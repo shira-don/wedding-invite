@@ -152,14 +152,6 @@
       to { transform: scale(1.08); }
     }
 
-    /* Image break parallax-feel */
-    .image-break img {
-      transition: transform 8s ease-out;
-    }
-    .image-break.visible img {
-      transform: scale(1.05);
-    }
-
     /* ── Navigation ───────────────────────────────── */
     nav {
       position: fixed;
@@ -181,7 +173,7 @@
     nav a {
       text-decoration: none;
       font-size: .7rem;
-      letter-spacing: 3px;
+      letter-spacing: 3px;2
       text-transform: uppercase;
       color: #3a3a3a;
       transition: color .3s;
@@ -448,8 +440,30 @@
     /* ── Details ──────────────────────────────────── */
     .details-section {
       padding: 6rem 0;
-      background: #ebe5f2;
+      background:
+        linear-gradient(rgba(245,240,252,.80) 0%, rgba(245,240,252,.46) 20%, rgba(231,222,244,.52) 100%),
+        url('images/compressed/soiree.jpg') center/cover no-repeat;
     }
+    /* Make the section header stand out over the venue photo */
+    .details-section .section-label {
+      color: #6a4a97;
+      font-size: .82rem;
+      font-weight: 600;
+      text-shadow: 0 1px 10px rgba(255,255,255,.9);
+    }
+    .details-section h2 {
+      color: #33303a;
+      font-weight: 400 !important;
+      text-shadow: 0 2px 14px rgba(255,255,255,.95), 0 0 30px rgba(255,255,255,.7);
+    }
+
+    /* Breathing room between sections — the gap takes the next section's colour */
+    .countdown-section { border-top: 1.75rem solid #ebe5f2; }
+    .couple-section    { border-top: 1.75rem solid #f7f3fc; }
+    .details-section   { border-top: 1.75rem solid #ece6f5; }
+    .timeline-section  { border-top: 1.75rem solid #e8ede7; }
+    .gallery-section   { border-top: 1.75rem solid #ebe5f2; }
+    footer             { border-top: 1.75rem solid #272030; }
     .details-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -615,19 +629,6 @@
     .rsvp-status.success { color: #7a9b78; }
     .rsvp-status.error { color: #c0392b; }
 
-    /* ── Full-width image break ───────────────────── */
-    .image-break {
-      width: 100%;
-      height: 50vh;
-      min-height: 300px;
-      overflow: hidden;
-    }
-    .image-break img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
     /* ── Footer ───────────────────────────────────── */
     footer {
       padding: 4rem 0;
@@ -693,7 +694,7 @@
       <li><a href="#details">Details</a></li>
       <li><a href="#schedule">Schedule</a></li>
       <li><a href="#gallery">Gallery</a></li>
-      <li><a href="#rsvp">RSVP</a></li>
+      <li hidden><a href="#rsvp">RSVP</a></li>
     </ul>
   </nav>
 
@@ -757,7 +758,7 @@
           <p>
             We first crossed paths in college, just two electronics engineering students
             navigating lectures and late-night study sessions. But it wasn't until we
-            were paired together for our thesis that everything changed — long hours in
+            were paired together for our thesis that everything changed. Long hours in
             the lab turned into long conversations, and somewhere between the circuit
             boards and deadlines, we fell in love.
           </p>
@@ -840,11 +841,6 @@
     </div>
   </section>
 
-  <!-- Full Width Image Break -->
-  <div class="image-break reveal-fade">
-    <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1600&q=80" alt="Garden venue at golden hour" loading="lazy" />
-  </div>
-
   <!-- Schedule / Timeline -->
   <section class="timeline-section" id="schedule">
     <div class="container">
@@ -916,18 +912,18 @@
         <img src="images/DUY_8307.jpg" alt="Our memories" loading="lazy" decoding="async" />
         <img src="images/DUY_8392.jpg" alt="Our memories" loading="lazy" decoding="async" />
         -->
-        <img src="images/compressed/DUY_7745_(2).jpg" alt="Our memories" loading="lazy" decoding="async" />
-        <img src="images/compressed/DUY_7902_(2).jpg" alt="Our memories" loading="lazy" decoding="async" />
-        <img src="images/compressed/DUY_8066.jpg" alt="Our memories" loading="lazy" decoding="async" />
-        <img src="images/compressed/DUY_8166.jpg" alt="Our memories" loading="lazy" decoding="async" />
+        <img src="images/compressed/DUY_7940.jpg" alt="Our memories" loading="lazy" decoding="async" />
+        <img src="images/compressed/DUY_8288.jpg" alt="Our memories" loading="lazy" decoding="async" />
+        <img src="images/compressed/DUY_7860_(2).jpg" alt="Our memories" loading="lazy" decoding="async" />
+        <img src="images/compressed/DUY_8075.jpg" alt="Our memories" loading="lazy" decoding="async" />
         <img src="images/compressed/DUY_8307.jpg" alt="Our memories" loading="lazy" decoding="async" />
-        <img src="images/compressed/DUY_8392.jpg" alt="Our memories" loading="lazy" decoding="async" />
+        <img src="images/compressed/DUY_8205.jpg" alt="Our memories" loading="lazy" decoding="async" />
       </div>
     </div>
   </section>
 
   <!-- RSVP -->
-  <section class="rsvp-section" id="rsvp">
+  <section class="rsvp-section" id="rsvp" hidden>
     <div class="container">
       <div class="text-center reveal">
         <p class="section-label">Respond</p>
