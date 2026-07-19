@@ -1,0 +1,6 @@
+# Full-resolution originals — kept locally, not committed.
+# The web-sized versions in images/compressed/ ARE tracked.
+/images/*.jpg
+/images/*.JPG
+/images/*.jpeg
+/images/*.png
