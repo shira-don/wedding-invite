@@ -285,6 +285,50 @@
     .btn-ghost:hover { background: rgba(255,255,255,.2); transform: translateY(-2px); }
     .btn-ghost:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 
+    /* Add-to-calendar dropdown */
+    .cal-wrap { position: relative; display: inline-flex; }
+    .cal-menu {
+      position: absolute;
+      top: calc(100% + .6rem);
+      left: 50%;
+      transform: translateX(-50%) translateY(-6px);
+      background: #fff;
+      border-radius: 5px;
+      box-shadow: 0 10px 30px rgba(40,25,60,.25);
+      padding: .4rem;
+      display: flex;
+      flex-direction: column;
+      min-width: 210px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .2s ease, transform .2s ease, visibility .2s;
+      z-index: 5;
+    }
+    .cal-menu.open { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    .cal-menu::before {
+      content: '';
+      position: absolute;
+      top: -6px; left: 50%;
+      width: 12px; height: 12px;
+      background: #fff;
+      transform: translateX(-50%) rotate(45deg);
+    }
+    .cal-menu a {
+      position: relative;
+      color: #3a3a3a;
+      text-decoration: none;
+      padding: .7rem .9rem;
+      font-size: .68rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border-radius: 3px;
+      text-align: left;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: background .2s, color .2s;
+    }
+    .cal-menu a:hover, .cal-menu a:focus-visible { background: #f2edf8; color: #7b5ea7; outline: none; }
+
     /* Inline text link (venue / maps) */
     .text-link {
       color: #7b5ea7;
@@ -488,9 +532,13 @@
     }
     .gallery-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: .5rem;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .6rem;
       margin-top: 3rem;
+    }
+    /* Desktop: let the gallery grow wider than the 900px content column */
+    @media (min-width: 769px) {
+      .gallery-section .container { max-width: 1320px; }
     }
     .gallery-grid img {
       width: 100%;
@@ -627,6 +675,7 @@
       .details-grid { grid-template-columns: 1fr; }
       .photo-strip { grid-template-columns: 1fr 1fr; }
       .photo-strip img:nth-child(3) { grid-column: 1 / -1; }
+      .gallery-grid { grid-template-columns: 1fr 1fr; }
       .countdown { gap: 1.5rem; }
     }
     @media (max-width: 480px) {
@@ -662,7 +711,14 @@
       <p class="date-line">December 06, 2026 &bull;
             Soirée Events Place</p>
       <div class="hero-actions">
-        <button type="button" class="btn-ghost" id="add-to-calendar">&#128197;&nbsp; Add to Calendar</button>
+        <div class="cal-wrap">
+          <button type="button" class="btn-ghost" id="add-to-calendar" aria-haspopup="true" aria-expanded="false" aria-controls="cal-menu">&#128197;&nbsp; Add to Calendar</button>
+          <div class="cal-menu" id="cal-menu" role="menu">
+            <a href="#" data-cal="google" role="menuitem" target="_blank" rel="noopener">Google Calendar</a>
+            <a href="#" data-cal="outlook" role="menuitem" target="_blank" rel="noopener">Outlook</a>
+            <a href="#" data-cal="apple" role="menuitem" download="Shira-and-Leendon-Wedding.ics">Apple / Other (.ics)</a>
+          </div>
+        </div>
         <a class="btn-ghost" href="https://www.google.com/maps/search/?api=1&query=Soir%C3%A9e+Events+Place+Indang+Cavite" target="_blank" rel="noopener">&#128205;&nbsp; Get Directions</a>
       </div>
     </div>
@@ -693,7 +749,8 @@
       </div>
       <div class="couple-grid">
         <div class="couple-photo reveal-left">
-          <img src="https://images.unsplash.com/photo-1529634597503-139d3726fed5?w=800&q=80" alt="Shira and Leendon walking together" loading="lazy" decoding="async" />
+          <!-- backup: <img src="https://images.unsplash.com/photo-1529634597503-139d3726fed5?w=800&q=80" alt="Shira and Leendon walking together" loading="lazy" decoding="async" /> -->
+          <img src="images/compressed/college-1.jpg" alt="Shira and Leendon in college" loading="lazy" decoding="async" />
         </div>
         <div class="couple-text reveal-right">
           <h3>A Love Story</h3>
@@ -963,39 +1020,64 @@
     }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
     animated.forEach(el => observer.observe(el));
 
-    // ── Add to Calendar (.ics download) ──────────────
+    // ── Add to Calendar (dropdown → Google / Outlook / Apple) ──
     (function addToCalendar() {
       const btn = document.getElementById('add-to-calendar');
-      if (!btn) return;
-      // Times in UTC (ceremony 4:00 PM PHT = 08:00 UTC; end ~ 11:00 PM PHT)
-      const ics = [
-        'BEGIN:VCALENDAR',
-        'VERSION:2.0',
-        'PRODID:-//Shira and Leendon//Wedding//EN',
-        'CALSCALE:GREGORIAN',
-        'BEGIN:VEVENT',
-        'UID:2026-12-06-shira-leendon@wedding',
-        'DTSTAMP:20260101T000000Z',
-        'DTSTART:20261206T080000Z',
-        'DTEND:20261206T150000Z',
-        'SUMMARY:Wedding of Shira & Leendon',
-        'DESCRIPTION:Ceremony 4:00 PM\\, Reception to follow. We cannot wait to celebrate with you!',
-        'LOCATION:Soirée Events Place, 347 Nara St., Kayquit 3, Indang, Cavite',
-        'END:VEVENT',
-        'END:VCALENDAR'
-      ].join('\r\n');
+      const menu = document.getElementById('cal-menu');
+      if (!btn || !menu) return;
 
-      btn.addEventListener('click', () => {
-        const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'Shira-and-Leendon-Wedding.ics';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      // Event details — ceremony 4:00 PM PHT (UTC+8) → end ~11:00 PM PHT
+      const EV = {
+        title: 'Wedding of Shira & Leendon',
+        details: 'Ceremony 4:00 PM, Reception to follow. We cannot wait to celebrate with you!',
+        location: 'Soirée Events Place, 347 Nara St., Kayquit 3, Indang, Cavite',
+        startUTC: '20261206T080000Z',
+        endUTC: '20261206T150000Z',
+        startLocal: '2026-12-06T16:00:00+08:00',
+        endLocal: '2026-12-06T23:00:00+08:00',
+      };
+
+      // Google Calendar — opens a pre-filled event to save
+      const google = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
+        + '&text=' + encodeURIComponent(EV.title)
+        + '&dates=' + EV.startUTC + '/' + EV.endUTC
+        + '&details=' + encodeURIComponent(EV.details)
+        + '&location=' + encodeURIComponent(EV.location);
+
+      // Outlook.com — opens a pre-filled event to save
+      const outlook = 'https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent'
+        + '&subject=' + encodeURIComponent(EV.title)
+        + '&startdt=' + encodeURIComponent(EV.startLocal)
+        + '&enddt=' + encodeURIComponent(EV.endLocal)
+        + '&body=' + encodeURIComponent(EV.details)
+        + '&location=' + encodeURIComponent(EV.location);
+
+      // Apple / other apps — .ics data URI (opens the calendar app directly)
+      const ics = [
+        'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Shira and Leendon//Wedding//EN','CALSCALE:GREGORIAN',
+        'BEGIN:VEVENT','UID:2026-12-06-shira-leendon@wedding','DTSTAMP:20260101T000000Z',
+        'DTSTART:' + EV.startUTC, 'DTEND:' + EV.endUTC,
+        'SUMMARY:' + EV.title,
+        'DESCRIPTION:' + EV.details.replace(/,/g, '\\,'),
+        'LOCATION:' + EV.location.replace(/,/g, '\\,'),
+        'END:VEVENT','END:VCALENDAR'
+      ].join('\r\n');
+      const icsHref = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics);
+
+      menu.querySelector('[data-cal="google"]').href = google;
+      menu.querySelector('[data-cal="outlook"]').href = outlook;
+      menu.querySelector('[data-cal="apple"]').href = icsHref;
+
+      const open = () => { menu.classList.add('open'); btn.setAttribute('aria-expanded', 'true'); };
+      const close = () => { menu.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); };
+      const toggle = () => menu.classList.contains('open') ? close() : open();
+
+      btn.addEventListener('click', (e) => { e.stopPropagation(); toggle(); });
+      menu.addEventListener('click', (e) => { if (e.target.tagName === 'A') close(); });
+      document.addEventListener('click', (e) => {
+        if (!menu.contains(e.target) && e.target !== btn) close();
       });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
     })();
 
     // ── Hide nav on scroll down, show on scroll up ───
