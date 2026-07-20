@@ -9,12 +9,17 @@
 
   <!-- Open Graph / social share -->
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://shira-don.github.io/wedding-invite/" />
   <meta property="og:title" content="Shira & Leendon — We're Getting Married!" />
-  <meta property="og:description" content="December 6, 2026 · Soirée Events Place, Indang, Cavite. Save the date and RSVP." />
-  <meta property="og:image" content="https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=80" />
+  <meta property="og:description" content="December 6, 2026 · Soirée Events Place, Indang, Cavite. Save the date!" />
+  <meta property="og:image" content="https://shira-don.github.io/wedding-invite/og-image.jpg?v=2" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Shira & Leendon — Save the Date, December 6, 2026" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Shira & Leendon — We're Getting Married!" />
   <meta name="twitter:description" content="December 6, 2026 · Soirée Events Place, Indang, Cavite." />
+  <meta name="twitter:image" content="https://shira-don.github.io/wedding-invite/og-image.jpg?v=2" />
 
   <!-- Favicon (inline SVG, no external request) -->
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%9C%3C/text%3E%3C/svg%3E" />
@@ -176,7 +181,7 @@
     nav a {
       text-decoration: none;
       font-size: .7rem;
-      letter-spacing: 3px;2
+      letter-spacing: 3px;
       text-transform: uppercase;
       color: #3a3a3a;
       transition: color .3s;
@@ -826,6 +831,31 @@
       color: rgba(255,255,255,.35);
     }
 
+    /* ── Background music toggle ──────────────────── */
+    .music-toggle {
+      position: fixed;
+      bottom: 1.25rem; right: 1.25rem;
+      z-index: 150;
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(123, 94, 167, .9);
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(80,60,110,.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.15rem;
+      backdrop-filter: blur(4px);
+      transition: transform .2s, background .3s;
+    }
+    .music-toggle:hover { background: #7b5ea7; transform: scale(1.06); }
+    .music-toggle:focus-visible { outline: 2px solid #7b5ea7; outline-offset: 2px; }
+    .music-toggle.hint { animation: musicPulse 1.9s ease-in-out infinite; }
+    @keyframes musicPulse {
+      0%, 100% { box-shadow: 0 6px 18px rgba(80,60,110,.4); }
+      50%      { box-shadow: 0 6px 28px rgba(123,94,167,.85); }
+    }
+
     /* ── Reduced motion ───────────────────────────── */
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
@@ -1202,6 +1232,12 @@
     <span class="build-note">// uptime: 8 years and counting · built with love (and a little JavaScript) 💜</span>
   </footer>
 
+  <!-- Background music -->
+  <audio id="bg-music" loop preload="none" src="music/song.mp3"></audio>
+  <button id="music-toggle" class="music-toggle hint" aria-label="Play music" aria-pressed="false" title="Play music">
+    <span class="music-icon">&#9834;</span>
+  </button>
+
   <!-- Scripts -->
   <script>
     // ── Hero terminal typewriter (re-types every 5s) ──
@@ -1222,6 +1258,36 @@
       }
       typeOnce();
       setInterval(typeOnce, 5000);   // reset & re-type on a 5-second loop
+    })();
+
+    // ── Background music toggle ──────────────────────
+    (function music() {
+      const audio = document.getElementById('bg-music');
+      const btn = document.getElementById('music-toggle');
+      if (!audio || !btn) return;
+      const icon = btn.querySelector('.music-icon');
+      audio.volume = 0.35;
+
+      // hide the control gracefully if the audio file is missing
+      audio.addEventListener('error', () => { btn.style.display = 'none'; });
+
+      function setUI(playing) {
+        icon.innerHTML = playing ? '&#10074;&#10074;' : '&#9834;';   // ❚❚ / ♪
+        btn.setAttribute('aria-pressed', playing);
+        btn.setAttribute('aria-label', playing ? 'Pause music' : 'Play music');
+        btn.title = playing ? 'Pause music' : 'Play music';
+        btn.classList.toggle('hint', !playing);
+      }
+      function play() {
+        audio.play().then(() => { setUI(true); localStorage.setItem('bgm', 'on'); })
+                    .catch(() => setUI(false));   // blocked until a user gesture
+      }
+      function pause() { audio.pause(); setUI(false); localStorage.setItem('bgm', 'off'); }
+
+      btn.addEventListener('click', () => audio.paused ? play() : pause());
+
+      // resume if the guest had music on from a previous page/visit
+      if (localStorage.getItem('bgm') === 'on') play(); else setUI(false);
     })();
 
     // ── Console easter egg (for fellow devs 💜) ───────
