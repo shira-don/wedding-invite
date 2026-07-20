@@ -15,7 +15,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@400;500&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -29,9 +29,14 @@
     .serif { font-family: 'Cormorant Garamond', serif; }
     .container { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; }
     .text-center { text-align: center; }
-    .divider { width: 60px; height: 1px; background: #7a9b78; margin: 1.75rem auto; }
+    .divider {
+      width: 190px; height: 20px; margin: 1.75rem auto;
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 20'%3E%3Cg fill='none' stroke='%237a9b78' stroke-width='1.4'%3E%3Cpath d='M6 10 H88 M112 10 H194'/%3E%3Cpath d='M52 10 V4'/%3E%3Cpath d='M148 10 V16'/%3E%3Ccircle cx='100' cy='10' r='5'/%3E%3C/g%3E%3Cg fill='%237a9b78'%3E%3Ccircle cx='6' cy='10' r='2.6'/%3E%3Ccircle cx='194' cy='10' r='2.6'/%3E%3Ccircle cx='100' cy='10' r='1.6'/%3E%3Ccircle cx='52' cy='4' r='2.2'/%3E%3Ccircle cx='148' cy='16' r='2.2'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;
+    }
     .section-label {
-      font-weight: 500; font-size: .75rem; letter-spacing: 4px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 500; font-size: .72rem; letter-spacing: 3px;
       text-transform: uppercase; color: #7b5ea7; margin-bottom: 1rem;
     }
 
@@ -158,9 +163,10 @@
     <div class="container">
       <p class="lead">
         <span class="serif">Our celebration blooms in lilac and sage.</span><br />
-        We would be delighted for our guests to dress within this soft, garden-inspired
-        palette. Wear <strong>lilac</strong>, <strong>sage</strong>, or any
-        <strong>light pastel</strong> shade — and help bring our day to life in color.
+        Our <strong>entourage and principal sponsors</strong> will wear our signature
+        <strong>lilac and sage</strong>. Our <strong>guests</strong> are invited to
+        wear any soft <strong>light pastel</strong> — together, let's bring our
+        garden to life in color.
       </p>
     </div>
   </section>
@@ -175,6 +181,7 @@
       </div>
 
       <p class="group-title">Our Signature Shades</p>
+      <p class="group-note">For our entourage &amp; principal sponsors</p>
       <div class="swatches">
         <div class="swatch"><div class="chip" style="background:#c9b8e6"></div><div class="name">Lilac</div><div class="hex">#C9B8E6</div></div>
         <div class="swatch"><div class="chip" style="background:#b49fd8"></div><div class="name">Deep Lilac</div><div class="hex">#B49FD8</div></div>
@@ -184,8 +191,8 @@
         <div class="swatch"><div class="chip" style="background:#e7eede"></div><div class="name">Sage Mist</div><div class="hex">#E7EEDE</div></div>
       </div>
 
-      <p class="group-title">Soft Pastels — All Welcome</p>
-      <p class="group-note">Any light, muted pastel complements the theme beautifully.</p>
+      <p class="group-title">Soft Pastels</p>
+      <p class="group-note">For our guests — any light, muted pastel is perfect.</p>
       <div class="swatches">
         <div class="swatch"><div class="chip" style="background:#f4d9dd"></div><div class="name">Blush</div><div class="hex">#F4D9DD</div></div>
         <div class="swatch"><div class="chip" style="background:#e3c4c8"></div><div class="name">Dusty Rose</div><div class="hex">#E3C4C8</div></div>
@@ -214,22 +221,25 @@
         <div class="swatch"><div class="chip" style="background:#1b2a4a"></div><div class="name">Dark Navy</div></div>
         <div class="swatch"><div class="chip" style="background:#5a1a1f"></div><div class="name">Deep Maroon</div></div>
       </div>
+      <p class="group-note" style="margin-top:1.25rem;">for tops &amp; dresses — dark pants are okay</p>
 
       <div class="notice">
-        <div class="head serif">Black &amp; dark colors are not allowed.</div>
+        <div class="head serif">Black &amp; dark tops are not allowed.</div>
         <p>
           To keep our garden setting light and cohesive, we kindly ask that
-          <strong>no black or dark-toned attire</strong> be worn — this includes charcoal,
-          dark navy, deep jewel tones, and other heavy, saturated colors.
+          <strong>tops and dresses avoid black or dark, heavy tones</strong> —
+          charcoal, dark navy, deep jewel tones, and the like.
         </p>
         <p style="margin-top:.85rem;">
-          We also kindly ask that <strong>barongs not be worn</strong>, so our
-          garden palette stays soft and consistent throughout the day.
+          Good news: <strong>dark pants or trousers are perfectly fine</strong> — as
+          long as your top follows the dress code above. <strong>Barongs</strong>,
+          however, are not part of our theme.
         </p>
         <p style="margin-top:.85rem;">
           Please note: as a firm part of our celebration's theme,
-          <strong>guests in black or dark attire will not be granted entry.</strong>
-          We truly appreciate your understanding and cooperation. 💜
+          <strong>guests whose attire does not follow the dress code may not be
+          granted entry.</strong> We truly appreciate your understanding and
+          cooperation. 💜
         </p>
       </div>
     </div>
@@ -247,8 +257,9 @@
         <div class="note-card">
           <h4>The Style</h4>
           <p>Semi-formal to cocktail attire. Think flowing dresses, elegant separates,
-             and smart suits in our soft palette. Kindly note that
-             <strong>barongs are not part of our dress code</strong> for this celebration.</p>
+             and smart tops in our soft palette. <strong>Dark pants or trousers are
+             welcome</strong> — just keep your top within the dress code. Kindly note
+             that <strong>barongs are not part of our theme</strong>.</p>
         </div>
         <div class="note-card">
           <h4>The Setting</h4>
