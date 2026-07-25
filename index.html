@@ -27,6 +27,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@400;500&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" referrerpolicy="no-referrer" />
   <style>
     /* ── Reset & Base ─────────────────────────────── */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -597,13 +598,20 @@
       color: #6b8f6b;
     }
     .timeline-item .dot {
-      width: 10px;
-      height: 10px;
-      background: #7a9b78;
+      width: 48px;
+      height: 48px;
+      background: #fff;
+      border: 1.5px solid #a3c0a1;
       border-radius: 50%;
       flex-shrink: 0;
       position: relative;
       z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6b8f6b;
+      font-size: 1.05rem;
+      box-shadow: 0 3px 12px rgba(70,88,58,.14);
     }
     .timeline-item .event {
       flex: 1;
@@ -1190,7 +1198,6 @@
           <div class="icon">&#9829;</div>
           <h3>The Ceremony</h3>
           <p>
-            Sunday, December 6, 2026<br />
             4:00 PM<br /><br />
             English Garden<br />
             Soirée Events Place<br />
@@ -1201,7 +1208,6 @@
           <div class="icon">&#9733;</div>
           <h3>The Reception</h3>
           <p>
-            Sunday, December 6, 2026<br />
             6:00 PM — Late<br /><br />
             Le Grand Maison<br />
             Soirée Events Place<br />
@@ -1243,37 +1249,37 @@
       <div class="timeline stagger-children">
         <div class="timeline-item">
           <div class="time">3:30 PM</div>
-          <div class="dot"></div>
+          <div class="dot"><i class="fa-solid fa-chair" aria-hidden="true"></i></div>
           <div class="event">Guest Arrival &amp; Seating</div>
         </div>
         <div class="timeline-item">
           <div class="time">4:00 PM</div>
-          <div class="dot"></div>
+          <div class="dot"><i class="fa-solid fa-ring" aria-hidden="true"></i></div>
           <div class="event">Wedding Ceremony</div>
         </div>
         <div class="timeline-item">
           <div class="time">5:00 PM</div>
-          <div class="dot"></div>
+          <div class="dot"><i class="fa-solid fa-martini-glass" aria-hidden="true"></i></div>
           <div class="event">Cocktail Hour &amp; Hors d'oeuvres</div>
         </div>
         <div class="timeline-item">
           <div class="time">6:00 PM</div>
-          <div class="dot"></div>
+          <div class="dot"><i class="fa-solid fa-utensils" aria-hidden="true"></i></div>
           <div class="event">Dinner &amp; Toasts</div>
         </div>
         <div class="timeline-item">
           <div class="time">7:30 PM</div>
-          <div class="dot"></div>
+          <div class="dot"><i class="fa-solid fa-cake-candles" aria-hidden="true"></i></div>
           <div class="event">First Dance &amp; Cake Cutting</div>
         </div>
         <div class="timeline-item">
           <div class="time">8:00 PM</div>
-          <div class="dot"></div>
+          <div class="dot"><i class="fa-solid fa-music" aria-hidden="true"></i></div>
           <div class="event">Dancing &amp; Celebration</div>
         </div>
         <div class="timeline-item">
-          <div class="time">11:00 PM</div>
-          <div class="dot"></div>
+          <div class="time">10:00 PM</div>
+          <div class="dot"><i class="fa-solid fa-burst" aria-hidden="true"></i></div>
           <div class="event">Fireworks Send-Off</div>
         </div>
       </div>
