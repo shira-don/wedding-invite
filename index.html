@@ -831,6 +831,145 @@
       color: rgba(255,255,255,.35);
     }
 
+    /* ── Envelope intro (lilac + wax seal) ────────── */
+    .env-overlay {
+      position: fixed; inset: 0; z-index: 1000; overflow: hidden;
+      cursor: pointer;
+      transition: transform 2.3s cubic-bezier(.5,0,.2,1), opacity 2.3s ease;
+    }
+    .env-overlay.lift { transform: translateY(108%); opacity: .9; }
+    /* site chrome hides during the intro, then the nav slides + fades in once the overlay is gone */
+    #navbar { transition: transform .5s ease, opacity .6s ease; }
+    body:has(#env-overlay) #navbar { opacity: 0; transform: translateY(-100%); pointer-events: none; }
+    body:has(#env-overlay) .music-toggle { opacity: 0; pointer-events: none; }
+    /* the envelope lives in this box; desktop fills the viewport */
+    .env-shape { position: absolute; inset: 0; perspective: 1500px; }
+    /* mobile: keep the envelope's proportions but cover the screen (crop the sides) */
+    @media (max-width: 820px) {
+      .env-overlay { background: #e6ead9; }        /* fills any sliver so the site never peeks (closed) */
+      .env-overlay.open { background: transparent; } /* clear it so the flap reveals the site, not sage */
+      .env-flap .env-floral { top: 31%; width: 46vw; }  /* larger, above the seal with a margin */
+      .env-shape {
+        inset: auto; top: 50%; left: 50%;
+        /* both dims set explicitly (≈3:2), generously over-covering so no edge gap */
+        width: max(108vw, 162vh);
+        height: max(108vh, 72vw);
+        /* -52% Y puts the flap-apex at the vertical centre; X centres the whole envelope
+           (adjust the -3vw to slide the apex horizontally) */
+        transform: translate(calc(-50% - 3vw), -52%);
+      }
+    }
+
+    /* four paper faces meet at the seal point (≈ 43% down).
+       Paper texture is baked INTO each face (background-blend-mode), so it is
+       clipped to the paper and travels with the flap when it opens. */
+    .env-face {
+      position: absolute; inset: 0; backface-visibility: hidden;
+      /* satin sheen — a soft highlight from top-centre, identical on every face
+         so it reads as one continuous smooth finish across the envelope */
+      --sheen: radial-gradient(140% 95% at 50% 42%, rgba(255,255,255,.2), rgba(255,255,255,0) 62%);
+    }
+    .env-left {
+      clip-path: polygon(0 0, 50% 52%, 0 100%);
+      background: var(--sheen), linear-gradient(115deg, #bcc7a3, #a7b48b);
+      z-index: 6; box-shadow: inset -8px 0 18px -10px rgba(70,88,58,.24);
+    }
+    .env-right {
+      clip-path: polygon(100% 0, 50% 52%, 100% 100%);
+      background: var(--sheen), linear-gradient(245deg, #bcc7a3, #a7b48b);
+      z-index: 6; box-shadow: inset 8px 0 18px -10px rgba(70,88,58,.24);
+    }
+    .env-bottom {
+      clip-path: polygon(0 100%, 50% 52%, 100% 100%);
+      background: var(--sheen), linear-gradient(#c3cdab, #b0bc90);
+      z-index: 7; box-shadow: 0 -8px 20px -10px rgba(70,88,58,.18);
+    }
+    .env-flap {
+      clip-path: polygon(0 0, 100% 0, 50% 52%);
+      /* soft fold-shadow along the top edge so the flap reads as folded down (closed) */
+      background:
+        linear-gradient(180deg, rgba(58,72,44,.3) 0, rgba(58,72,44,0) 16%),
+        var(--sheen),
+        linear-gradient(#c9d3af, #c1cca1);
+      transform-origin: top center;
+      transform: rotateX(0deg);
+      transition: transform 1s cubic-bezier(.6,.02,.25,1), z-index 0s .5s;
+      z-index: 9;
+    }
+    /* dedicated shadow: a dark copy of the flap, shifted down + blurred, so a
+       thick soft shadow peeks below the flap's V-edge onto the pocket */
+    .env-flap-shadow {
+      position: absolute; inset: 0;
+      clip-path: polygon(0 0, 100% 0, 50% 52%);
+      background: #2b3a20;
+      z-index: 8;
+      transform: translateY(1.8%);   /* flap overlaps onto the body */
+      filter: blur(13px);            /* soft, diffuse — reads as a cast shadow */
+      opacity: .3;
+      transition: opacity .3s ease;
+    }
+    .env-overlay.open .env-flap { transform: rotateX(178deg); z-index: 3; }
+    .env-overlay.open .env-flap-shadow { opacity: 0; }
+    /* lilac floral emboss on the upper flap (rotates away with the flap on open) */
+    .env-floral {
+      position: absolute; left: 50%; top: 30%;
+      transform: translate(-50%, -50%);
+      width: clamp(100px, 21vw, 180px);
+      height: auto;
+      pointer-events: none;
+      backface-visibility: hidden;
+      opacity: .92;
+      filter: drop-shadow(0 1px 1px rgba(70,88,58,.4));
+    }
+
+    .env-invite {
+      position: absolute; left: 0; right: 0; top: 63%; z-index: 8;
+      text-align: center;
+      font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 400;
+      font-size: clamp(1.2rem, 5.5vw, 1.7rem); line-height: 1.4;
+      color: #64714b;
+      transition: opacity .4s ease;
+    }
+    .env-overlay.open .env-invite { opacity: 0; }
+
+    /* wax seal at the meeting point */
+    .env-seal {
+      position: absolute; left: 50%; top: 52%; transform: translate(-50%,-50%);
+      width: clamp(128px, 38vw, 200px); height: auto; z-index: 11;
+      filter: drop-shadow(0 9px 20px rgba(80,50,120,.42));
+      transition: transform .55s ease, opacity .55s ease;
+    }
+    .env-overlay.open .env-seal { transform: translate(-50%,-50%) scale(.15) rotate(-22deg); opacity: 0; }
+
+    .env-hint {
+      position: absolute; left: 0; right: 0; bottom: 6%; z-index: 12;
+      text-align: center;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .72rem; letter-spacing: 3px; text-transform: uppercase;
+      color: #6b7a5f;
+      animation: envHintPulse 2s ease-in-out infinite;
+      transition: opacity .4s;
+    }
+    .env-hint::before { content: '❯ '; color: #7a9b78; }
+    .env-overlay.open .env-hint { opacity: 0; }
+    @keyframes envHintPulse { 0%,100% { opacity: .5; } 50% { opacity: 1; } }
+
+    /* ─────────────────────────────────────────────────────────────
+       DISABLED FOR NOW — sage floral envelope split-by-flap reveal.
+       To re-enable: swap this CSS back in, restore the sage markup
+       below, and change the JS open() back to the piece-slide version.
+
+    .env-overlay { position: fixed; inset: 0; z-index: 1000; overflow: hidden;
+      cursor: pointer; background: #f4f4f5; transition: background-color .35s ease; }
+    .env-overlay.open { background-color: transparent; pointer-events: none; }
+    .env-piece { position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: contain; object-position: center; user-select: none; pointer-events: none;
+      transition: transform 2s cubic-bezier(.5,0,.2,1); will-change: transform; }
+    .env-overlay.open .env-flap { transform: translateY(-115%); }
+    .env-overlay.open .env-body { transform: translateY(115%); }
+    @media (max-width: 820px) { .env-piece { object-fit: cover; } }
+    ───────────────────────────────────────────────────────────── */
+
     /* ── Background music toggle ──────────────────── */
     .music-toggle {
       position: fixed;
@@ -885,6 +1024,28 @@
   </style>
 </head>
 <body>
+
+  <!-- Envelope intro (lilac + wax seal) -->
+  <div class="env-overlay" id="env-overlay" role="button" tabindex="0" aria-label="Tap to open the invitation">
+    <div class="env-shape">
+      <div class="env-face env-left"></div>
+      <div class="env-face env-right"></div>
+      <div class="env-face env-bottom"></div>
+      <div class="env-flap-shadow"></div>
+      <div class="env-face env-flap" id="env-flap"><img class="env-floral" src="images/compressed/floral-emboss.png" alt="" /></div>
+      <img class="env-seal" src="images/compressed/seal-sl.png" alt="S & L monogram wax seal" />
+    </div>
+    <p class="env-hint">Tap to open</p>
+  </div>
+  <!-- DISABLED FOR NOW — sage floral split-by-flap markup:
+  <div class="env-overlay" id="env-overlay" role="button" tabindex="0" aria-label="Tap to open the invitation">
+    <img class="env-piece env-body" src="images/compressed/env-body.webp" alt="" />
+    <img class="env-piece env-flap" src="images/compressed/env-flap.webp" alt="" />
+    <p class="env-hint">Tap to open</p>
+  </div>
+  -->
+
+  <noscript><style>.env-overlay { display: none !important; }</style></noscript>
 
   <!-- Navigation -->
   <nav id="navbar">
@@ -1240,6 +1401,40 @@
 
   <!-- Scripts -->
   <script>
+    // ── Envelope intro ───────────────────────────────
+    (function envelope() {
+      const ov = document.getElementById('env-overlay');
+      if (!ov) return;
+      // ?replay (or #replay) forces the intro to show — handy for previewing
+      const force = /replay/i.test(location.search + location.hash);
+      // otherwise don't replay when returning to the page in the same session
+      if (!force && sessionStorage.getItem('env-opened')) { ov.remove(); return; }
+      document.body.style.overflow = 'hidden';
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let opened = false;
+      function open() {
+        if (opened) return;
+        opened = true;
+        ov.classList.add('open');   // wax seal breaks + flap swings open
+        sessionStorage.setItem('env-opened', '1');
+        // resume music if the guest had it on from a previous visit
+        try {
+          if (localStorage.getItem('bgm') === 'on') {
+            const b = document.getElementById('music-toggle');
+            if (b) b.click();
+          }
+        } catch (e) {}
+        const revealAt = reduce ? 120 : 500;   // let the flap start opening, then slide away
+        setTimeout(() => { ov.classList.add('lift'); document.body.style.overflow = ''; }, revealAt);
+        setTimeout(() => ov.remove(), revealAt + 2400);
+        // -- sage split variant (disabled): ov.classList.add('open'); overflow=''; setTimeout(remove, 2100);
+      }
+      ov.addEventListener('click', open);
+      ov.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+      });
+    })();
+
     // ── Hero terminal typewriter (re-types every 5s) ──
     (function heroTerminal() {
       const el = document.getElementById('term-text');
