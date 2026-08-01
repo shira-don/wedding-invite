@@ -1498,7 +1498,7 @@
       const icon = btn.querySelector('.music-icon');
 
       // Paste the YouTube video ID here (the part after v= or youtu.be/)
-      const VIDEO_ID = 'npT_R6QvWvY';   // Jacob's Piano · Married Life
+      const VIDEO_ID = 'BZIg8G3Xp-Y';   // background music
       if (!VIDEO_ID) { btn.style.display = 'none'; return; }
 
       let player = null, ready = false, playing = false, wantPlay = false;
@@ -1530,14 +1530,14 @@
       window.onYouTubeIframeAPIReady = function () {
         player = new YT.Player('yt-player', {
           videoId: VIDEO_ID,
-          playerVars: { autoplay: 0, controls: 0, loop: 1, playlist: VIDEO_ID,
-                        playsinline: 1, modestbranding: 1, rel: 0, fs: 0 },
+          playerVars: { autoplay: 0, controls: 0, playsinline: 1,
+                        modestbranding: 1, rel: 0, fs: 0, start: 18 },
           events: {
             onReady: () => { ready = true; player.setVolume(35); if (wantPlay) startPlay(); },
             onStateChange: (e) => {
               if (e.data === YT.PlayerState.PLAYING) setUI(true);
               else if (e.data === YT.PlayerState.PAUSED) setUI(false);
-              else if (e.data === YT.PlayerState.ENDED) { player.seekTo(0); player.playVideo(); }
+              else if (e.data === YT.PlayerState.ENDED) { player.seekTo(18); player.playVideo(); }  // loop back to 0:18
             }
           }
         });
