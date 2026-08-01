@@ -31,7 +31,7 @@
   <style>
     /* ── Reset & Base ─────────────────────────────── */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; overflow-x: hidden; max-width: 100%; }
     body {
       font-family: 'Montserrat', sans-serif;
       font-weight: 300;
@@ -1001,6 +1001,12 @@
     @media (max-width: 820px) { .env-piece { object-fit: cover; } }
     ───────────────────────────────────────────────────────────── */
 
+    /* hidden YouTube audio player */
+    #yt-player {
+      position: fixed; bottom: 0; left: 0;
+      width: 1px; height: 1px; opacity: 0;
+      pointer-events: none; z-index: -1;
+    }
     /* ── Background music toggle ──────────────────── */
     .music-toggle {
       position: fixed;
@@ -1424,7 +1430,7 @@
   </footer>
 
   <!-- Background music -->
-  <audio id="bg-music" loop preload="none" src="music/song.mp3"></audio>
+  <div id="yt-player" aria-hidden="true"></div>
   <button id="music-toggle" class="music-toggle hint" aria-label="Play music" aria-pressed="false" title="Play music">
     <span class="music-icon">&#9834;</span>
   </button>
@@ -1485,34 +1491,63 @@
       setInterval(typeOnce, 5000);   // reset & re-type on a 5-second loop
     })();
 
-    // ── Background music toggle ──────────────────────
+    // ── Background music (YouTube) ───────────────────
     (function music() {
-      const audio = document.getElementById('bg-music');
       const btn = document.getElementById('music-toggle');
-      if (!audio || !btn) return;
+      if (!btn) return;
       const icon = btn.querySelector('.music-icon');
-      audio.volume = 0.35;
 
-      // hide the control gracefully if the audio file is missing
-      audio.addEventListener('error', () => { btn.style.display = 'none'; });
+      // Paste the YouTube video ID here (the part after v= or youtu.be/)
+      const VIDEO_ID = 'npT_R6QvWvY';   // Jacob's Piano · Married Life
+      if (!VIDEO_ID) { btn.style.display = 'none'; return; }
 
-      function setUI(playing) {
-        icon.innerHTML = playing ? '&#10074;&#10074;' : '&#9834;';   // ❚❚ / ♪
-        btn.setAttribute('aria-pressed', playing);
-        btn.setAttribute('aria-label', playing ? 'Pause music' : 'Play music');
-        btn.title = playing ? 'Pause music' : 'Play music';
-        btn.classList.toggle('hint', !playing);
+      let player = null, ready = false, playing = false, wantPlay = false;
+
+      function setUI(on) {
+        playing = on;
+        icon.innerHTML = on ? '&#10074;&#10074;' : '&#9834;';   // ❚❚ / ♪
+        btn.setAttribute('aria-pressed', on);
+        btn.setAttribute('aria-label', on ? 'Pause music' : 'Play music');
+        btn.title = on ? 'Pause music' : 'Play music';
+        btn.classList.toggle('hint', !on);
       }
-      function play() {
-        audio.play().then(() => { setUI(true); localStorage.setItem('bgm', 'on'); })
-                    .catch(() => setUI(false));   // blocked until a user gesture
+      function startPlay() {
+        localStorage.setItem('bgm', 'on');
+        if (!ready) { wantPlay = true; return; }
+        player.unMute(); player.setVolume(35); player.playVideo();
       }
-      function pause() { audio.pause(); setUI(false); localStorage.setItem('bgm', 'off'); }
+      function stop() {
+        localStorage.setItem('bgm', 'off');
+        if (ready) player.pauseVideo();
+        setUI(false);
+      }
 
-      btn.addEventListener('click', () => audio.paused ? play() : pause());
+      // load the IFrame API and build the (hidden) player as early as possible
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.head.appendChild(tag);
+
+      window.onYouTubeIframeAPIReady = function () {
+        player = new YT.Player('yt-player', {
+          videoId: VIDEO_ID,
+          playerVars: { autoplay: 0, controls: 0, loop: 1, playlist: VIDEO_ID,
+                        playsinline: 1, modestbranding: 1, rel: 0, fs: 0 },
+          events: {
+            onReady: () => { ready = true; player.setVolume(35); if (wantPlay) startPlay(); },
+            onStateChange: (e) => {
+              if (e.data === YT.PlayerState.PLAYING) setUI(true);
+              else if (e.data === YT.PlayerState.PAUSED) setUI(false);
+              else if (e.data === YT.PlayerState.ENDED) { player.seekTo(0); player.playVideo(); }
+            }
+          }
+        });
+      };
+
+      btn.addEventListener('click', () => playing ? stop() : startPlay());
 
       // resume if the guest had music on from a previous page/visit
-      if (localStorage.getItem('bgm') === 'on') play(); else setUI(false);
+      if (localStorage.getItem('bgm') === 'on') wantPlay = true;
+      setUI(false);
     })();
 
     // ── Console easter egg (for fellow devs 💜) ───────
