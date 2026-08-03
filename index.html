@@ -857,12 +857,12 @@
       .env-overlay { background: url("images/compressed/paper-bg.jpg") center / cover; }  /* paper fills any sliver */
       .env-overlay.open { background: transparent; } /* clear it so the flap reveals the site, not sage */
       .env-shape .env-seal { width: 34vw; }              /* slightly smaller wax seal on mobile */
-      .env-flap .env-floral { top: 27%; height: 40vh; width: auto; max-width: 90vw; }  /* ~2/5 of viewport height */
+      .env-flap .env-floral { top: 31%; width: 38vw; }   /* floral emboss on the flap */
       /* the shape's bottom-left is off-screen on the over-sized mobile shape, so
          anchor the texture to the VIEWPORT bottom-left corner (two edges hide at the
          screen edge, the base radial mask fades the rest — no rectangle) */
       .env-shape .env-floral-corner {
-        width: 56vw;
+        height: 40vh; width: auto;   /* ~2/5 of viewport height */
         left: 50%; right: auto;
         top: 52%; bottom: auto;
         transform: translate(-50vw, calc(50vh - 100%));
@@ -1439,6 +1439,16 @@
 
   <!-- Scripts -->
   <script>
+    // Failsafe: if the page is restored from the back/forward cache, make sure
+    // scrolling is never left locked and no stale intro overlay is covering it.
+    window.addEventListener('pageshow', function (e) {
+      if (e.persisted) {
+        document.body.style.overflow = '';
+        const stale = document.getElementById('env-overlay');
+        if (stale) stale.remove();
+      }
+    });
+
     // ── Envelope intro ───────────────────────────────
     (function envelope() {
       const ov = document.getElementById('env-overlay');
@@ -1446,7 +1456,9 @@
       // ?replay (or #replay) forces the intro to show — handy for previewing
       const force = /replay/i.test(location.search + location.hash);
       // otherwise don't replay when returning to the page in the same session
-      if (!force && sessionStorage.getItem('env-opened')) { ov.remove(); return; }
+      let seenBefore = false;
+      try { seenBefore = sessionStorage.getItem('env-opened') === '1'; } catch (e) {}
+      if (!force && seenBefore) { ov.remove(); document.body.style.overflow = ''; return; }
       document.body.style.overflow = 'hidden';
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       let opened = false;
@@ -1454,7 +1466,7 @@
         if (opened) return;
         opened = true;
         ov.classList.add('open');   // wax seal breaks + flap swings open
-        sessionStorage.setItem('env-opened', '1');
+        try { sessionStorage.setItem('env-opened', '1'); } catch (e) {}
         // start the music on this tap (a real user gesture) for everyone,
         // unless the guest has explicitly turned it off
         try {
@@ -1525,26 +1537,35 @@
         setUI(false);
       }
 
-      // load the IFrame API and build the (hidden) player as early as possible
-      const tag = document.createElement('script');
-      tag.src = 'https://www.youtube.com/iframe_api';
-      document.head.appendChild(tag);
-
-      window.onYouTubeIframeAPIReady = function () {
+      function buildPlayer() {
         player = new YT.Player('yt-player', {
           videoId: VIDEO_ID,
           playerVars: { autoplay: 0, controls: 0, playsinline: 1,
-                        modestbranding: 1, rel: 0, fs: 0, start: 18 },
+                        modestbranding: 1, rel: 0, fs: 0, start: 19 },
           events: {
             onReady: () => { ready = true; player.setVolume(35); if (wantPlay) startPlay(); },
             onStateChange: (e) => {
               if (e.data === YT.PlayerState.PLAYING) setUI(true);
               else if (e.data === YT.PlayerState.PAUSED) setUI(false);
-              else if (e.data === YT.PlayerState.ENDED) { player.seekTo(18); player.playVideo(); }  // loop back to 0:18
+              else if (e.data === YT.PlayerState.ENDED) { player.seekTo(19); player.playVideo(); }  // loop back to 0:19
             }
           }
         });
-      };
+      }
+
+      // If the IFrame API is already loaded (e.g. a repeat visit), build now;
+      // otherwise load it and build via the global ready callback.
+      if (window.YT && window.YT.Player) {
+        buildPlayer();
+      } else {
+        const prev = window.onYouTubeIframeAPIReady;
+        window.onYouTubeIframeAPIReady = function () { if (typeof prev === 'function') prev(); buildPlayer(); };
+        if (!document.querySelector('script[src*="youtube.com/iframe_api"]')) {
+          const tag = document.createElement('script');
+          tag.src = 'https://www.youtube.com/iframe_api';
+          document.head.appendChild(tag);
+        }
+      }
 
       btn.addEventListener('click', () => playing ? stop() : startPlay());
 
