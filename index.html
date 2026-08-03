@@ -856,7 +856,8 @@
     @media (max-width: 820px) {
       .env-overlay { background: url("images/compressed/paper-bg.jpg") center / cover; }  /* paper fills any sliver */
       .env-overlay.open { background: transparent; } /* clear it so the flap reveals the site, not sage */
-      .env-flap .env-floral { top: 31%; width: 46vw; }  /* larger, above the seal with a margin */
+      .env-shape .env-seal { width: 34vw; }              /* slightly smaller wax seal on mobile */
+      .env-flap .env-floral { top: 27%; height: 40vh; width: auto; max-width: 90vw; }  /* ~2/5 of viewport height */
       /* the shape's bottom-left is off-screen on the over-sized mobile shape, so
          anchor the texture to the VIEWPORT bottom-left corner (two edges hide at the
          screen edge, the base radial mask fades the rest — no rectangle) */
@@ -918,11 +919,12 @@
     .env-flap-shadow {
       position: absolute; inset: 0;
       clip-path: polygon(0 0, 100% 0, 50% 52%);
-      background: #2b3a20;
+      /* a soft band that trails evenly along the flap's V-edge and fades perpendicular */
+      background: #263519;
       z-index: 8;
-      transform: translateY(1.8%);   /* flap overlaps onto the body */
-      filter: blur(13px);            /* soft, diffuse — reads as a cast shadow */
-      opacity: .3;
+      transform: translateY(1.1%);   /* thin trail just below the flap edge */
+      filter: blur(8px);             /* soft perpendicular fade */
+      opacity: .42;
       transition: opacity .3s ease;
     }
     .env-overlay.open .env-flap { transform: rotateX(178deg); z-index: 3; }
@@ -1453,11 +1455,12 @@
         opened = true;
         ov.classList.add('open');   // wax seal breaks + flap swings open
         sessionStorage.setItem('env-opened', '1');
-        // resume music if the guest had it on from a previous visit
+        // start the music on this tap (a real user gesture) for everyone,
+        // unless the guest has explicitly turned it off
         try {
-          if (localStorage.getItem('bgm') === 'on') {
+          if (localStorage.getItem('bgm') !== 'off') {
             const b = document.getElementById('music-toggle');
-            if (b) b.click();
+            if (b && b.getAttribute('aria-pressed') !== 'true') b.click();
           }
         } catch (e) {}
         const revealAt = reduce ? 120 : 500;   // let the flap start opening, then slide away
