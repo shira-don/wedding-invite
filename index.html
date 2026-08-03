@@ -534,15 +534,50 @@
     .countdown-section { border-top: 1.75rem solid #ebe5f2; }
     .couple-section    { border-top: 1.75rem solid #f7f3fc; }
     .details-section   { border-top: 1.75rem solid #ece6f5; }
+    .dresscode-section { border-top: 1.75rem solid #f6f2fb; }
     .timeline-section  { border-top: 1.75rem solid #e8ede7; }
+
+    /* Dress code (attire guides) */
+    .dresscode-section { padding: 6rem 0; background: #f6f2fb; }
+    .attire-guides { display: flex; flex-direction: column; gap: 1.25rem; max-width: 880px; margin: 3rem auto 0; }
+    .attire-guides img { width: 100%; height: auto; display: block; border-radius: 8px; box-shadow: 0 3px 24px -8px rgba(80,60,110,.2); }
+    .dresscode-avoid {
+      max-width: 680px; margin: 2.25rem auto 0; text-align: center;
+      font-size: .76rem; letter-spacing: .3px; color: #9a8fae;
+    }
+    .avoid-set { display: inline-flex; align-items: center; gap: .45rem; vertical-align: middle; margin-right: .55rem; }
+    .avoid-chip {
+      width: 18px; height: 18px; border-radius: 50%; position: relative; display: inline-block;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.12);
+    }
+    .avoid-chip::after {   /* diagonal strikethrough = not allowed */
+      content: ''; position: absolute; inset: 0; border-radius: 50%;
+      background: linear-gradient(45deg, transparent calc(50% - 1px), rgba(255,255,255,.9) calc(50% - 1px),
+                  rgba(255,255,255,.9) calc(50% + 1px), transparent calc(50% + 1px));
+    }
+    .avoid-barong { font-size: .6rem; color: #8a7ea8; }   /* struck-through barong (shirt) icon */
+    .avoid-text { vertical-align: middle; }
     .gallery-section   { border-top: 1.75rem solid #ebe5f2; }
     footer             { border-top: 1.75rem solid #272030; }
     .details-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3rem;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
       margin-top: 3rem;
     }
+    /* Add-to-Calendar / Directions buttons, styled for the light details background */
+    .details-actions {
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+      margin-top: 3rem;
+    }
+    .details-actions .cal-wrap { position: relative; display: inline-flex; }
+    .details-actions .btn-ghost {
+      background: rgba(255,255,255,.92);
+      border-color: #7b5ea7;
+      color: #6a4a97;
+      box-shadow: 0 4px 16px rgba(80,60,110,.18);
+    }
+    .details-actions .btn-ghost:hover { background: #fff; transform: translateY(-2px); }
     .detail-card {
       background: #fff;
       border-radius: 4px;
@@ -1093,6 +1128,7 @@
       <li><a href="#home">Home</a></li>
       <li><a href="#couple">Our Story</a></li>
       <li><a href="#details">Details</a></li>
+      <li><a href="#attire">Attire</a></li>
       <li><a href="#schedule">Schedule</a></li>
       <li><a href="#gallery">Gallery</a></li>
       <li hidden><a href="#rsvp">RSVP</a></li>
@@ -1113,17 +1149,6 @@
       </h1>
       <p class="date-line">December 06, 2026 &bull;
             Soirée Events Place</p>
-      <div class="hero-actions">
-        <div class="cal-wrap">
-          <button type="button" class="btn-ghost" id="add-to-calendar" aria-haspopup="true" aria-expanded="false" aria-controls="cal-menu">&#128197;&nbsp; Add to Calendar</button>
-          <div class="cal-menu" id="cal-menu" role="menu">
-            <a href="#" data-cal="google" role="menuitem" target="_blank" rel="noopener">Google Calendar</a>
-            <a href="#" data-cal="outlook" role="menuitem" target="_blank" rel="noopener">Outlook</a>
-            <a href="#" data-cal="apple" role="menuitem" download="Shira-and-Leendon-Wedding.ics">Apple / Other (.ics)</a>
-          </div>
-        </div>
-        <a class="btn-ghost" href="https://www.google.com/maps/search/?api=1&query=Soir%C3%A9e+Events+Place+Indang+Cavite" target="_blank" rel="noopener">&#128205;&nbsp; Get Directions</a>
-      </div>
     </div>
     <div class="scroll-cue"><span></span></div>
   </section>
@@ -1247,25 +1272,55 @@
           </p>
         </div>
         <div class="detail-card">
-          <div class="icon">&#9738;</div>
-          <h3>Dress Code</h3>
-          <p>
-            Semi-Formal / Cocktail Attire<br />
-            Colors of Lilac &amp; Sage<br />
-            <em>Black &amp; dark colors not allowed</em><br /><br />
-            <a class="text-link" href="dress-code.html">View the dress code guide →</a>
-          </p>
-        </div>
-        <div class="detail-card">
           <div class="icon">&#9752;</div>
           <h3>Getting There</h3>
           <p>
             Soirée Events Place<br />
             347 Nara St., Kayquit 3,<br />
-            Indang, Cavite<br /><br />
-            <a class="text-link" href="https://www.google.com/maps/search/?api=1&query=Soir%C3%A9e+Events+Place+Indang+Cavite" target="_blank" rel="noopener">Open in Google Maps →</a>
+            Indang, Cavite
           </p>
         </div>
+      </div>
+
+      <div class="details-actions reveal">
+        <div class="cal-wrap">
+          <button type="button" class="btn-ghost" id="add-to-calendar" aria-haspopup="true" aria-expanded="false" aria-controls="cal-menu">&#128197;&nbsp; Add to Calendar</button>
+          <div class="cal-menu" id="cal-menu" role="menu">
+            <a href="#" data-cal="google" role="menuitem" target="_blank" rel="noopener">Google Calendar</a>
+            <a href="#" data-cal="outlook" role="menuitem" target="_blank" rel="noopener">Outlook</a>
+            <a href="#" data-cal="apple" role="menuitem" download="Shira-and-Leendon-Wedding.ics">Apple / Other (.ics)</a>
+          </div>
+        </div>
+        <a class="btn-ghost" href="https://www.google.com/maps/search/?api=1&query=Soir%C3%A9e+Events+Place+Indang+Cavite" target="_blank" rel="noopener">&#128205;&nbsp; Get Directions</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dress Code -->
+  <section class="dresscode-section" id="attire">
+    <div class="container">
+      <div class="text-center reveal">
+        <p class="section-label">Attire</p>
+        <h2 class="serif" style="font-size:2.5rem; font-weight:300;">Dress Code</h2>
+        <div class="divider"></div>
+      </div>
+      <div class="attire-guides reveal">
+        <img src="images/compressed/dress-sponsors.jpg" alt="Principal Sponsors — ladies in sage; gentlemen in light brown or light gray" loading="lazy" />
+        <img src="images/compressed/dress-entourage.jpg" alt="Entourage — ladies in lilac; gentlemen in light brown" loading="lazy" />
+        <img src="images/compressed/dress-guests.jpg" alt="Guests — neutral tones with soft lilac or sage accents" loading="lazy" />
+      </div>
+      <div class="dresscode-avoid">
+        <span class="avoid-set">
+          <span class="avoid-chip" style="background:#111114"></span>
+          <span class="avoid-chip" style="background:#33313a"></span>
+          <span class="avoid-chip" style="background:#1b2a4a"></span>
+          <span class="avoid-chip" style="background:#5a1a1f"></span>
+          <span class="fa-stack avoid-barong" title="No barongs" role="img" aria-label="No barongs">
+            <i class="fa-solid fa-shirt fa-stack-1x" aria-hidden="true"></i>
+            <i class="fa-solid fa-slash fa-stack-1x" style="color:#9a5b8f" aria-hidden="true"></i>
+          </span>
+        </span>
+        <span class="avoid-text">Please avoid black &amp; dark tops &amp; barongs&nbsp; ·&nbsp; dark pants welcome</span>
       </div>
     </div>
   </section>
