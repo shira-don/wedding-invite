@@ -36,9 +36,26 @@
       font-family: 'Montserrat', sans-serif;
       font-weight: 300;
       color: #3a3a3a;
-      background: #f7f3fc;
+      background: #ece7f4;
       overflow-x: hidden;
+      position: relative;   /* containing block for .page-scroll */
     }
+
+    /* ── Scroll backdrop ──────────────────────────────
+       One continuous paper scroll behind the whole document: a rolled cap at the
+       top, the tiling body down the length, and the same cap flipped at the bottom.
+       z-index -1 puts it above body's background but behind all in-flow content, so
+       no wrapper markup is needed around the sections.
+       Both assets are 1000px wide with their gold rails on matching fractions
+       (3.80% / 95.80%), so the rails run unbroken through the cap-to-body joins. */
+    .page-scroll {
+      position: absolute; inset: 0; z-index: -1;
+      pointer-events: none;
+      background: #e3e7da url("../images/compressed/sage-paper.jpg") top center / 620px auto repeat;
+    }
+    /* Gold-railed scroll caps removed for now — plain sage paper base;
+       transparent gold border accents to be layered on separately. */
+    .page-scroll::before, .page-scroll::after { content: none; }
     img { display: block; max-width: 100%; }
 
     /* ── Typography ───────────────────────────────── */
@@ -220,6 +237,7 @@
       position: relative;
       z-index: 1;
       padding: 2rem;
+      transform: translateY(11vh);   /* sit a little lower in the frame */
     }
     .hero-content .pre-title {
       font-family: 'Montserrat', sans-serif;
@@ -246,19 +264,20 @@
     }
     @keyframes termBlink { 50% { opacity: 0; } }
     .hero-content h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-weight: 300;
-      font-size: clamp(3rem, 8vw, 6rem);
-      line-height: 1.1;
+      font-family: 'Billa Mount', 'Cormorant Garamond', serif;
+      font-weight: 400;
+      font-size: clamp(2.4rem, 7vw, 4.6rem);
+      line-height: 1.15;
       margin-bottom: .5rem;
+      white-space: nowrap;
     }
     .hero-content .ampersand {
-      display: block;
+      display: inline;
       font-family: 'Cormorant Garamond', serif;
       font-style: italic;
       font-weight: 300;
-      font-size: clamp(1.5rem, 4vw, 2.5rem);
-      margin: .25rem 0;
+      font-size: .5em;
+      margin: 0 .12em;
       opacity: .8;
     }
     .hero-content .date-line {
@@ -387,7 +406,7 @@
     /* ── Countdown ────────────────────────────────── */
     .countdown-section {
       padding: 5rem 0;
-      background: #ebe5f2;
+      background: rgba(235,229,242,.62);
     }
     .countdown {
       display: flex;
@@ -413,7 +432,7 @@
       letter-spacing: 3px;
       text-transform: uppercase;
       margin-top: .5rem;
-      color: #7a9b78;
+      color: #52734d;
     }
 
     /* ── Couple / Story ───────────────────────────── */
@@ -442,7 +461,7 @@
       font-weight: 400;
       font-size: 2rem;
       margin-bottom: 1rem;
-      color: #6b8f6b;
+      color: #4c6b4c;
     }
     .couple-text p {
       line-height: 1.8;
@@ -483,7 +502,7 @@
       font-family: 'Cormorant Garamond', serif;
       font-weight: 500;
       font-size: 1.4rem;
-      color: #6b8f6b;
+      color: #4c6b4c;
       margin: .55rem 0 .3rem;
     }
     .cl-item p {
@@ -494,7 +513,7 @@
     .cl-item .commit {
       font-family: 'IBM Plex Mono', monospace;
       font-size: .68rem;
-      color: #a99fc0;
+      color: #7a6f98;
       margin-top: .3rem;
     }
 
@@ -531,19 +550,19 @@
     }
 
     /* Breathing room between sections — the gap takes the next section's colour */
-    .countdown-section { border-top: 1.75rem solid #ebe5f2; }
-    .couple-section    { border-top: 1.75rem solid #f7f3fc; }
-    .details-section   { border-top: 1.75rem solid #ece6f5; }
-    .dresscode-section { border-top: 1.75rem solid #f6f2fb; }
-    .timeline-section  { border-top: 1.75rem solid #e8ede7; }
+    .countdown-section { border-top: 1.75rem solid transparent; }
+    .couple-section    { border-top: 1.75rem solid transparent; }
+    .details-section   { border-top: 1.75rem solid transparent; }
+    .dresscode-section { border-top: 1.75rem solid transparent; }
+    .timeline-section  { border-top: 1.75rem solid transparent; }
 
     /* Dress code (attire guides) */
-    .dresscode-section { padding: 6rem 0; background: #f6f2fb; }
+    .dresscode-section { padding: 6rem 0; background: rgba(246,242,251,.60); }
     .attire-guides { display: flex; flex-direction: column; gap: 1.25rem; max-width: 880px; margin: 3rem auto 0; }
     .attire-guides img { width: 100%; height: auto; display: block; border-radius: 8px; box-shadow: 0 3px 24px -8px rgba(80,60,110,.2); }
     .dresscode-avoid {
       max-width: 680px; margin: 2.25rem auto 0; text-align: center;
-      font-size: .76rem; letter-spacing: .3px; color: #9a8fae;
+      font-size: .76rem; letter-spacing: .3px; color: #6d6288;
     }
     .avoid-set { display: inline-flex; align-items: center; gap: .45rem; vertical-align: middle; margin-right: .55rem; }
     .avoid-chip {
@@ -555,9 +574,9 @@
       background: linear-gradient(45deg, transparent calc(50% - 1px), rgba(255,255,255,.9) calc(50% - 1px),
                   rgba(255,255,255,.9) calc(50% + 1px), transparent calc(50% + 1px));
     }
-    .avoid-barong { font-size: .6rem; color: #8a7ea8; }   /* struck-through barong (shirt) icon */
+    .avoid-barong { font-size: .6rem; color: #635980; }   /* struck-through barong (shirt) icon */
     .avoid-text { vertical-align: middle; }
-    .gallery-section   { border-top: 1.75rem solid #ebe5f2; }
+    .gallery-section   { border-top: 1.75rem solid transparent; }
     footer             { border-top: 1.75rem solid #272030; }
     .details-grid {
       display: grid;
@@ -588,14 +607,14 @@
     .detail-card .icon {
       font-size: 2rem;
       margin-bottom: 1rem;
-      color: #7a9b78;
+      color: #52734d;
     }
     .detail-card h3 {
       font-family: 'Cormorant Garamond', serif;
       font-weight: 400;
       font-size: 1.5rem;
       margin-bottom: 1rem;
-      color: #6b8f6b;
+      color: #4c6b4c;
     }
     .detail-card p {
       font-size: .85rem;
@@ -604,7 +623,7 @@
     }
 
     /* ── Timeline ─────────────────────────────────── */
-    .timeline-section { padding: 6rem 0; background: #e8ede7; }
+    .timeline-section { padding: 6rem 0; background: rgba(232,237,231,.58); }
     .timeline {
       position: relative;
       max-width: 500px;
@@ -630,7 +649,7 @@
       text-align: right;
       font-family: 'Cormorant Garamond', serif;
       font-size: 1.3rem;
-      color: #6b8f6b;
+      color: #4c6b4c;
     }
     .timeline-item .dot {
       width: 48px;
@@ -644,7 +663,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #6b8f6b;
+      color: #4c6b4c;
       font-size: 1.05rem;
       box-shadow: 0 3px 12px rgba(70,88,58,.14);
     }
@@ -657,7 +676,7 @@
     /* ── Gallery ──────────────────────────────────── */
     .gallery-section {
       padding: 6rem 0;
-      background: #ebe5f2;
+      background: rgba(235,229,242,.62);
     }
     /* Desktop: let the gallery grow wider than the 900px content column */
     @media (min-width: 769px) {
@@ -764,7 +783,7 @@
       margin-top: 1.25rem;
       font-size: .72rem;
       letter-spacing: 3px;
-      color: #7a9b78;
+      color: #52734d;
     }
     @media (max-width: 900px) {
       .car-viewport img { flex-basis: calc((100% - .8rem) / 2); }  /* 2 per view */
@@ -790,7 +809,7 @@
       letter-spacing: 2px;
       text-transform: uppercase;
       margin-bottom: .5rem;
-      color: #7a9b78;
+      color: #52734d;
     }
     .form-group input,
     .form-group select,
@@ -836,7 +855,7 @@
       font-size: .85rem;
       min-height: 1.5em;
     }
-    .rsvp-status.success { color: #7a9b78; }
+    .rsvp-status.success { color: #52734d; }
     .rsvp-status.error { color: #c0392b; }
 
     /* ── Footer ───────────────────────────────────── */
@@ -863,7 +882,7 @@
       font-family: 'IBM Plex Mono', monospace;
       font-size: .78rem;
       letter-spacing: 2px;
-      color: #a3c0a1;
+      color: #6a8a67;
     }
     footer .build-note {
       display: block;
@@ -937,6 +956,11 @@
     .env-body { filter: drop-shadow(0 16px 30px rgba(74,56,100,.30)); }
 
     /* ── cover text: the two bands the envelope leaves ─── */
+    @font-face {
+      font-family: 'Billa Mount';
+      src: url('../fonts/BillaMount-Regular.ttf') format('truetype');
+      font-weight: 400; font-style: normal; font-display: swap;
+    }
     .env-cover-head {
       flex: 0 0 auto; text-align: center; padding: 0 1.5rem;
       color: #5d6b4e;
@@ -951,20 +975,20 @@
       color: #5d6451;   /* darkened for 4.6:1 on the lilac ground */
     }
     .env-cover-head .env-names {
-      margin-top: .3rem;
-      font-family: 'Pinyon Script', 'Cormorant Garamond', cursive, serif;
+      margin: 1.2rem 0 1rem;
+      font-family: 'Billa Mount', 'Pinyon Script', 'Cormorant Garamond', cursive, serif;
       font-weight: 400;
-      /* script faces carry a small x-height, so they need more size and more leading
-         than a serif at the same optical weight */
-      font-size: clamp(2.2rem, 11vw, 3.4rem); line-height: 1.24;
-      letter-spacing: .5px;
+      /* Billa Mount is a chunky brush script — a touch more size and leading than the
+         old copperplate, with tight tracking so the strokes stay connected */
+      font-size: clamp(2rem, 9.5vw, 3rem); line-height: 1.15;
+      letter-spacing: 0;
       color: #55634a;
     }
     .env-cover-head .env-names .amp {
       font-size: .78em; opacity: .7; margin: 0 .1em;
     }
     .env-cover-head .env-when {
-      margin-top: .35rem;
+      margin-top: .9rem;
       font-family: 'Cormorant Garamond', serif; font-weight: 400;
       font-size: .7rem; letter-spacing: 3.5px; text-transform: uppercase;
       color: #5b654f;   /* darkened for 4.6:1 on the lilac ground */
@@ -1098,6 +1122,9 @@
   </style>
 </head>
 <body>
+
+  <!-- paper scroll behind the whole page (see .page-scroll) -->
+  <div class="page-scroll" aria-hidden="true"></div>
 
   <!-- Envelope intro — body and flap are separate assets on one shared
        820x1247 canvas, so every layer is inset:0 (see .env-shape) -->
