@@ -917,17 +917,18 @@
         radial-gradient(140% 112% at 50% 45%, rgba(96,76,124,0) 42%,
           rgba(96,76,124,.15) 78%, rgba(82,64,108,.30) 100%),
         linear-gradient(178deg, #efe9f6 0%, #e4dbef 44%, #d2c6e4 100%);
-      transition: opacity 1.15s ease, transform 1.5s cubic-bezier(.32,0,.24,1);
+      transition: opacity .6s ease;
     }
-    /* Exit: the surface dissolves while the envelope pushes toward the viewer, so the
-       reveal reads as moving INTO the invitation. The old translateY(108%) slide fit
-       when the overlay was a full-bleed sheet of paper — now that it is an object on a
-       surface that does not reach the edges, sliding the whole panel down read as the
-       page falling out from under itself. The envelope scales further than the surface
-       behind it, which gives the push-in some depth. */
-    .env-overlay.lift { opacity: 0; transform: scale(1.06); pointer-events: none; }
-    .env-overlay.lift .env-shape { transform: scale(1.13) translateY(-2.5%); }
-    .env-overlay.lift .env-cover-head { opacity: 0; transform: translateY(-10px); }
+    /* Reveal: the envelope scales up to fill the screen (JS sets a cover scale on
+       .env-shape), then the flap slides up and the body slides down to uncover the
+       site. The cover text + hint fade out during the grow. */
+    .env-overlay.grow .env-cover-head,
+    .env-overlay.grow .env-hint { opacity: 0; pointer-events: none; }
+    /* Once the envelope fills the screen, drop the lilac surface so the split
+       uncovers the SITE behind the overlay, not the overlay's own background.
+       Instant (not transitioned) — the envelope is covering it at this instant, so
+       the change is invisible until the pieces part. */
+    .env-overlay.split { pointer-events: none; background: transparent; }
     /* site chrome hides during the intro, then the nav slides + fades in once the overlay is gone */
     #navbar { transition: transform .5s ease, opacity .6s ease; }
     body:has(#env-overlay) #navbar { opacity: 0; transform: translateY(-100%); pointer-events: none; }
@@ -947,7 +948,7 @@
       width: min(88vw, 560px, 47vh);
       aspect-ratio: 820 / 1247;
       perspective: 1400px;
-      transition: transform 1.5s cubic-bezier(.32,0,.24,1);
+      transition: transform 1.2s cubic-bezier(.33,0,.2,1);   /* grow-to-fill */
     }
 
     /* the envelope lifts off the surface — drop-shadow follows the body's own alpha,
@@ -1000,13 +1001,13 @@
       position: absolute; inset: 0; width: 100%; height: 100%;
       object-fit: fill; user-select: none; pointer-events: none;
     }
-    .env-body { z-index: 1; }
+    .env-body { z-index: 1; transition: transform 1.5s cubic-bezier(.5,.02,.22,1) .5s; }
 
     /* The shadow the closed flap casts on the body. It is the flap's own alpha,
        blurred and offset at build time, so the soft edge follows the V exactly —
        a CSS blur cannot do this, because clip-path is applied after filter and
        would crop the blur back to a hard edge. */
-    .env-flap-shadow { z-index: 2; transition: opacity .5s ease; }
+    .env-flap-shadow { z-index: 2; transition: opacity .5s ease, transform 1.5s cubic-bezier(.5,.02,.22,1) .5s; }
 
     /* The flap is a two-sided card: ONE box rotates on the fold, and the two faces
        ride inside it. Rotating the faces as independent siblings 180° apart does not
@@ -1021,9 +1022,19 @@
       transform-origin: 50% 0;
       transform-style: preserve-3d;
       will-change: transform;
-      transition: transform 1.4s cubic-bezier(.5,.02,.22,1);
+      transition: transform 1.5s cubic-bezier(.5,.02,.22,1);
     }
-    .env-overlay.open .env-flap-hinge { transform: rotateX(-172deg); }
+    /* Split: flap slides up off the top, body + its shadow slide down off the
+       bottom, uncovering the hero. The parent .env-shape scale multiplies these
+       translates, so they clear the viewport. */
+    /* the flap hinges open on its top-edge axis (rotateX) AND lifts up, so the
+       folded-back flap fully clears the top of the frame instead of leaving a
+       sliver of its (sage) back face peeking in */
+    .env-overlay.split .env-flap-hinge { transform: translateY(-65%) rotateX(-172deg); }
+    .env-overlay.split .env-body { transform: translateY(130%); }
+    /* the flap's cast shadow belongs to the CLOSED flap — fade it out as the flap
+       lifts (it rides down with the body meanwhile) so no shadow lingers on the body */
+    .env-overlay.split .env-flap-shadow { transform: translateY(130%); opacity: 0; }
 
     .env-flap-face {
       position: absolute; inset: 0; width: 100%; height: 100%;
@@ -1544,10 +1555,10 @@
       document.body.style.overflow = 'hidden';
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       let opened = false;
+      const shape = ov.querySelector('.env-shape');
       function open() {
         if (opened) return;
         opened = true;
-        ov.classList.add('open');   // wax seal breaks + flap swings open
         try { sessionStorage.setItem('env-opened', '1'); } catch (e) {}
         // start the music on this tap (a real user gesture) for everyone,
         // unless the guest has explicitly turned it off
@@ -1557,11 +1568,21 @@
             if (b && b.getAttribute('aria-pressed') !== 'true') b.click();
           }
         } catch (e) {}
-        // the flap takes 1.4s to swing; let it get well past vertical before the
-        // overlay slides off, so the hinge reads as an envelope actually opening
-        const revealAt = reduce ? 120 : 1000;
-        setTimeout(() => { ov.classList.add('lift'); document.body.style.overflow = ''; }, revealAt);
-        setTimeout(() => ov.remove(), revealAt + 1700);   // matches the 1.5s dissolve
+        // Phase 1 — grow the envelope until it covers the viewport (scale computed
+        // from its measured size so it fills reliably on any screen).
+        if (shape) {
+          const r = shape.getBoundingClientRect();
+          const cover = Math.max(window.innerWidth / r.width, window.innerHeight / r.height) * 1.06;
+          shape.style.transform = 'scale(' + cover + ')';
+        }
+        ov.classList.add('grow');   // cover text + hint fade out
+        // Phase 2 — split: flap slides up, body slides down, uncovering the site.
+        // A short hold lets the envelope sit full-frame before it opens.
+        const growDur  = reduce ? 60 : 1200;
+        const hold     = reduce ? 0  : 320;
+        const splitDur = reduce ? 60 : 2000;   // flap opens, then body drops (.5s stagger) + 1.5s
+        setTimeout(() => { ov.classList.add('split'); document.body.style.overflow = ''; }, growDur + hold);
+        setTimeout(() => ov.remove(), growDur + hold + splitDur + 400);
       }
       ov.addEventListener('click', open);
       ov.addEventListener('keydown', (e) => {
