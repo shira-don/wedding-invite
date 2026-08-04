@@ -1007,7 +1007,7 @@
        flap with no lilac seam when closed. */
     .env-body {
       z-index: 1;
-      clip-path: polygon(0 20%, 49% 36%, 100% 20%, 100% 100%, 0 100%);
+      clip-path: polygon(0 19%, 50% 48.5%, 100% 19%, 100% 100%, 0 100%);
       transition: transform 1.8s cubic-bezier(.5,.02,.22,1) .5s;
     }
 
@@ -1026,7 +1026,7 @@
        art maps exactly onto its share of the stage (820:479 = 38.412%). */
     .env-flap-hinge {
       position: absolute; top: 0; left: 0; z-index: 3;
-      width: 100%; aspect-ratio: 820 / 479;
+      width: 100%; aspect-ratio: 1118 / 865;
       transform-origin: 50% 0;
       transform-style: preserve-3d;
       will-change: transform;
@@ -1038,7 +1038,7 @@
     /* the flap hinges open on its top-edge axis (rotateX) AND lifts up, so the
        folded-back flap fully clears the top of the frame instead of leaving a
        sliver of its (sage) back face peeking in */
-    .env-overlay.split .env-flap-hinge { transform: translateY(-65%) rotateX(-172deg); }
+    .env-overlay.split .env-flap-hinge { transform: translateY(-65%) rotateX(172deg); }
     .env-overlay.split .env-body { transform: translateY(130%); }
     /* the flap's cast shadow belongs to the CLOSED flap — fade it out as the flap
        lifts (it rides down with the body meanwhile) so no shadow lingers on the body */
@@ -1052,6 +1052,16 @@
     /* rotated about its own centre, which mirrors it — the asset is written
        pre-mirrored so it lands the right way up */
     .env-flap-face.is-back { transform: rotateX(180deg); }
+    /* wax seal sits at the flap's V-tip and rides the flap open (separate layer so
+       it never distorts when the flap is sized) */
+    .env-flap-seal {
+      position: absolute; left: 50%; top: 100%;
+      width: 21%; height: auto;
+      transform: translate(-50%, -52%) translateZ(1px);
+      backface-visibility: hidden;
+      filter: drop-shadow(0 5px 10px rgba(80,50,120,.4));
+      pointer-events: none; user-select: none;
+    }
 
     .env-overlay.open .env-flap-shadow { opacity: 0; }
 
@@ -1161,6 +1171,7 @@
         <img class="env-flap-face" src="../images/compressed/env2-flap.webp"
              alt="Sage envelope sealed with an S & L wax monogram" />
         <img class="env-flap-face is-back" src="../images/compressed/env2-flap-back.webp" alt="" />
+        <img class="env-flap-seal" src="../images/compressed/seal-sl.png" alt="" />
       </div>
     </div>
     <p class="env-hint">Tap to open</p>
