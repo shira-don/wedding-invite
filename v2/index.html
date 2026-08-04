@@ -962,6 +962,11 @@
       src: url('../fonts/BillaMount-Regular.ttf') format('truetype');
       font-weight: 400; font-style: normal; font-display: swap;
     }
+    @font-face {
+      font-family: 'Aquiline Two';
+      src: url('../fonts/AquilineTwo.ttf') format('truetype');
+      font-weight: 400; font-style: normal; font-display: swap;
+    }
     .env-cover-head {
       flex: 0 0 auto; text-align: center; padding: 0 1.5rem;
       color: #5d6b4e;
@@ -976,12 +981,13 @@
       color: #5d6451;   /* darkened for 4.6:1 on the lilac ground */
     }
     .env-cover-head .env-names {
-      margin: 1.2rem 0 1rem;
-      font-family: 'Billa Mount', 'Pinyon Script', 'Cormorant Garamond', cursive, serif;
+      margin: -1.1rem 0 0;   /* pull up: the font reserves big empty space above its caps */
+      font-family: 'Aquiline Two', 'Billa Mount', 'Pinyon Script', cursive, serif;
       font-weight: 400;
-      /* Billa Mount is a chunky brush script — a touch more size and leading than the
-         old copperplate, with tight tracking so the strokes stay connected */
-      font-size: clamp(2rem, 9.5vw, 3rem); line-height: 1.15;
+      /* Aquiline Two runs small with very long descenders/flourishes — sized up, with
+         a tight gap to the kicker above and a generous one to the date below (via
+         .env-when's margin) so the tails don't collide with the date */
+      font-size: clamp(2.6rem, 12vw, 4rem); line-height: 1.2;
       letter-spacing: 0;
       color: #55634a;
     }
@@ -989,7 +995,7 @@
       font-size: .78em; opacity: .7; margin: 0 .1em;
     }
     .env-cover-head .env-when {
-      margin-top: .9rem;
+      margin-top: 2.4rem;
       font-family: 'Cormorant Garamond', serif; font-weight: 400;
       font-size: .7rem; letter-spacing: 3.5px; text-transform: uppercase;
       color: #5b654f;   /* darkened for 4.6:1 on the lilac ground */
