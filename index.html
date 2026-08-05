@@ -425,15 +425,39 @@
       margin-top: 3rem;
       align-items: center;
     }
+    /* polaroid frame: photo seated in the window, the PNG frame overlaid on top */
     .couple-photo {
-      border-radius: 4px;
-      overflow: hidden;
-      aspect-ratio: 3/4;
+      position: relative;
+      width: min(100%, 330px);
+      aspect-ratio: 230 / 310;
+      margin: 0 0 0 auto;   /* nudge toward the text on the right */
+      filter: drop-shadow(0 14px 26px rgba(60,50,90,.25));
     }
-    .couple-photo img {
-      width: 100%;
-      height: 100%;
+    /* tilt the polaroid, combined with the reveal-left slide so they don't conflict */
+    .couple-photo.reveal-left { transform: translateX(-60px) rotate(-4deg); }
+    .couple-photo.reveal-left.visible { transform: translateX(0) rotate(-4deg); }
+    /* tulip accent poking out at the bottom of the frame */
+    .couple-photo .cp-tulip {
+      position: absolute; z-index: 2;
+      right: -6%; bottom: 3%;
+      width: 30%; height: auto;
+      transform: rotate(16deg);   /* vertical, leaned into the lower-right; stem laps onto the photo */
+      filter: drop-shadow(0 6px 8px rgba(60,50,90,.2));
+      pointer-events: none;
+    }
+    .couple-photo img:not(.cp-tulip) {
+      position: absolute;
+      left: 7%; top: 5.5%;                 /* the polaroid window */
+      width: 85.7%; height: 74.2%;
       object-fit: cover;
+      z-index: 0;
+    }
+    .couple-photo::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("images/compressed/polaroid-frame.png") center / 100% 100% no-repeat;
+      z-index: 1;
+      pointer-events: none;
     }
     .couple-text h3 {
       font-family: 'Cormorant Garamond', serif;
@@ -1177,6 +1201,7 @@
         <div class="couple-photo reveal-left">
           <!-- backup: <img src="https://images.unsplash.com/photo-1529634597503-139d3726fed5?w=800&q=80" alt="Shira and Leendon walking together" loading="lazy" decoding="async" /> -->
           <img src="images/compressed/college-1.jpg" alt="Shira and Leendon in college" loading="lazy" decoding="async" />
+          <img class="cp-tulip" src="images/compressed/tulip.webp" alt="" loading="lazy" decoding="async" />
         </div>
         <div class="couple-text reveal-right">
           <h3>A Love Story</h3>
