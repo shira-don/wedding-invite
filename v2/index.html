@@ -26,6 +26,7 @@
 
   <link rel="stylesheet" href="../fonts/google-fonts.css" />
   <link rel="stylesheet" href="../fonts/font-awesome.css" />
+  <link rel="preload" as="image" href="../images/compressed/DUY_7968.jpg" />
   <style>
     /* ── Reset & Base ─────────────────────────────── */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -61,13 +62,14 @@
     .mono  { font-family: 'IBM Plex Mono', monospace; }
     .section-label {
       font-family: 'IBM Plex Mono', monospace;
-      font-weight: 500;
-      font-size: .72rem;
+      font-weight: 600;
+      font-size: .78rem;
       letter-spacing: 3px;
       text-transform: uppercase;
       color: #7b5ea7;
       margin-bottom: 1rem;
     }
+    section h2.serif { font-weight: 400 !important; letter-spacing: .5px; }
 
     /* ── Utility ──────────────────────────────────── */
     .container { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; }
@@ -204,6 +206,9 @@
     }
     nav a:hover { color: #7b5ea7; }
 
+    .nav-toggle { display: none; }
+    .nav-backdrop { display: none; }
+
     /* ── Hero ─────────────────────────────────────── */
     .hero {
       position: relative;
@@ -225,17 +230,18 @@
     .hero-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        to bottom,
-        rgba(40,25,60,.35) 0%,
-        rgba(30,40,35,.5) 100%
-      );
+      background:
+        radial-gradient(60% 55% at 50% 45%, rgba(0,0,0,0) 0%, rgba(28,20,42,.55) 100%),
+        linear-gradient(to bottom, rgba(40,25,60,.35) 0%, rgba(30,40,35,.5) 100%);
     }
     .hero-content {
       position: relative;
       z-index: 1;
       padding: 2rem;
+      display: flex;
+      flex-direction: column;
     }
+    .hero-content .hero-terminal { order: 5; margin: 1.75rem 0 0; opacity: .65; }
     .hero-content .pre-title {
       font-family: 'Montserrat', sans-serif;
       font-weight: 300;
@@ -403,15 +409,27 @@
 
     /* ── Countdown ────────────────────────────────── */
     .countdown-section {
-      padding: 5rem 0;
+      padding: 5rem 0 2.5rem;
       background: rgba(235,229,242,.62);
     }
     .countdown {
       display: flex;
       justify-content: center;
-      gap: 2rem;
+      gap: 3rem;
       flex-wrap: wrap;
-      margin-top: 2rem;
+      max-width: 640px;
+      margin: 1.75rem auto 0;
+    }
+    .countdown-item { position: relative; }
+    .countdown-item + .countdown-item::before {
+      content: ':';
+      position: absolute;
+      left: -1.9rem; top: -.15rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 2.6rem;
+      font-weight: 500;
+      color: rgba(123,94,167,.45);
+      line-height: 1;
     }
     .countdown-item {
       text-align: center;
@@ -435,7 +453,8 @@
 
     /* ── Couple / Story ───────────────────────────── */
     .couple-section {
-      padding: 6rem 0;
+      padding: 2.5rem 0 6rem;
+      background: rgba(232, 238, 224, .82);
     }
     .couple-grid {
       display: grid;
@@ -444,40 +463,45 @@
       margin-top: 3rem;
       align-items: center;
     }
-    /* polaroid frame: photo seated in the window, the PNG frame overlaid on top */
+    /* mat + tape treatment for the how-we-met photo */
     .couple-photo {
       position: relative;
       width: min(100%, 330px);
-      aspect-ratio: 230 / 310;
-      margin: 0 0 0 auto;   /* nudge toward the text on the right */
-      filter: drop-shadow(0 14px 26px rgba(60,50,90,.25));
+      margin: 0 0 0 auto;
+      padding: 1.25rem 1.25rem 2.75rem;
+      background: #f7f3fc;
+      box-shadow: 0 14px 28px -12px rgba(60,50,90,.28);
     }
-    /* tilt the polaroid, combined with the reveal-left slide so they don't conflict */
-    .couple-photo.reveal-left { transform: translateX(-60px) rotate(-4deg); }
-    .couple-photo.reveal-left.visible { transform: translateX(0) rotate(-4deg); }
-    /* tulip accent poking out at the bottom of the frame */
+    .couple-photo.reveal-left { transform: translateX(-60px) rotate(-3deg); }
+    .couple-photo.reveal-left.visible { transform: translateX(0) rotate(-3deg); }
     .couple-photo .cp-tulip {
       position: absolute; z-index: 2;
-      right: -6%; bottom: 3%;
-      width: 30%; height: auto;
-      transform: rotate(16deg);   /* vertical, leaned into the lower-right; stem laps onto the photo */
-      filter: drop-shadow(0 6px 8px rgba(60,50,90,.2));
+      right: -4%; bottom: 4%;
+      width: 20%; height: auto;
+      transform: rotate(16deg);
+      opacity: .85;
+      filter: drop-shadow(0 4px 6px rgba(60,50,90,.18));
       pointer-events: none;
     }
     .couple-photo img:not(.cp-tulip) {
-      position: absolute;
-      left: 7%; top: 5.5%;                 /* the polaroid window */
-      width: 85.7%; height: 74.2%;
+      display: block;
+      width: 100%;
+      aspect-ratio: 3 / 4;
       object-fit: cover;
-      z-index: 0;
     }
+    .couple-photo::before,
     .couple-photo::after {
       content: '';
-      position: absolute; inset: 0;
-      background: url("../images/compressed/polaroid-frame.png") center / 100% 100% no-repeat;
-      z-index: 1;
-      pointer-events: none;
+      position: absolute;
+      top: -.55rem;
+      width: 3.5rem;
+      height: 1rem;
+      background: rgba(216, 200, 236, .55);
+      box-shadow: 0 2px 4px rgba(0,0,0,.08);
+      z-index: 3;
     }
+    .couple-photo::before { left: 12%; transform: rotate(-8deg); }
+    .couple-photo::after  { right: 12%; transform: rotate(6deg); }
     .couple-text h3 {
       font-family: 'Cormorant Garamond', serif;
       font-weight: 400;
@@ -486,9 +510,10 @@
       color: #4c6b4c;
     }
     .couple-text p {
-      line-height: 1.8;
-      font-size: .9rem;
-      color: #666;
+      font-weight: 400;
+      line-height: 1.75;
+      font-size: .95rem;
+      color: #4a4652;
     }
 
     /* ── Changelog (our version history) ──────────── */
@@ -528,9 +553,10 @@
       margin: .55rem 0 .3rem;
     }
     .cl-item p {
-      font-size: .88rem;
-      line-height: 1.7;
-      color: #666;
+      font-weight: 400;
+      font-size: .95rem;
+      line-height: 1.75;
+      color: #4a4652;
     }
     .cl-item .commit {
       font-family: 'IBM Plex Mono', monospace;
@@ -539,16 +565,54 @@
       margin-top: .3rem;
     }
 
-    /* ── Photo strip ──────────────────────────────── */
-    .photo-strip {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 4px;
+    /* ── Photo strip (torn-paper collage) ─────────── */
+    .ps-band {
+      background: rgba(232, 238, 224, .82);
+      padding: 3.5rem 0;
     }
-    .photo-strip img {
-      width: 100%;
+    .ps-torn {
+      position: relative;
+      max-width: 900px;
+      height: 460px;
+      margin: 0 auto;
+    }
+    .ps-slot {
+      position: absolute;
+      width: 40%;
       aspect-ratio: 1;
+    }
+    .ps-slot::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, .55);
+      clip-path: polygon(2% 4%, 8% 1%, 22% 3%, 40% 0, 60% 2%, 78% 0, 92% 3%, 98% 6%, 100% 22%, 97% 40%, 100% 60%, 98% 78%, 100% 96%, 92% 98%, 78% 100%, 60% 97%, 40% 100%, 22% 98%, 8% 100%, 2% 96%, 0 78%, 3% 60%, 0 40%, 2% 22%, 0 8%);
+      transform: translate(6px, 16px);
+      filter: blur(8px);
+    }
+    .ps-slot img {
+      display: block;
+      position: relative;
+      width: 100%;
+      height: 100%;
       object-fit: cover;
+      clip-path: polygon(2% 4%, 8% 1%, 22% 3%, 40% 0, 60% 2%, 78% 0, 92% 3%, 98% 6%, 100% 22%, 97% 40%, 100% 60%, 98% 78%, 100% 96%, 92% 98%, 78% 100%, 60% 97%, 40% 100%, 22% 98%, 8% 100%, 2% 96%, 0 78%, 3% 60%, 0 40%, 2% 22%, 0 8%);
+    }
+    .ps-slot:nth-child(1) { top: 8%;  left: 0;   transform: rotate(-6deg); }
+    .ps-slot:nth-child(2) { top: 14%; left: 30%; transform: rotate(2deg); z-index: 2; }
+    .ps-slot:nth-child(3) { top: 4%;  right: 0;  transform: rotate(6deg); }
+
+    @media (max-width: 640px) {
+      .ps-torn { height: auto; padding: 0 1.25rem; }
+      .ps-slot {
+        position: relative;
+        width: 100%;
+        margin-bottom: 2rem;
+      }
+      .ps-slot:nth-child(1),
+      .ps-slot:nth-child(2),
+      .ps-slot:nth-child(3) { top: auto; left: auto; right: auto; transform: none; }
+      .ps-slot::before { transform: translate(4px, 14px); filter: blur(6px); }
     }
 
     /* ── Details ──────────────────────────────────── */
@@ -620,11 +684,20 @@
     }
     .details-actions .btn-ghost:hover { background: #fff; transform: translateY(-2px); }
     .detail-card {
-      background: #fff;
+      background: rgba(255,255,255,.94);
+      border: 1px solid rgba(123,94,167,.15);
       border-radius: 4px;
       padding: 3rem 2rem;
       text-align: center;
-      box-shadow: 0 2px 20px rgba(0,0,0,.04);
+      box-shadow: 0 8px 24px -8px rgba(80,60,110,.18);
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+    .detail-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 32px -10px rgba(80,60,110,.24);
+    }
+    .details-grid .detail-card:nth-child(2) {
+      border-top: 2px solid #7b5ea7;
     }
     .detail-card .icon {
       font-size: 2rem;
@@ -639,9 +712,10 @@
       color: #4c6b4c;
     }
     .detail-card p {
-      font-size: .85rem;
-      line-height: 1.7;
-      color: #666;
+      font-weight: 400;
+      font-size: .95rem;
+      line-height: 1.75;
+      color: #4a4652;
     }
 
     /* ── Timeline ─────────────────────────────────── */
@@ -691,8 +765,10 @@
     }
     .timeline-item .event {
       flex: 1;
-      font-size: .85rem;
-      color: #555;
+      font-weight: 400;
+      font-size: .95rem;
+      line-height: 1.6;
+      color: #4a4652;
     }
 
     /* ── Gallery ──────────────────────────────────── */
@@ -1166,16 +1242,97 @@
 
     /* ── Responsive ───────────────────────────────── */
     @media (max-width: 768px) {
-      nav ul { gap: 1rem; }
-      nav a { font-size: .6rem; letter-spacing: 2px; }
+      nav {
+        background: transparent;
+        backdrop-filter: none;
+        border-bottom: none;
+        pointer-events: none;
+      }
+      nav.hidden { transform: none; }
+      nav ul {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100vh;
+        width: min(76vw, 300px);
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: 1.3rem;
+        padding: 4.6rem 2rem 2rem;
+        background: rgba(247, 243, 252, .98);
+        backdrop-filter: blur(12px);
+        border-left: 1px solid rgba(123, 94, 167, .15);
+        box-shadow: -10px 0 28px rgba(42, 35, 56, .14);
+        transform: translateX(100%);
+        transition: transform .35s cubic-bezier(.4, 0, .2, 1);
+        pointer-events: auto;
+        z-index: 101;
+      }
+      nav.open ul { transform: translateX(0); }
+      nav ul li[hidden] { display: none; }
+      nav a {
+        font-size: .78rem;
+        letter-spacing: 3px;
+        padding: .35rem 0;
+        display: block;
+      }
+      .nav-toggle {
+        display: flex;
+        position: fixed;
+        top: 12px;
+        right: 12px;
+        width: 42px;
+        height: 42px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        background: transparent;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        z-index: 103;
+        pointer-events: auto;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .nav-toggle span {
+        display: block;
+        width: 22px;
+        height: 2px;
+        background: #2a2338;
+        border-radius: 2px;
+        transition: transform .3s ease, opacity .2s ease;
+      }
+      nav.open .nav-toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+      nav.open .nav-toggle span:nth-child(2) { opacity: 0; }
+      nav.open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+      .nav-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(42, 35, 56, .38);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .3s ease;
+        z-index: 100;
+      }
+      nav.open .nav-backdrop { opacity: 1; pointer-events: auto; }
       .couple-grid { grid-template-columns: 1fr; }
+      .couple-photo { margin: 0 auto; }
       .details-grid { grid-template-columns: 1fr; }
-      .photo-strip { grid-template-columns: 1fr 1fr; }
-      .photo-strip img:nth-child(3) { grid-column: 1 / -1; }
-      .countdown { gap: 1.5rem; }
+      .countdown {
+        gap: 1.4rem;
+        flex-wrap: nowrap;
+        max-width: 100%;
+        padding: 0 1rem;
+      }
+      .countdown-item { min-width: 0; }
+      .countdown-item .number { font-size: 1.7rem; }
+      .countdown-item .label { font-size: .55rem; letter-spacing: 2px; margin-top: .35rem; }
+      .countdown-item + .countdown-item::before { left: -1rem; top: -.05rem; font-size: 1.7rem; }
     }
     @media (max-width: 480px) {
-      nav ul { gap: .7rem; flex-wrap: wrap; justify-content: center; }
+      nav ul { width: min(82vw, 280px); padding: 4.4rem 1.6rem 1.6rem; }
     }
   </style>
 </head>
@@ -1210,7 +1367,11 @@
 
   <!-- Navigation -->
   <nav id="navbar">
-    <ul>
+    <button id="nav-toggle" class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav-list">
+      <span></span><span></span><span></span>
+    </button>
+    <div id="nav-backdrop" class="nav-backdrop" aria-hidden="true"></div>
+    <ul id="nav-list">
       <li><a href="#home">Home</a></li>
       <li><a href="#couple">Our Story</a></li>
       <li><a href="#details">Details</a></li>
@@ -1244,11 +1405,11 @@
     <div class="container reveal">
       <p class="section-label">&gt; compiling&nbsp;forever…</p>
       <h2 class="serif" style="font-size:2rem; font-weight:300;">Days Until We Say I Do</h2>
-      <div class="countdown" id="countdown-timer">
-        <div class="countdown-item"><div class="number" id="cd-days">000</div><div class="label">Days</div></div>
-        <div class="countdown-item"><div class="number" id="cd-hours">00</div><div class="label">Hours</div></div>
-        <div class="countdown-item"><div class="number" id="cd-mins">00</div><div class="label">Minutes</div></div>
-        <div class="countdown-item"><div class="number" id="cd-secs">00</div><div class="label">Seconds</div></div>
+      <div class="countdown">
+        <div class="countdown-item"><div class="number cd-days">000</div><div class="label">Days</div></div>
+        <div class="countdown-item"><div class="number cd-hours">00</div><div class="label">Hours</div></div>
+        <div class="countdown-item"><div class="number cd-mins">00</div><div class="label">Minutes</div></div>
+        <div class="countdown-item"><div class="number cd-secs">00</div><div class="label">Seconds</div></div>
       </div>
     </div>
   </section>
@@ -1317,16 +1478,13 @@
     </div>
   </section>
 
-  <!-- Photo Strip -->
-  <div class="photo-strip stagger-children">
-    <!-- full-res:
-    <img src="../images/DUY_7820_(2).jpg" alt="Couple moment" loading="lazy" decoding="async" />
-    <img src="../images/DUY_8034.jpg" alt="Couple moment" loading="lazy" decoding="async" />
-    <img src="../images/DUY_8252.jpg" alt="Couple moment" loading="lazy" decoding="async" />
-    -->
-    <img src="../images/compressed/DUY_7820_(2).jpg" alt="Couple moment" loading="lazy" decoding="async" />
-    <img src="../images/compressed/DUY_8034.jpg" alt="Couple moment" loading="lazy" decoding="async" />
-    <img src="../images/compressed/DUY_8252.jpg" alt="Couple moment" loading="lazy" decoding="async" />
+  <!-- Photo Strip — torn-paper collage -->
+  <div class="ps-band">
+    <div class="ps-torn reveal">
+      <div class="ps-slot"><img src="../images/compressed/DUY_7820_(2).jpg" alt="Couple moment" loading="lazy" decoding="async" /></div>
+      <div class="ps-slot"><img src="../images/compressed/DUY_8034.jpg" alt="Couple moment" loading="lazy" decoding="async" /></div>
+      <div class="ps-slot"><img src="../images/compressed/DUY_8252.jpg" alt="Couple moment" loading="lazy" decoding="async" /></div>
+    </div>
   </div>
 
   <!-- Details -->
@@ -1741,10 +1899,11 @@
         const h = Math.floor((diff % 86400000) / 3600000);
         const m = Math.floor((diff % 3600000) / 60000);
         const s = Math.floor((diff % 60000) / 1000);
-        document.getElementById('cd-days').textContent = String(d).padStart(3, '0');
-        document.getElementById('cd-hours').textContent = String(h).padStart(2, '0');
-        document.getElementById('cd-mins').textContent = String(m).padStart(2, '0');
-        document.getElementById('cd-secs').textContent = String(s).padStart(2, '0');
+        const set = (sel, val) => document.querySelectorAll(sel).forEach(el => el.textContent = val);
+        set('.cd-days', String(d).padStart(3, '0'));
+        set('.cd-hours', String(h).padStart(2, '0'));
+        set('.cd-mins', String(m).padStart(2, '0'));
+        set('.cd-secs', String(s).padStart(2, '0'));
       }
       update();
       setInterval(update, 1000);
@@ -1922,9 +2081,28 @@
     let lastScroll = 0;
     window.addEventListener('scroll', () => {
       const curr = window.scrollY;
-      document.getElementById('navbar').classList.toggle('hidden', curr > lastScroll && curr > 80);
+      if (Math.abs(curr - lastScroll) < 6) return;
+      const navEl = document.getElementById('navbar');
+      if (navEl.classList.contains('open')) return;
+      navEl.classList.toggle('hidden', curr > lastScroll && curr > 120);
       lastScroll = curr;
     });
+
+    // ── Mobile side-sheet nav ─────────────────────────
+    (() => {
+      const navEl = document.getElementById('navbar');
+      const toggle = document.getElementById('nav-toggle');
+      const backdrop = document.getElementById('nav-backdrop');
+      const setOpen = (open) => {
+        navEl.classList.toggle('open', open);
+        toggle.setAttribute('aria-expanded', String(open));
+        document.body.style.overflow = open ? 'hidden' : '';
+      };
+      toggle.addEventListener('click', () => setOpen(!navEl.classList.contains('open')));
+      backdrop.addEventListener('click', () => setOpen(false));
+      navEl.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', () => setOpen(false)));
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && navEl.classList.contains('open')) setOpen(false); });
+    })();
 
   </script>
   <script src="../rsvp.js"></script>
