@@ -771,9 +771,9 @@
     }
     .sponsor-couple .line {
       font-family: 'Cormorant Garamond', serif;
-      font-size: .9rem;
+      font-size: 1rem;
       color: #3a3a3a;
-      line-height: 1.4;
+      line-height: 1.5;
       letter-spacing: .3px;
       text-align: left;
     }
@@ -890,7 +890,7 @@
     .entourage-outro {
       font-family: 'Dancing Script', 'Pinyon Script', 'Great Vibes', cursive;
       font-weight: 500;
-      font-size: 1.25rem;
+      font-size: 1.8rem;
       color: #4c6b4c;
       text-align: center;
       margin-top: 3rem;
@@ -2454,7 +2454,7 @@
         { title: 'Principal Sponsors',       match: r => /principal sponsor/i.test(r), hideRole: true, style: 'card', tagline: 'With gratitude to those who will guide and witness our union' },
         { title: 'Bridal Party',             match: r => /(best man|maid of honor|groomsm(a|e)n|bridesmaid)/i.test(r), hideRole: true, style: 'numbered', tagline: 'The ones standing beside us' },
         { title: 'Our Little Bearers',       match: r => /((ring|bible|candle|coin|arrhae) ?bearer|little (groom|bride)|flower ?girl)/i.test(r), style: 'bearers', tagline: 'The sweetest little ones joining us on our special day' },
-        { title: 'Ceremony',                 match: r => /(officiant|host|priest|celebrant)/i.test(r), tagline: 'Ministering our vows' },
+        { title: 'Ceremony',                 match: r => /(officiant|host|priest|celebrant)/i.test(r) },
       ];
       const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
       const sectionTitle = title => `
@@ -2488,7 +2488,12 @@
           if (!byLast.has(key)) byLast.set(key, []);
           byLast.get(key).push(p);
         });
-        return [...byLast.values()];
+        return [...byLast.entries()]
+          .sort(([ka, la], [kb, lb]) => {
+            if ((la.length === 1) !== (lb.length === 1)) return la.length === 1 ? 1 : -1;
+            return ka.localeCompare(kb);
+          })
+          .map(([, list]) => list);
       };
       try {
         const res = await fetch(url);
@@ -2504,8 +2509,12 @@
           if (g.style === 'numbered') {
             const maidOfHonor = g.people.find(p => /maid of honor/i.test(p.role));
             const bestMan = g.people.find(p => /best man/i.test(p.role));
-            const groomsmen = g.people.filter(p => /groomsm(a|e)n/i.test(p.role) && !/best man/i.test(p.role));
-            const bridesmaids = g.people.filter(p => /bridesmaid/i.test(p.role) && !/maid of honor/i.test(p.role));
+            const stripTitle = n => String(n).replace(/^(engr\.?|dr\.?|doctor|atty\.?|attorney|rev\.?|reverend|father|fr\.?|hon\.?|prof\.?|professor|sir|madam|bishop|msgr\.?|monsignor|pastor|capt\.?|captain|col\.?|colonel|maj\.?|major|judge)\s+/i, '').trim();
+            const byFirstName = (a, b) => stripTitle(a.name).localeCompare(stripTitle(b.name));
+            const groomsmen = g.people.filter(p => /groomsm(a|e)n/i.test(p.role) && !/best man/i.test(p.role))
+              .sort(byFirstName);
+            const bridesmaids = g.people.filter(p => /bridesmaid/i.test(p.role) && !/maid of honor/i.test(p.role))
+              .sort(byFirstName);
             const numList = list => `<ol class="bridal-list">${list.map((p, i) =>
               `<li><span class="num">${String(i + 1).padStart(2, '0')}</span><span>${esc(p.name)}</span></li>`
             ).join('')}</ol>`;
@@ -2566,13 +2575,18 @@
           if (rendered) {
             const looksFemale = name => {
               const first = String(name).trim().split(/\s+/)[0].toLowerCase();
-              return /^(mary|ma\.?|maria|marie|meriam|miriam|felicitas|elma|annabelle|rosie|rosa|ana|anna|anne|erma|leenie|shira|mirabel|verline|graceky|izellah|arlyn|christiana|via|natasha|samara|judy|ivy|jasmine|jenny|melody|esther|kristina|jarmaine|justine|gerdalyn|michaela|elsa|edna|angel|beatrice|camille|carla|carmen|clara|cristina|daisy|elena|emily|eva|flora|gloria|helen|joy|julia|karla|katrina|laura|leah|lorna|lucia|margarita|martha|mercy|nina|nora|olivia|pilar|priscilla|regina|rose|rosemary|ruby|sofia|sylvia|teresa|veronica|victoria|yolanda)$/.test(first);
+              return /^(mary|ma\.?|maria|marie|meriam|miriam|felicitas|elma|annabelle|rosie|rosa|salvacion|ana|anna|anne|erma|leenie|shira|mirabel|verline|graceky|izellah|arlyn|christiana|via|natasha|samara|judy|ivy|jasmine|jenny|melody|esther|kristina|jarmaine|justine|gerdalyn|michaela|elsa|edna|angel|beatrice|camille|carla|carmen|clara|cristina|daisy|elena|emily|eva|flora|gloria|helen|joy|julia|karla|katrina|laura|leah|lorna|lucia|margarita|martha|mercy|nina|nora|olivia|pilar|priscilla|regina|rose|rosemary|ruby|sofia|sylvia|teresa|veronica|victoria|yolanda)$/.test(first);
             };
+            const hasTitle = n => /^(engr\.?|dr\.?|doctor|atty\.?|attorney|rev\.?|reverend|father|fr\.?|hon\.?|prof\.?|professor|sir|madam|bishop|msgr\.?|monsignor|pastor|capt\.?|captain|col\.?|colonel|maj\.?|major|judge)\b/i.test(n);
             const coupleLines = couple => {
-              if (couple.length === 1) return `<span class="line">${esc(couple[0].name)}</span>`;
+              if (couple.length === 1) {
+                const p = couple[0];
+                if (hasTitle(p.name)) return `<span class="line">${esc(p.name)}</span>`;
+                const title = looksFemale(p.name) ? 'Mrs. ' : 'Mr. ';
+                return `<span class="line">${esc(title)}${esc(p.name)}</span>`;
+              }
               const husband = couple.find(p => !looksFemale(p.name)) || couple[0];
               const wife = couple.find(p => looksFemale(p.name) && p !== husband) || couple.find(p => p !== husband);
-              const hasTitle = n => /^(engr\.?|dr\.?|doctor|atty\.?|attorney|rev\.?|reverend|father|fr\.?|hon\.?|prof\.?|professor|sir|madam|bishop|msgr\.?|monsignor|pastor|capt\.?|captain|col\.?|colonel|maj\.?|major|judge)\b/i.test(n);
               const husbandStr = hasTitle(husband.name) ? husband.name : `Mr. ${husband.name}`;
               const wifeStr = hasTitle(wife.name) ? wife.name : `Mrs. ${wife.name}`;
               return `<span class="line">${esc(husbandStr)} &amp; ${esc(wifeStr)}</span>`;
