@@ -26,6 +26,9 @@
 
   <link rel="stylesheet" href="../fonts/google-fonts.css" />
   <link rel="stylesheet" href="../fonts/font-awesome.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600&display=swap" />
   <link rel="preload" as="image" href="../images/compressed/DUY_7968.jpg" />
   <style>
     /* ── Reset & Base ─────────────────────────────── */
@@ -613,6 +616,302 @@
       .ps-slot:nth-child(2),
       .ps-slot:nth-child(3) { top: auto; left: auto; right: auto; transform: none; }
       .ps-slot::before { transform: translate(4px, 14px); filter: blur(6px); }
+    }
+
+    /* ── Entourage ────────────────────────────────── */
+    .entourage-section {
+      padding: 5rem 0 5.5rem;
+      background:
+        radial-gradient(120% 60% at 50% 0%, rgba(255,255,255,.55), rgba(255,255,255,0) 60%),
+        linear-gradient(180deg, rgba(250,247,255,.94), rgba(238,231,246,.88));
+    }
+    .entourage-hero {
+      position: relative;
+      max-width: 520px;
+      margin: 0 auto 2.5rem;
+      text-align: center;
+    }
+    .entourage-accent {
+      position: absolute;
+      top: -.5rem;
+      width: 150px;
+      height: auto;
+      opacity: .9;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .entourage-accent.left {
+      left: -3.5rem;
+      transform: scaleX(-1) rotate(-20deg);
+    }
+    .entourage-accent.right {
+      right: -3.5rem;
+      transform: rotate(-20deg);
+    }
+    .entourage-pre,
+    .entourage-heading,
+    .entourage-heart-lg,
+    .entourage-tagline-hero { position: relative; z-index: 1; }
+    .entourage-pre {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+      font-size: .78rem;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: #7b5ea7;
+    }
+    .entourage-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 500;
+      font-size: clamp(2.4rem, 8vw, 3.4rem);
+      letter-spacing: 8px;
+      color: #a89bbb;
+      margin: .35rem 0 .4rem;
+    }
+    .entourage-heart-lg {
+      display: inline-block;
+      font-size: 1.05rem;
+      color: #b7a5cd;
+      margin: .35rem 0 .5rem;
+    }
+    .entourage-tagline-hero {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+      font-size: .72rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #4a4652;
+      line-height: 1.9;
+      margin-top: .9rem;
+    }
+    .entourage-body { max-width: 640px; }
+    .entourage-group { margin-top: 3rem; }
+    .entourage-group.card {
+      background: rgba(216, 200, 236, .28);
+      border-radius: 18px;
+      padding: 2rem 1.35rem 2.25rem;
+    }
+    .entourage-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .9rem;
+      margin-bottom: .35rem;
+    }
+    .entourage-title-row h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 500;
+      font-size: 1.5rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #4c6b4c;
+      margin: 0;
+      white-space: nowrap;
+    }
+    .entourage-leaf { width: 68px; height: 18px; flex-shrink: 0; }
+    .entourage-leaf.flip { transform: scaleX(-1); }
+    .entourage-script {
+      font-family: 'Dancing Script', 'Pinyon Script', 'Great Vibes', cursive;
+      font-weight: 500;
+      font-size: 1.25rem;
+      color: #4c6b4c;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      line-height: 1.3;
+    }
+    .entourage-script .heart {
+      color: #b7a5cd;
+      font-size: .78em;
+      margin-left: .3em;
+    }
+    .entourage-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .55rem 1.6rem;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .entourage-item { text-align: center; padding: .3rem .2rem; }
+    .entourage-item.solo { grid-column: 1 / -1; }
+    .entourage-item .role {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .55rem;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: #7b5ea7;
+      display: block;
+      margin-bottom: .15rem;
+    }
+    .entourage-item .name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: .95rem;
+      color: #3a3a3a;
+    }
+    .sponsor-couples {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .sponsor-couple {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: .55rem;
+      padding: .5rem 0;
+    }
+    .sponsor-couple + .sponsor-couple {
+      border-top: 1px solid rgba(168, 155, 187, .3);
+    }
+    .sponsor-couple .icon {
+      color: #b7a5cd;
+      font-size: .72rem;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .sponsor-couple .line {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: .9rem;
+      color: #3a3a3a;
+      line-height: 1.4;
+      letter-spacing: .3px;
+      text-align: left;
+    }
+    .bridal-honor {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 0 1.25rem;
+      text-align: center;
+      max-width: 560px;
+      margin: 0 auto 1.4rem;
+      padding-bottom: 1.35rem;
+      border-bottom: 1px solid rgba(168, 155, 187, .35);
+    }
+    .bridal-honor .honor-head {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 500;
+      font-size: .82rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #7b5ea7;
+      margin-bottom: .35rem;
+    }
+    .bridal-honor .honor-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      color: #3a3a3a;
+      letter-spacing: 1.5px;
+    }
+    .bridal-honor .honor-spacer { width: 1px; }
+    .bridal-party {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 0 1.25rem;
+      align-items: stretch;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    .bridal-col-head {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+      font-size: 1rem;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: #4c6b4c;
+      text-align: center;
+      margin-bottom: 1.1rem;
+    }
+    .bridal-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .bridal-list li {
+      font-family: 'Montserrat', sans-serif;
+      font-size: .72rem;
+      letter-spacing: 2px;
+      color: #3a3a3a;
+      padding: .28rem 0;
+      text-transform: uppercase;
+      display: flex;
+      gap: .75rem;
+      align-items: baseline;
+    }
+    .bridal-list .num {
+      color: #a89bbb;
+      font-weight: 500;
+      min-width: 1.5em;
+      font-size: .76rem;
+    }
+    .bridal-divider {
+      position: relative;
+      width: 1px;
+      background: rgba(168, 155, 187, .5);
+      margin: .3rem 0;
+    }
+    .bridal-divider-mid {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: .4rem .15rem;
+      line-height: 0;
+    }
+    .bearers-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1.2rem .6rem;
+      text-align: center;
+    }
+    .bearer-item .accent {
+      display: block;
+      margin: 0 auto .5rem;
+      color: #b7a5cd;
+      line-height: 0;
+    }
+    .bearer-item .role {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 500;
+      font-size: .72rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #7b5ea7;
+      display: block;
+      margin-bottom: .3rem;
+    }
+    .bearer-item .name {
+      font-family: 'Montserrat', sans-serif;
+      font-size: .72rem;
+      letter-spacing: 1.5px;
+      color: #3a3a3a;
+      text-transform: uppercase;
+      line-height: 1.5;
+    }
+    .entourage-outro {
+      font-family: 'Dancing Script', 'Pinyon Script', 'Great Vibes', cursive;
+      font-weight: 500;
+      font-size: 1.25rem;
+      color: #4c6b4c;
+      text-align: center;
+      margin-top: 3rem;
+    }
+    .entourage-loading {
+      text-align: center;
+      color: #7a6f98;
+      font-style: italic;
+      margin-top: 2rem;
+    }
+    @media (max-width: 480px) {
+      .entourage-title-row h3 { font-size: 1.25rem; letter-spacing: 3px; }
+      .entourage-leaf { width: 44px; }
+      .entourage-heading { letter-spacing: 6px; }
+      .bridal-col-head { letter-spacing: 4px; font-size: .9rem; }
+      .bridal-list li { font-size: .68rem; letter-spacing: 1.5px; gap: .5rem; }
+      .bridal-party { gap: 0 .7rem; }
+      .bearers-row { grid-template-columns: 1fr 1fr; }
+      .entourage-accent { width: 90px; top: -.75rem; opacity: .8; }
+      .entourage-accent.left { left: -1rem; }
+      .entourage-accent.right { right: -1rem; }
     }
 
     /* ── Details ──────────────────────────────────── */
@@ -1374,6 +1673,7 @@
     <ul id="nav-list">
       <li><a href="#home">Home</a></li>
       <li><a href="#couple">Our Story</a></li>
+      <li><a href="#entourage">Entourage</a></li>
       <li><a href="#details">Details</a></li>
       <li><a href="#attire">Attire</a></li>
       <li><a href="#schedule">Schedule</a></li>
@@ -1486,6 +1786,21 @@
       <div class="ps-slot"><img src="../images/compressed/DUY_8252.jpg" alt="Couple moment" loading="lazy" decoding="async" /></div>
     </div>
   </div>
+
+  <!-- Entourage — pulled from Google Sheet via Apps Script -->
+  <section class="entourage-section" id="entourage">
+    <div class="container entourage-hero reveal">
+      <img class="entourage-accent left" src="../images/pngtree-lavender-wildflower-botanical-watercolor-bouquet-png-image_19701816.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+      <img class="entourage-accent right" src="../images/pngtree-lavender-wildflower-botanical-watercolor-bouquet-png-image_19701816.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+      <p class="entourage-pre">Our Beloved</p>
+      <h2 class="entourage-heading">Entourage</h2>
+      <!-- <span class="entourage-heart-lg">&hearts;</span> -->
+      <!-- <p class="entourage-tagline-hero">The people who will stand<br />beside us as we say &ldquo;I do.&rdquo;</p> -->
+    </div>
+    <div class="container entourage-body" id="entourage-body">
+      <p class="entourage-loading">Loading…</p>
+    </div>
+  </section>
 
   <!-- Details -->
   <section class="details-section" id="details">
@@ -2102,6 +2417,196 @@
       backdrop.addEventListener('click', () => setOpen(false));
       navEl.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', () => setOpen(false)));
       document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && navEl.classList.contains('open')) setOpen(false); });
+    })();
+
+    // ── Entourage — fetched from Google Sheet via Apps Script ─
+    (async () => {
+      const url = 'https://script.google.com/macros/s/AKfycbxBtBuAPNr2cDcS9VJwtHnczv9sTftT_hBHDjPOX1hsJ3GF3Kg3fetmplVGwT9cNrwo/exec?list=entourage';
+      const body = document.getElementById('entourage-body');
+      if (!body) return;
+      const LEAF_BRANCH = `<svg class="entourage-leaf" viewBox="0 0 100 22" xmlns="http://www.w3.org/2000/svg" fill="#7c9a7c" aria-hidden="true">
+        <path d="M 8 12 Q 50 6 92 12" stroke="#7c9a7c" stroke-width=".8" fill="none" stroke-linecap="round"/>
+        <ellipse cx="20" cy="9" rx="7" ry="2.7" transform="rotate(-30 20 9)"/>
+        <ellipse cx="35" cy="15" rx="7" ry="2.7" transform="rotate(28 35 15)"/>
+        <ellipse cx="50" cy="8" rx="7" ry="2.7" transform="rotate(-25 50 8)"/>
+        <ellipse cx="65" cy="15" rx="7" ry="2.7" transform="rotate(28 65 15)"/>
+        <ellipse cx="80" cy="9" rx="7" ry="2.7" transform="rotate(-30 80 9)"/>
+      </svg>`;
+      const LEAF_MID = `<svg viewBox="0 0 34 30" width="22" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g fill="#7c9a7c">
+          <ellipse cx="10" cy="9" rx="5" ry="1.8" transform="rotate(-40 10 9)"/>
+          <ellipse cx="24" cy="9" rx="5" ry="1.8" transform="rotate(40 24 9)"/>
+        </g>
+        <line x1="17" y1="9" x2="17" y2="20" stroke="#7c9a7c" stroke-width=".7"/>
+        <text x="17" y="28" font-family="serif" font-size="7" fill="#b7a5cd" text-anchor="middle">&#9825;</text>
+      </svg>`;
+      const LEAF_TWIG = `<svg viewBox="0 0 34 24" width="30" height="22" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g fill="#b7a5cd">
+          <ellipse cx="10" cy="8" rx="5" ry="1.8" transform="rotate(-40 10 8)"/>
+          <ellipse cx="24" cy="8" rx="5" ry="1.8" transform="rotate(40 24 8)"/>
+          <ellipse cx="13" cy="14" rx="4" ry="1.6" transform="rotate(-30 13 14)"/>
+          <ellipse cx="21" cy="14" rx="4" ry="1.6" transform="rotate(30 21 14)"/>
+        </g>
+        <line x1="17" y1="8" x2="17" y2="22" stroke="#b7a5cd" stroke-width=".7"/>
+      </svg>`;
+      const sections = [
+        { title: 'Parents',                  match: r => /(father|mother) of the (groom|bride)/i.test(r), tagline: 'Our loving families' },
+        { title: 'Principal Sponsors',       match: r => /principal sponsor/i.test(r), hideRole: true, style: 'card', tagline: 'With gratitude to those who will guide and witness our union' },
+        { title: 'Bridal Party',             match: r => /(best man|maid of honor|groomsm(a|e)n|bridesmaid)/i.test(r), hideRole: true, style: 'numbered', tagline: 'The ones standing beside us' },
+        { title: 'Our Little Bearers',       match: r => /((ring|bible|candle|coin|arrhae) ?bearer|little (groom|bride)|flower ?girl)/i.test(r), style: 'bearers', tagline: 'The sweetest little ones joining us on our special day' },
+        { title: 'Ceremony',                 match: r => /(officiant|host|priest|celebrant)/i.test(r), tagline: 'Ministering our vows' },
+      ];
+      const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+      const sectionTitle = title => `
+        <div class="entourage-title-row">
+          ${LEAF_BRANCH}
+          <h3>${esc(title)}</h3>
+          ${LEAF_BRANCH.replace('class="entourage-leaf"', 'class="entourage-leaf flip"')}
+        </div>
+      `;
+      const scriptTagline = t => t
+        ? `<p class="entourage-script">${esc(t)} <span class="heart">&hearts;</span></p>`
+        : '';
+      const renderItem = (p, hideRole, solo) => `
+        <li class="entourage-item side-${esc(p.side)}${solo ? ' solo' : ''}">
+          ${hideRole ? '' : `<span class="role">${esc(p.role)}</span>`}
+          <span class="name">${esc(p.name)}</span>
+        </li>
+      `;
+      const pairByLastName = people => {
+        const lastNameOf = n => {
+          const parts = String(n).trim().split(/\s+/);
+          const last = parts[parts.length - 1];
+          if (/^(jr\.?|sr\.?|ii|iii|iv)$/i.test(last) && parts.length > 1) {
+            return parts[parts.length - 2].toLowerCase();
+          }
+          return last.toLowerCase();
+        };
+        const byLast = new Map();
+        people.forEach(p => {
+          const key = lastNameOf(p.name);
+          if (!byLast.has(key)) byLast.set(key, []);
+          byLast.get(key).push(p);
+        });
+        return [...byLast.values()];
+      };
+      try {
+        const res = await fetch(url);
+        const { people = [] } = await res.json();
+        const buckets = sections.map(s => ({ ...s, people: [] }));
+        const other = { title: 'Wedding Party', people: [] };
+        people.forEach(p => {
+          const bucket = buckets.find(b => b.match(p.role)) || other;
+          bucket.people.push(p);
+        });
+        const groups = [...buckets, other].filter(b => b.people.length);
+        const html = groups.map(g => {
+          if (g.style === 'numbered') {
+            const maidOfHonor = g.people.find(p => /maid of honor/i.test(p.role));
+            const bestMan = g.people.find(p => /best man/i.test(p.role));
+            const groomsmen = g.people.filter(p => /groomsm(a|e)n/i.test(p.role) && !/best man/i.test(p.role));
+            const bridesmaids = g.people.filter(p => /bridesmaid/i.test(p.role) && !/maid of honor/i.test(p.role));
+            const numList = list => `<ol class="bridal-list">${list.map((p, i) =>
+              `<li><span class="num">${String(i + 1).padStart(2, '0')}</span><span>${esc(p.name)}</span></li>`
+            ).join('')}</ol>`;
+            const honorBlock = (maidOfHonor || bestMan) ? `
+              <div class="bridal-honor">
+                <div>
+                  ${maidOfHonor ? `<p class="honor-head">Maid of Honor</p><p class="honor-name">${esc(maidOfHonor.name)}</p>` : ''}
+                </div>
+                <div class="honor-spacer"></div>
+                <div>
+                  ${bestMan ? `<p class="honor-head">Best Man</p><p class="honor-name">${esc(bestMan.name)}</p>` : ''}
+                </div>
+              </div>
+            ` : '';
+            return `
+              <div class="entourage-group">
+                ${sectionTitle(g.title)}
+                ${scriptTagline(g.tagline)}
+                ${honorBlock}
+                <div class="bridal-party">
+                  <div>
+                    <p class="bridal-col-head">Bridesmaids</p>
+                    ${numList(bridesmaids)}
+                  </div>
+                  <div class="bridal-divider">
+                    <div class="bridal-divider-mid">${LEAF_MID}</div>
+                  </div>
+                  <div>
+                    <p class="bridal-col-head">Groomsmen</p>
+                    ${numList(groomsmen)}
+                  </div>
+                </div>
+              </div>
+            `;
+          }
+          if (g.style === 'bearers') {
+            return `
+              <div class="entourage-group card">
+                ${sectionTitle(g.title)}
+                ${scriptTagline(g.tagline)}
+                <div class="bearers-row">
+                  ${g.people.map(p => `
+                    <div class="bearer-item">
+                      <span class="accent">${LEAF_TWIG}</span>
+                      <span class="role">${esc(p.role)}</span>
+                      <span class="name">${esc(p.name)}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            `;
+          }
+          const rendered = g.title === 'Principal Sponsors'
+            ? pairByLastName(g.people)
+            : null;
+          const classes = ['entourage-group'];
+          if (g.style === 'card') classes.push('card');
+          if (rendered) {
+            const looksFemale = name => {
+              const first = String(name).trim().split(/\s+/)[0].toLowerCase();
+              return /^(mary|ma\.?|maria|marie|meriam|miriam|felicitas|elma|annabelle|rosie|rosa|ana|anna|anne|erma|leenie|shira|mirabel|verline|graceky|izellah|arlyn|christiana|via|natasha|samara|judy|ivy|jasmine|jenny|melody|esther|kristina|jarmaine|justine|gerdalyn|michaela|elsa|edna|angel|beatrice|camille|carla|carmen|clara|cristina|daisy|elena|emily|eva|flora|gloria|helen|joy|julia|karla|katrina|laura|leah|lorna|lucia|margarita|martha|mercy|nina|nora|olivia|pilar|priscilla|regina|rose|rosemary|ruby|sofia|sylvia|teresa|veronica|victoria|yolanda)$/.test(first);
+            };
+            const coupleLines = couple => {
+              if (couple.length === 1) return `<span class="line">${esc(couple[0].name)}</span>`;
+              const husband = couple.find(p => !looksFemale(p.name)) || couple[0];
+              const wife = couple.find(p => looksFemale(p.name) && p !== husband) || couple.find(p => p !== husband);
+              const hasTitle = n => /^(engr\.?|dr\.?|doctor|atty\.?|attorney|rev\.?|reverend|father|fr\.?|hon\.?|prof\.?|professor|sir|madam|bishop|msgr\.?|monsignor|pastor|capt\.?|captain|col\.?|colonel|maj\.?|major|judge)\b/i.test(n);
+              const husbandStr = hasTitle(husband.name) ? husband.name : `Mr. ${husband.name}`;
+              const wifeStr = hasTitle(wife.name) ? wife.name : `Mrs. ${wife.name}`;
+              return `<span class="line">${esc(husbandStr)} &amp; ${esc(wifeStr)}</span>`;
+            };
+            return `
+              <div class="${classes.join(' ')}">
+                ${sectionTitle(g.title)}
+                ${scriptTagline(g.tagline)}
+                <ul class="sponsor-couples">
+                  ${rendered.map(couple => `
+                    <li class="sponsor-couple${couple.length === 1 ? ' solo' : ''}">
+                      <span class="icon">&hearts;</span>
+                      ${coupleLines(couple)}
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+            `;
+          }
+          return `
+            <div class="${classes.join(' ')}">
+              ${sectionTitle(g.title)}
+              ${scriptTagline(g.tagline)}
+              <ul class="entourage-list">
+                ${g.people.map(p => renderItem(p, g.hideRole, false)).join('')}
+              </ul>
+            </div>
+          `;
+        }).join('');
+        body.innerHTML = html + '<p class="entourage-outro">With love and gratitude</p>';
+      } catch (err) {
+        body.innerHTML = '<p class="entourage-loading">Our wedding party will appear here soon.</p>';
+        console.error('[entourage]', err);
+      }
     })();
 
   </script>
