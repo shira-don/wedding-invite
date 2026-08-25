@@ -870,6 +870,7 @@
       line-height: 1;
     }
     .bearer-ic { width: 1.1em; height: 1.1em; vertical-align: -.18em; }
+    .bearer-item .accent svg + svg { margin-left: .25em; }
     /* two-column boys / girls grouping for the bearers */
     .bearers-two {
       display: grid;
@@ -2582,6 +2583,7 @@
       </svg>`;
       const FLOWER_BASKET = `<svg class="bearer-ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="7.6" cy="7.4" r="1.9"/><circle cx="12" cy="5.7" r="2.2"/><circle cx="16.4" cy="7.4" r="1.9"/><path d="M4.4 11.3h15.2l-1.5 7.4a1.25 1.25 0 0 1-1.23 1H7.13a1.25 1.25 0 0 1-1.23-1L4.4 11.3z"/><path d="M6.8 11.3a5.2 5.2 0 0 1 10.4 0" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>`;
       const DRESS = `<svg class="bearer-ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 3c1.5 2 4.5 2 6 0l-1.2 6c3.7 3 4.7 7.5 4.2 12L6 21c-.5-4.5 .5-9 4.2-12Z"/></svg>`;
+      const RABBIT = `<svg class="bearer-ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><ellipse cx="8.7" cy="6.6" rx="1.7" ry="4.4" transform="rotate(-15 8.7 6.6)"/><ellipse cx="13.3" cy="6.6" rx="1.7" ry="4.4" transform="rotate(15 13.3 6.6)"/><circle cx="11" cy="15.6" r="5.7"/><circle cx="17.7" cy="18.2" r="1.7"/></svg>`;
       const roleIcon = role => {
         const r = String(role).toLowerCase();
         if (/flower ?girl/.test(r))            return FLOWER_BASKET;
@@ -2589,7 +2591,7 @@
         if (/bible ?bearer/.test(r))           return '<i class="fa-solid fa-book-bible"></i>';
         if (/(coin|arrhae) ?bearer/.test(r))   return '<i class="fa-solid fa-coins"></i>';
         if (/candle ?bearer/.test(r))          return '<i class="fa-solid fa-fire"></i>';
-        if (/little bride/.test(r))            return '<i class="fa-solid fa-child-dress"></i>';
+        if (/little bride/.test(r))            return DRESS;
         if (/little groom/.test(r))            return '<i class="fa-solid fa-user-tie"></i>';
         return LEAF_TWIG;
       };
@@ -2651,11 +2653,17 @@
             const maidOfHonor = g.people.find(p => /maid of honor/i.test(p.role));
             const bestMan = g.people.find(p => /best man/i.test(p.role));
             const stripTitle = n => String(n).replace(/^(engr\.?|dr\.?|doctor|atty\.?|attorney|rev\.?|reverend|father|fr\.?|hon\.?|prof\.?|professor|sir|madam|bishop|msgr\.?|monsignor|pastor|capt\.?|captain|col\.?|colonel|maj\.?|major|judge)\s+/i, '').trim();
-            const byFirstName = (a, b) => stripTitle(a.name).localeCompare(stripTitle(b.name));
+            const lastNameKey = n => {
+              const parts = stripTitle(n).split(/\s+/);
+              const last = parts[parts.length - 1];
+              if (/^(jr\.?|sr\.?|ii|iii|iv)$/i.test(last) && parts.length > 1) return parts[parts.length - 2].toLowerCase();
+              return last.toLowerCase();
+            };
+            const byLastName = (a, b) => lastNameKey(a.name).localeCompare(lastNameKey(b.name));
             const groomsmen = g.people.filter(p => /groomsm(a|e)n/i.test(p.role) && !/best man/i.test(p.role))
-              .sort(byFirstName);
+              .sort(byLastName);
             const bridesmaids = g.people.filter(p => /bridesmaid/i.test(p.role) && !/maid of honor/i.test(p.role))
-              .sort(byFirstName);
+              .sort(byLastName);
             const numList = list => `<ol class="bridal-list">${list.map((p, i) =>
               `<li><span class="num">${String(i + 1).padStart(2, '0')}</span><span>${esc(p.name)}</span></li>`
             ).join('')}</ol>`;
@@ -2693,11 +2701,13 @@
           }
           if (g.style === 'bearers') {
             const isGirl = p => /flower ?girl|little bride|\bgirl\b/i.test(p.role);
-            const girls = g.people.filter(isGirl);
+            // our pet rabbit joins as a flower girl (hardcoded)
+            const sunset = { name: 'Sunset', role: 'Flower Girl', _icon: RABBIT + FLOWER_BASKET };
+            const girls = [...g.people.filter(isGirl), sunset];
             const boys  = g.people.filter(p => !isGirl(p));
             const bearerItem = p => `
               <div class="bearer-item">
-                <span class="accent">${roleIcon(p.role)}</span>
+                <span class="accent">${p._icon || roleIcon(p.role)}</span>
                 <span class="role">${esc(p.role)}</span>
                 <span class="name">${esc(p.name)}</span>
               </div>`;
@@ -2707,7 +2717,7 @@
                    <div class="bridal-divider"><div class="bridal-divider-mid">${LEAF_MID}</div></div>
                    <div><p class="bridal-col-head">Boys</p><div class="bearers-col">${boys.map(bearerItem).join('')}</div></div>
                  </div>`
-              : `<div class="bearers-row">${g.people.map(bearerItem).join('')}</div>`;
+              : `<div class="bearers-row">${[...g.people, sunset].map(bearerItem).join('')}</div>`;
             return `
               <div class="entourage-group card">
                 ${sectionTitle(g.title)}
