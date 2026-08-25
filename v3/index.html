@@ -929,7 +929,7 @@
 
     /* ── Shared entourage-style design system (applied to every content section) ── */
     .countdown-section, .couple-section, .details-section,
-    .dresscode-section, .timeline-section, .gallery-section {
+    .dresscode-section, .timeline-section, .gallery-section, .gifts-section {
       background:
         radial-gradient(120% 55% at 50% 0%, rgba(255,255,255,.55), rgba(255,255,255,0) 60%),
         linear-gradient(180deg, rgba(250,247,255,.94), rgba(238,231,246,.88)) !important;
@@ -1056,6 +1056,14 @@
     .avoid-barong { font-size: .6rem; color: #635980; }   /* struck-through barong (shirt) icon */
     .avoid-text { vertical-align: middle; }
     .gallery-section   { border-top: 1.75rem solid transparent; }
+    .gifts-section     { border-top: 1.75rem solid transparent; padding: 5rem 0; }
+    .gift-note {
+      max-width: 540px; margin: 0 auto; text-align: center;
+      font-family: 'Cormorant Garamond', serif; font-size: 1.18rem;
+      line-height: 1.75; color: #4a4652;
+    }
+    .gift-note .lead { display: block; margin-bottom: .9rem; color: #3a3a3a; }
+    .gift-note .home { color: #7b5ea7; font-style: italic; }
     footer             { border-top: 1.75rem solid #272030; }
     .details-grid {
       display: grid;
@@ -2114,6 +2122,27 @@
         <img class="lb-img" id="lb-img" src="" alt="Gallery photo enlarged" />
         <button type="button" class="lb-btn lb-nav lb-next" aria-label="Next photo">&#8250;</button>
         <div class="lb-counter"><span id="lb-index">1</span> / 26</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- A gentle note on gifts -->
+  <section class="gifts-section" id="gifts">
+    <div class="container">
+      <div class="sec-hero reveal">
+        <img class="sec-accent left" src="../images/compressed/lilac-bouquet.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+        <img class="sec-accent right" src="../images/compressed/lilac-bouquet.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+        <p class="sec-pre">A Gentle Note</p>
+        <h2 class="sec-heading">On Gifts</h2>
+      </div>
+      <div class="sec-card reveal">
+        <p class="gift-note">
+          <span class="lead">Your presence on our special day is the greatest gift of all.</span>
+          Should you wish to give a little more, we are saving toward
+          <span class="home">our very first home together</span> — and a gift of
+          cash would help us build its foundation. Whatever you choose, please
+          know we are endlessly grateful. &#128156;
+        </p>
       </div>
     </div>
   </section>
