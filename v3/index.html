@@ -2214,14 +2214,9 @@
         if (opened) return;
         opened = true;
         try { sessionStorage.setItem('env-opened', '1'); } catch (e) {}
-        // start the music on this tap (a real user gesture) for everyone,
-        // unless the guest has explicitly turned it off
-        try {
-          if (localStorage.getItem('bgm') !== 'off') {
-            const b = document.getElementById('music-toggle');
-            if (b && b.getAttribute('aria-pressed') !== 'true') b.click();
-          }
-        } catch (e) {}
+        // Music starts from this tap via the global gesture primer in the music
+        // IIFE below (it listens for the first real interaction), so it survives
+        // the case where the YouTube player isn't ready at the exact tap moment.
         // Phase 1 — grow the envelope until it covers the viewport (scale computed
         // from its measured size so it fills reliably on any screen).
         if (shape) {
@@ -2284,13 +2279,16 @@
         btn.title = on ? 'Pause music' : 'Play music';
         btn.classList.toggle('hint', !on);
       }
+      // startPlay never toggles off — it always tries to make audio audible, so it
+      // is safe to call repeatedly (from the button, the envelope tap, or the primer).
       function startPlay() {
         localStorage.setItem('bgm', 'on');
-        if (!ready) { wantPlay = true; return; }
-        player.unMute(); player.setVolume(35); player.playVideo();
+        wantPlay = true;
+        if (ready) { player.unMute(); player.setVolume(35); player.playVideo(); }
       }
       function stop() {
         localStorage.setItem('bgm', 'off');
+        wantPlay = false;
         if (ready) player.pauseVideo();
         setUI(false);
       }
@@ -2301,9 +2299,17 @@
           playerVars: { autoplay: 0, controls: 0, playsinline: 1,
                         modestbranding: 1, rel: 0, fs: 0, start: 19 },
           events: {
-            onReady: () => { ready = true; player.setVolume(35); if (wantPlay) startPlay(); },
+            onReady: () => {
+              ready = true;
+              player.setVolume(35);
+              // Prime playback MUTED (allowed without a gesture) so a later unmute
+              // is instant — and so it plays even if the tap beat the player loading.
+              if (localStorage.getItem('bgm') !== 'off') { player.mute(); player.playVideo(); }
+              if (wantPlay) { player.unMute(); player.setVolume(35); player.playVideo(); }
+            },
             onStateChange: (e) => {
-              if (e.data === YT.PlayerState.PLAYING) setUI(true);
+              // Only reflect "playing" in the UI when it's actually audible (unmuted).
+              if (e.data === YT.PlayerState.PLAYING) setUI(!player.isMuted());
               else if (e.data === YT.PlayerState.PAUSED) setUI(false);
               else if (e.data === YT.PlayerState.ENDED) { player.seekTo(19); player.playVideo(); }  // loop back to 0:19
             }
@@ -2326,6 +2332,19 @@
       }
 
       btn.addEventListener('click', () => playing ? stop() : startPlay());
+
+      // Global gesture primer: unmute on the first real interaction (the envelope
+      // tap, or any later tap/scroll/keypress if the tap beat the player loading).
+      // Ignores the toggle button and respects a guest who turned music off; it
+      // keeps retrying each gesture until audio is actually audible.
+      function primeOnGesture(e) {
+        if (e && e.target && e.target.closest && e.target.closest('#music-toggle')) return;
+        if (localStorage.getItem('bgm') === 'off') return;
+        if (ready && playing && !player.isMuted()) return;   // already audible
+        startPlay();
+      }
+      ['pointerdown', 'touchend', 'keydown'].forEach(ev =>
+        document.addEventListener(ev, primeOnGesture, { passive: true }));
 
       // resume if the guest had music on from a previous page/visit
       if (localStorage.getItem('bgm') === 'on') wantPlay = true;
