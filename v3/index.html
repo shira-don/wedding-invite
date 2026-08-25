@@ -570,8 +570,8 @@
 
     /* ── Photo strip (torn-paper collage) ─────────── */
     .ps-band {
-      background: rgba(232, 238, 224, .82);
-      padding: 3.5rem 0;
+      background: transparent;   /* blends into the How We Met section gradient */
+      padding: 1rem 0 0;
     }
     .ps-torn {
       position: relative;
@@ -929,7 +929,8 @@
 
     /* ── Shared entourage-style design system (applied to every content section) ── */
     .countdown-section, .couple-section, .details-section,
-    .dresscode-section, .timeline-section, .gallery-section, .gifts-section {
+    .dresscode-section, .timeline-section, .gallery-section, .gifts-section,
+    .rsvp-section {
       background:
         radial-gradient(120% 55% at 50% 0%, rgba(255,255,255,.55), rgba(255,255,255,0) 60%),
         linear-gradient(180deg, rgba(250,247,255,.94), rgba(238,231,246,.88)) !important;
@@ -1057,6 +1058,7 @@
     .avoid-text { vertical-align: middle; }
     .gallery-section   { border-top: 1.75rem solid transparent; }
     .gifts-section     { border-top: 1.75rem solid transparent; padding: 5rem 0; }
+    .rsvp-section      { border-top: 1.75rem solid transparent; }
     .gift-note {
       max-width: 540px; margin: 0 auto; text-align: center;
       font-family: 'Cormorant Garamond', serif; font-size: 1.18rem;
@@ -1397,6 +1399,19 @@
     }
     .rsvp-status.success { color: #52734d; }
     .rsvp-status.error { color: #c0392b; }
+    /* v3 two-step RSVP */
+    .rsvp-deadline { text-align: center; max-width: 460px; margin: 0 auto 2rem; color: #6f6880; font-size: .9rem; line-height: 1.7; }
+    .rsvp-card { max-width: 520px; margin: 0 auto; }
+    .rsvp-card .rsvp-form { max-width: none; margin: 0; }
+    .rsvp-welcome { text-align: center; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: #4a4652; margin-bottom: 1.25rem; line-height: 1.5; }
+    .rsvp-welcome strong { color: #7b5ea7; }
+    .rsvp-update-note { text-align: center; font-size: .8rem; color: #7b5ea7; margin: -.5rem 0 1.25rem; }
+    .rsvp-chooser { margin-top: 1.25rem; display: grid; gap: .5rem; }
+    .rsvp-chooser-label { font-size: .72rem; color: #52734d; letter-spacing: 1.5px; text-transform: uppercase; text-align: center; margin-bottom: .25rem; }
+    .rsvp-chooser-opt { display: flex; align-items: center; gap: .6rem; padding: .65rem .9rem; background: #fff; border: 1px solid rgba(168, 155, 187, .4); border-radius: 8px; font-size: .95rem; cursor: pointer; }
+    .rsvp-chooser-opt:hover { border-color: #7b5ea7; }
+    .rsvp-actions { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: .5rem; }
+    .form-group label .opt { text-transform: none; letter-spacing: 0; color: #9a94a6; font-size: .95em; }
 
     /* ── Footer ───────────────────────────────────── */
     footer {
@@ -1821,7 +1836,7 @@
       <li><a href="#attire">Attire</a></li>
       <li><a href="#schedule">Schedule</a></li>
       <li><a href="#gallery">Gallery</a></li>
-      <li hidden><a href="#rsvp">RSVP</a></li>
+      <li><a href="#rsvp">RSVP</a></li>
     </ul>
   </nav>
 
@@ -1922,16 +1937,15 @@
         </div>
       </div>
     </div>
+      <!-- Photo Strip — torn-paper collage, part of How We Met -->
+      <div class="ps-band">
+        <div class="ps-torn reveal">
+          <div class="ps-slot"><img src="../images/compressed/DUY_7820_(2).jpg" alt="Shira and Leendon" loading="lazy" decoding="async" /></div>
+          <div class="ps-slot"><img src="../images/compressed/DUY_8034.jpg" alt="Shira and Leendon" loading="lazy" decoding="async" /></div>
+          <div class="ps-slot"><img src="../images/compressed/DUY_8252.jpg" alt="Shira and Leendon" loading="lazy" decoding="async" /></div>
+        </div>
+      </div>
   </section>
-
-  <!-- Photo Strip — torn-paper collage -->
-  <div class="ps-band">
-    <div class="ps-torn reveal">
-      <div class="ps-slot"><img src="../images/compressed/DUY_7820_(2).jpg" alt="Couple moment" loading="lazy" decoding="async" /></div>
-      <div class="ps-slot"><img src="../images/compressed/DUY_8034.jpg" alt="Couple moment" loading="lazy" decoding="async" /></div>
-      <div class="ps-slot"><img src="../images/compressed/DUY_8252.jpg" alt="Couple moment" loading="lazy" decoding="async" /></div>
-    </div>
-  </div>
 
   <!-- Entourage — pulled from Google Sheet via Apps Script -->
   <section class="entourage-section" id="entourage">
@@ -1998,7 +2012,7 @@
   <!-- Dress Code -->
   <section class="dresscode-section" id="attire">
     <div class="container">
-      <div class="sec-hero reveal">
+      <div class="sec-hero reveal align-right">
         <img class="sec-accent left" src="../images/pngtree-lavender-wildflower-botanical-watercolor-bouquet-png-image_19701816.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" />
         <img class="sec-accent right" src="../images/pngtree-lavender-wildflower-botanical-watercolor-bouquet-png-image_19701816.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" />
         <p class="sec-pre">Attire</p>
@@ -2075,7 +2089,7 @@
   <!-- Gallery -->
   <section class="gallery-section" id="gallery">
     <div class="container">
-      <div class="sec-hero reveal">
+      <div class="sec-hero reveal align-left">
         <img class="sec-accent left" src="../images/pngtree-lavender-wildflower-botanical-watercolor-bouquet-png-image_19701816.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" />
         <img class="sec-accent right" src="../images/pngtree-lavender-wildflower-botanical-watercolor-bouquet-png-image_19701816.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" />
         <p class="sec-pre">Memories</p>
@@ -2129,7 +2143,7 @@
   <!-- A gentle note on gifts -->
   <section class="gifts-section" id="gifts">
     <div class="container">
-      <div class="sec-hero reveal">
+      <div class="sec-hero reveal align-right">
         <img class="sec-accent left" src="../images/compressed/lilac-bouquet.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" />
         <img class="sec-accent right" src="../images/compressed/lilac-bouquet.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" />
         <p class="sec-pre">A Gentle Note</p>
@@ -2148,54 +2162,64 @@
   </section>
 
   <!-- RSVP -->
-  <section class="rsvp-section" id="rsvp" hidden>
+  <section class="rsvp-section" id="rsvp">
     <div class="container">
-      <div class="text-center reveal">
-        <p class="section-label">Respond</p>
-        <h2 class="serif" style="font-size:2.5rem; font-weight:300;">RSVP</h2>
-        <div class="divider"></div>
-        <p style="color:#888; font-size:.9rem; max-width:460px; margin:0 auto; line-height:1.7;">
-          Kindly respond by September 1, 2026. We can't wait to celebrate with you!
-        </p>
+      <div class="sec-hero reveal align-left">
+        <img class="sec-accent left" src="../images/compressed/lilac-bouquet.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+        <img class="sec-accent right" src="../images/compressed/lilac-bouquet.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+        <p class="sec-pre">Kindly Respond</p>
+        <h2 class="sec-heading">RSVP</h2>
       </div>
-      <form class="rsvp-form reveal" onsubmit="handleRsvp(event)">
-        <div class="form-group">
-          <label for="name">Full Name</label>
-          <input type="text" id="name" placeholder="Your full name" required />
+      <p class="rsvp-deadline reveal">
+        Kindly respond by <strong>October 1, 2026</strong>. We can't wait to celebrate with you!
+      </p>
+
+      <div class="sec-card rsvp-card reveal">
+        <!-- Step 1 — find your invitation -->
+        <div id="rsvp-step1" class="rsvp-form">
+          <div class="form-group">
+            <label for="rsvp-name">Find Your Invitation</label>
+            <input type="text" id="rsvp-name" placeholder="Enter your full name" autocomplete="name" />
+          </div>
+          <div class="text-center">
+            <button type="button" class="btn" id="rsvp-find">Find my invitation</button>
+          </div>
+          <div id="rsvp-chooser" class="rsvp-chooser" hidden></div>
         </div>
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" placeholder="your@email.com" required />
+
+        <!-- Step 2 — confirm -->
+        <div id="rsvp-step2" class="rsvp-form" hidden>
+          <p id="rsvp-welcome" class="rsvp-welcome"></p>
+          <p id="rsvp-update-note" class="rsvp-update-note" hidden>
+            You've already RSVP'd — you can update your response below.
+          </p>
+          <div class="form-group">
+            <label for="rsvp-attendance">Will You Attend?</label>
+            <select id="rsvp-attendance">
+              <option value="yes">Joyfully Accept</option>
+              <option value="no">Respectfully Decline</option>
+            </select>
+          </div>
+          <div class="form-group" id="rsvp-count-group">
+            <label for="rsvp-count">Number Attending</label>
+            <select id="rsvp-count"></select>
+          </div>
+          <div class="form-group">
+            <label for="rsvp-mobile">Mobile Number</label>
+            <input type="tel" id="rsvp-mobile" placeholder="09xx xxx xxxx" autocomplete="tel" inputmode="tel" />
+          </div>
+          <div class="form-group">
+            <label for="rsvp-message">Message to the Couple <span class="opt">(optional)</span></label>
+            <textarea id="rsvp-message" placeholder="Share your well wishes..."></textarea>
+          </div>
+          <div class="rsvp-actions">
+            <button type="button" class="btn-ghost" id="rsvp-back">&larr; Not you?</button>
+            <button type="button" class="btn" id="rsvp-submit">Send RSVP</button>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="guests">Number of Guests</label>
-          <select id="guests">
-            <option value="111">1</option>
-            <option value="2" selected>2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="attendance">Will You Attend?</label>
-          <select id="attendance">
-            <option value="yes">Joyfully Accept</option>
-            <option value="no">Respectfully Decline</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="dietary">Dietary Requirements</label>
-          <input type="text" id="dietary" placeholder="Any allergies or dietary needs" />
-        </div>
-        <div class="form-group">
-          <label for="message">Message to the Couple</label>
-          <textarea id="message" placeholder="Share your well wishes..."></textarea>
-        </div>
-        <div class="text-center">
-          <button type="submit" class="btn">Send RSVP</button>
-        </div>
+
         <div id="rsvp-status" class="rsvp-status" role="status" aria-live="polite"></div>
-      </form>
+      </div>
     </div>
   </section>
 
