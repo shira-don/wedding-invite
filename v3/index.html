@@ -771,7 +771,7 @@
     }
     .sponsor-couple .line {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 1rem;
+      font-size: .95rem;
       color: #3a3a3a;
       line-height: 1.5;
       letter-spacing: .3px;
@@ -827,12 +827,11 @@
       margin: 0;
     }
     .bridal-list li {
-      font-family: 'Montserrat', sans-serif;
-      font-size: .72rem;
-      letter-spacing: 2px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: .95rem;
+      letter-spacing: .3px;
       color: #3a3a3a;
       padding: .28rem 0;
-      text-transform: uppercase;
       display: flex;
       gap: .75rem;
       align-items: baseline;
@@ -893,11 +892,10 @@
       margin-bottom: .3rem;
     }
     .bearer-item .name {
-      font-family: 'Montserrat', sans-serif;
-      font-size: .72rem;
-      letter-spacing: 1.5px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: .95rem;
+      letter-spacing: .3px;
       color: #3a3a3a;
-      text-transform: uppercase;
       line-height: 1.5;
     }
     .entourage-outro {
@@ -919,7 +917,7 @@
       .entourage-leaf { width: 44px; }
       .entourage-heading { letter-spacing: 6px; }
       .bridal-col-head { letter-spacing: 4px; font-size: .9rem; }
-      .bridal-list li { font-size: .68rem; letter-spacing: 1.5px; gap: .5rem; }
+      .bridal-list li { gap: .5rem; }
       .bridal-party { gap: 0 .7rem; }
       .bearers-row { grid-template-columns: 1fr 1fr; }
       .bearers-two { gap: 0 .7rem; }
@@ -2635,10 +2633,7 @@
           byLast.get(key).push(p);
         });
         return [...byLast.entries()]
-          .sort(([ka, la], [kb, lb]) => {
-            if ((la.length === 1) !== (lb.length === 1)) return la.length === 1 ? 1 : -1;
-            return ka.localeCompare(kb);
-          })
+          .sort(([ka], [kb]) => ka.localeCompare(kb))
           .map(([, list]) => list);
       };
       try {
