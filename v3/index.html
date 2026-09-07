@@ -2665,7 +2665,6 @@
       </svg>`;
       const FLOWER_BASKET = `<svg class="bearer-ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="7.6" cy="7.4" r="1.9"/><circle cx="12" cy="5.7" r="2.2"/><circle cx="16.4" cy="7.4" r="1.9"/><path d="M4.4 11.3h15.2l-1.5 7.4a1.25 1.25 0 0 1-1.23 1H7.13a1.25 1.25 0 0 1-1.23-1L4.4 11.3z"/><path d="M6.8 11.3a5.2 5.2 0 0 1 10.4 0" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>`;
       const DRESS = `<svg class="bearer-ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 3c1.5 2 4.5 2 6 0l-1.2 6c3.7 3 4.7 7.5 4.2 12L6 21c-.5-4.5 .5-9 4.2-12Z"/></svg>`;
-      const RABBIT = `<svg class="bearer-ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><ellipse cx="8.7" cy="6.6" rx="1.7" ry="4.4" transform="rotate(-15 8.7 6.6)"/><ellipse cx="13.3" cy="6.6" rx="1.7" ry="4.4" transform="rotate(15 13.3 6.6)"/><circle cx="11" cy="15.6" r="5.7"/><circle cx="17.7" cy="18.2" r="1.7"/></svg>`;
       const roleIcon = role => {
         const r = String(role).toLowerCase();
         if (/flower ?girl/.test(r))            return FLOWER_BASKET;
@@ -2783,13 +2782,11 @@
           }
           if (g.style === 'bearers') {
             const isGirl = p => /flower ?girl|little bride|\bgirl\b/i.test(p.role);
-            // our pet rabbit joins as a flower girl (hardcoded)
-            const sunset = { name: 'Sunset', role: 'Flower Girl', _icon: RABBIT + FLOWER_BASKET };
-            const girls = [...g.people.filter(isGirl), sunset];
+            const girls = g.people.filter(isGirl);
             const boys  = g.people.filter(p => !isGirl(p));
             const bearerItem = p => `
               <div class="bearer-item">
-                <span class="accent">${p._icon || roleIcon(p.role)}</span>
+                <span class="accent">${roleIcon(p.role)}</span>
                 <span class="role">${esc(p.role)}</span>
                 <span class="name">${esc(p.name)}</span>
               </div>`;
@@ -2799,7 +2796,7 @@
                    <div class="bridal-divider"><div class="bridal-divider-mid">${LEAF_MID}</div></div>
                    <div><p class="bridal-col-head">Boys</p><div class="bearers-col">${boys.map(bearerItem).join('')}</div></div>
                  </div>`
-              : `<div class="bearers-row">${[...g.people, sunset].map(bearerItem).join('')}</div>`;
+              : `<div class="bearers-row">${g.people.map(bearerItem).join('')}</div>`;
             return `
               <div class="entourage-group card">
                 ${sectionTitle(g.title)}
