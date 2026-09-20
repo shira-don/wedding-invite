@@ -1421,6 +1421,27 @@
     .rsvp-chooser-opt { display: flex; align-items: center; gap: .6rem; padding: .65rem .9rem; background: #fff; border: 1px solid rgba(168, 155, 187, .4); border-radius: 8px; font-size: .95rem; cursor: pointer; }
     .rsvp-chooser-opt:hover { border-color: #7b5ea7; }
     .rsvp-actions { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: .5rem; }
+    /* per-member attendance toggles (scoped high to beat .form-group label) */
+    .rsvp-members { display: grid; gap: .5rem; }
+    .rsvp-members .rsvp-member {
+      display: flex; align-items: center; gap: .7rem;
+      padding: .6rem .8rem; margin: 0; background: #fff;
+      border: 1px solid rgba(168, 155, 187, .4); border-radius: 8px; cursor: pointer;
+      text-transform: none; letter-spacing: normal; font-size: 1rem;
+      transition: background .15s, border-color .15s;
+    }
+    .rsvp-members .rsvp-mem-check {
+      width: 1.15rem; height: 1.15rem; min-width: 0; padding: 0; margin: 0;
+      border: 0; border-radius: 0; accent-color: #7b5ea7; flex: 0 0 auto;
+    }
+    .rsvp-mem-name { flex: 1; font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 1.05rem; color: #3a3a3a; line-height: 1.25; text-transform: none; letter-spacing: .2px; }
+    .rsvp-mem-role { display: block; font-family: 'Montserrat', sans-serif; font-weight: 400; font-size: .6rem; letter-spacing: 1px; text-transform: uppercase; color: #7b5ea7; margin-top: .12rem; }
+    .rsvp-mem-state { font-family: 'Montserrat', sans-serif; font-size: .66rem; letter-spacing: .5px; text-transform: uppercase; color: #52734d; flex-shrink: 0; }
+    .rsvp-mem-state::after { content: 'Attending'; }
+    .rsvp-members .rsvp-member:has(.rsvp-mem-check:not(:checked)) { background: rgba(120, 110, 130, .06); border-color: rgba(120, 110, 130, .2); }
+    .rsvp-members .rsvp-member:has(.rsvp-mem-check:not(:checked)) .rsvp-mem-name { color: #9a94a6; }
+    .rsvp-members .rsvp-member:has(.rsvp-mem-check:not(:checked)) .rsvp-mem-state { color: #a89ba0; }
+    .rsvp-members .rsvp-member:has(.rsvp-mem-check:not(:checked)) .rsvp-mem-state::after { content: 'Not attending'; }
     .form-group label .opt { text-transform: none; letter-spacing: 0; color: #9a94a6; font-size: .95em; }
 
     /* ── Footer ───────────────────────────────────── */
@@ -2204,15 +2225,8 @@
             You've already RSVP'd — you can update your response below.
           </p>
           <div class="form-group">
-            <label for="rsvp-attendance">Will You Attend?</label>
-            <select id="rsvp-attendance">
-              <option value="yes">Joyfully Accept</option>
-              <option value="no">Respectfully Decline</option>
-            </select>
-          </div>
-          <div class="form-group" id="rsvp-count-group">
-            <label for="rsvp-count">Number Attending</label>
-            <select id="rsvp-count"></select>
+            <label>Who's Attending?</label>
+            <div id="rsvp-members" class="rsvp-members"></div>
           </div>
           <div class="form-group">
             <label for="rsvp-mobile">Mobile Number</label>
@@ -2635,7 +2649,7 @@
 
     // ── Entourage — fetched from Google Sheet via Apps Script ─
     (async () => {
-      const url = 'https://script.google.com/macros/s/AKfycbxBtBuAPNr2cDcS9VJwtHnczv9sTftT_hBHDjPOX1hsJ3GF3Kg3fetmplVGwT9cNrwo/exec?list=entourage';
+      const url = 'https://script.google.com/macros/s/AKfycbyQlKkVbL9LLWWtE4l1jPspYy4kftYR46H5QsnKaEpg3imBotvS-CNAAghHkEdUqnnL/exec?list=entourage';
       const body = document.getElementById('entourage-body');
       if (!body) return;
       const LEAF_BRANCH = `<svg class="entourage-leaf" viewBox="0 0 100 22" xmlns="http://www.w3.org/2000/svg" fill="#7c9a7c" aria-hidden="true">

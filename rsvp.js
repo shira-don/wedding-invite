@@ -1,11 +1,16 @@
 // ─────────────────────────────────────────────────────────────
-// RSVP → Google Sheets (guest-list matched, two-step)
+// RSVP → Google Sheets (guest-list matched, per-family)
 //
-// Paste the deployed **standalone** Apps Script Web App URL below.
-// See google-apps-script.js for setup instructions.
+// The guest list is one row per person; invitations are the blocks of
+// rows between blank rows. Searching any name pulls up the whole block,
+// and one person confirms who's attending. Writes yes/no to col G and
+// the mobile/message to the head row's Notes (col H).
+//
+// Paste the deployed standalone Apps Script Web App URL below.
 // ─────────────────────────────────────────────────────────────
 
-const RSVP_SCRIPT_URL = 'YOUR_RSVP_APPS_SCRIPT_WEB_APP_URL';
+// Same Web App as the entourage endpoint — the script now handles both.
+const RSVP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyQlKkVbL9LLWWtE4l1jPspYy4kftYR46H5QsnKaEpg3imBotvS-CNAAghHkEdUqnnL/exec';
 
 // Shown in the strict "we couldn't find your name" message.
 // TODO: replace with the real coordinator name / mobile number.
@@ -14,12 +19,11 @@ const COORDINATOR_CONTACT = 'our wedding coordinator';
 // PH mobile: 09xxxxxxxxx or +639xxxxxxxxx (spaces/dashes tolerated).
 const PH_MOBILE_RE = /^(09\d{9}|\+639\d{9})$/;
 
-let currentParty = null;   // { id, party, seats, responded, status, count, mobile, message }
+let currentGroup = null;   // { headId, members: [{ id, name, role, response }] }
 
 document.addEventListener('DOMContentLoaded', () => {
   const findBtn   = document.getElementById('rsvp-find');
   const nameInput = document.getElementById('rsvp-name');
-  const attendSel = document.getElementById('rsvp-attendance');
   const submitBtn = document.getElementById('rsvp-submit');
   const backBtn   = document.getElementById('rsvp-back');
   if (!findBtn) return;   // RSVP not on this page
@@ -28,7 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
   nameInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') { e.preventDefault(); lookupInvitation(); }
   });
-  attendSel.addEventListener('change', updateCountVisibility);
   submitBtn.addEventListener('click', submitRsvp);
   if (backBtn) backBtn.addEventListener('click', backToSearch);
 });
@@ -58,15 +61,15 @@ function lookupInvitation() {
   fetch(RSVP_SCRIPT_URL + '?rsvp=lookup&name=' + encodeURIComponent(name))
     .then((r) => r.json())
     .then((res) => {
-      const matches = (res && res.matches) || [];
-      if (matches.length === 0) {
+      const groups = (res && res.groups) || [];
+      if (groups.length === 0) {
         showStatus(statusEl,
           'We couldn’t find that name on our guest list. Please check the spelling, ' +
           'or reach out to ' + COORDINATOR_CONTACT + '.', 'error');
-      } else if (matches.length === 1) {
-        selectParty(matches[0]);
+      } else if (groups.length === 1) {
+        selectGroup(groups[0]);
       } else {
-        renderChooser(matches);
+        renderChooser(groups);
       }
     })
     .catch(() => showStatus(statusEl,
@@ -74,70 +77,63 @@ function lookupInvitation() {
     .finally(() => { findBtn.disabled = false; findBtn.textContent = original; });
 }
 
-function renderChooser(matches) {
+function renderChooser(groups) {
   const chooser = document.getElementById('rsvp-chooser');
+  const label = (g) => {
+    const first = g.members[0] ? g.members[0].name : 'Invitation';
+    const more = g.members.length - 1;
+    return more > 0 ? (first + ' + ' + more + ' more') : first;
+  };
   chooser.innerHTML =
-    '<p class="rsvp-chooser-label">We found a few matches — which one is you?</p>' +
-    matches.map((m, i) =>
-      '<label class="rsvp-chooser-opt"><input type="radio" name="rsvp-party" value="' + i + '"> ' +
-      escapeHtml(m.party) + '</label>').join('');
+    '<p class="rsvp-chooser-label">We found a few invitations — which one is yours?</p>' +
+    groups.map((g, i) =>
+      '<label class="rsvp-chooser-opt"><input type="radio" name="rsvp-group" value="' + i + '"> ' +
+      escapeHtml(label(g)) + '</label>').join('');
   chooser.hidden = false;
-  chooser.querySelectorAll('input[name="rsvp-party"]').forEach((el, i) => {
-    el.addEventListener('change', () => selectParty(matches[i]));
+  chooser.querySelectorAll('input[name="rsvp-group"]').forEach((el, i) => {
+    el.addEventListener('change', () => selectGroup(groups[i]));
   });
 }
 
-function selectParty(m) {
-  currentParty = m;
+function selectGroup(g) {
+  currentGroup = g;
 
   document.getElementById('rsvp-step1').hidden = true;
   document.getElementById('rsvp-step2').hidden = false;
   showStatus(document.getElementById('rsvp-status'), '', '');
 
+  const n = g.members.length;
   document.getElementById('rsvp-welcome').innerHTML =
-    'Welcome, <strong>' + escapeHtml(m.party) + '</strong>! ' +
-    'You have up to <strong>' + m.seats + '</strong> seat' + (m.seats > 1 ? 's' : '') + '.';
+    'Your invitation includes <strong>' + n + '</strong> guest' + (n > 1 ? 's' : '') +
+    '. Please tick who will be joining us.';
 
-  // Build the count options 1..seats
-  const countSel = document.getElementById('rsvp-count');
-  countSel.innerHTML = '';
-  for (let n = 1; n <= m.seats; n++) {
-    countSel.insertAdjacentHTML('beforeend', '<option value="' + n + '">' + n + '</option>');
-  }
+  const alreadyResponded = g.members.some((m) => m.response === 'yes' || m.response === 'no');
+  document.getElementById('rsvp-update-note').hidden = !alreadyResponded;
 
-  // Prefill if they already responded (updates are allowed)
-  const attendSel = document.getElementById('rsvp-attendance');
-  const noteEl = document.getElementById('rsvp-update-note');
-  if (m.responded) {
-    attendSel.value = m.status === 'Declined' ? 'no' : 'yes';
-    countSel.value = String(Math.min(m.count || 1, m.seats) || 1);
-    document.getElementById('rsvp-mobile').value = m.mobile || '';
-    document.getElementById('rsvp-message').value = m.message || '';
-    noteEl.hidden = false;
-  } else {
-    attendSel.value = 'yes';
-    countSel.value = String(m.seats);
-    document.getElementById('rsvp-mobile').value = '';
-    document.getElementById('rsvp-message').value = '';
-    noteEl.hidden = true;
-  }
-  updateCountVisibility();
-}
+  const list = document.getElementById('rsvp-members');
+  list.innerHTML = g.members.map((m) => {
+    const checked = m.response === 'no' ? '' : 'checked';   // default attending
+    const role = m.role ? '<span class="rsvp-mem-role">' + escapeHtml(m.role) + '</span>' : '';
+    return '<label class="rsvp-member">' +
+      '<input type="checkbox" class="rsvp-mem-check" data-id="' + m.id + '" ' + checked + '>' +
+      '<span class="rsvp-mem-name">' + escapeHtml(m.name) + role + '</span>' +
+      '<span class="rsvp-mem-state"></span>' +
+    '</label>';
+  }).join('');
 
-function updateCountVisibility() {
-  const attending = document.getElementById('rsvp-attendance').value !== 'no';
-  const seats = currentParty ? currentParty.seats : 1;
-  // Hide the count picker when declining, or when only a single seat is allotted.
-  document.getElementById('rsvp-count-group').hidden = !attending || seats <= 1;
+  document.getElementById('rsvp-mobile').value = '';
+  document.getElementById('rsvp-message').value = '';
 }
 
 function submitRsvp() {
   const statusEl = document.getElementById('rsvp-status');
   const submitBtn = document.getElementById('rsvp-submit');
-  if (!currentParty) { showStatus(statusEl, 'Please find your invitation first.', 'error'); return; }
+  if (!currentGroup) { showStatus(statusEl, 'Please find your invitation first.', 'error'); return; }
 
-  const attending = document.getElementById('rsvp-attendance').value;   // 'yes' | 'no'
-  const count = attending === 'no' ? 0 : Number(document.getElementById('rsvp-count').value || 1);
+  const checks = Array.from(document.querySelectorAll('.rsvp-mem-check'));
+  const m = checks.map((c) => c.dataset.id + ':' + (c.checked ? 'yes' : 'no')).join(';');
+  const attending = checks.filter((c) => c.checked).length;
+
   const mobileRaw = document.getElementById('rsvp-mobile').value.trim();
   const mobile = mobileRaw.replace(/[\s-]/g, '');
   const message = document.getElementById('rsvp-message').value.trim();
@@ -147,10 +143,6 @@ function submitRsvp() {
     document.getElementById('rsvp-mobile').focus();
     return;
   }
-  if (attending === 'yes' && count > currentParty.seats) {
-    showStatus(statusEl, 'That is more than your allotted seats (' + currentParty.seats + ').', 'error');
-    return;
-  }
 
   const original = submitBtn.textContent;
   submitBtn.disabled = true; submitBtn.textContent = 'Sending…';
@@ -158,10 +150,8 @@ function submitRsvp() {
 
   const params = new URLSearchParams({
     rsvp: 'submit',
-    id: currentParty.id,
-    party: currentParty.party,
-    attending: attending,
-    count: String(count),
+    head: currentGroup.headId,
+    m: m,
     mobile: mobile,
     message: message
   });
@@ -170,9 +160,9 @@ function submitRsvp() {
     .then((r) => r.json())
     .then((res) => {
       if (res && res.status === 'success') {
-        const msg = attending === 'no'
+        const msg = attending === 0
           ? 'Thank you for letting us know — you will be missed! 💜'
-          : 'Thank you! Your RSVP is confirmed for ' + count + ' — we can’t wait to celebrate with you! 💜';
+          : 'Thank you! We’ve got ' + attending + ' attending — we can’t wait to celebrate with you! 💜';
         showStatus(statusEl, msg, 'success');
         submitBtn.textContent = 'Sent!';
         submitBtn.style.background = '#7a9b78';
@@ -188,7 +178,7 @@ function submitRsvp() {
 }
 
 function backToSearch() {
-  currentParty = null;
+  currentGroup = null;
   document.getElementById('rsvp-step2').hidden = true;
   document.getElementById('rsvp-step1').hidden = false;
   const submitBtn = document.getElementById('rsvp-submit');
