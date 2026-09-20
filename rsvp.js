@@ -10,7 +10,7 @@
 // ─────────────────────────────────────────────────────────────
 
 // Same Web App as the entourage endpoint — the script now handles both.
-const RSVP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyQlKkVbL9LLWWtE4l1jPspYy4kftYR46H5QsnKaEpg3imBotvS-CNAAghHkEdUqnnL/exec';
+const RSVP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzFK9IKeYJe10jecpVcDHz3xEGoBRQmCfZYH4eARSVDY3hzFmMqamw9baRCU3JS1lpy/exec';
 
 // Shown in the strict "we couldn't find your name" message.
 // TODO: replace with the real coordinator name / mobile number.
