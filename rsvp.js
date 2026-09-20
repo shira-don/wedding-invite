@@ -103,23 +103,39 @@ function selectGroup(g) {
   showStatus(document.getElementById('rsvp-status'), '', '');
 
   const n = g.members.length;
-  document.getElementById('rsvp-welcome').innerHTML =
-    'Your invitation includes <strong>' + n + '</strong> guest' + (n > 1 ? 's' : '') +
-    '. Please tick who will be joining us.';
+  const single = n === 1;
+  const welcome = document.getElementById('rsvp-welcome');
+  const label = document.getElementById('rsvp-attend-label');
+  const list = document.getElementById('rsvp-members');
 
   const alreadyResponded = g.members.some((m) => m.response === 'yes' || m.response === 'no');
   document.getElementById('rsvp-update-note').hidden = !alreadyResponded;
 
-  const list = document.getElementById('rsvp-members');
-  list.innerHTML = g.members.map((m) => {
-    const checked = m.response === 'no' ? '' : 'checked';   // default attending
-    const role = m.role ? '<span class="rsvp-mem-role">' + escapeHtml(m.role) + '</span>' : '';
-    return '<label class="rsvp-member">' +
-      '<input type="checkbox" class="rsvp-mem-check" data-id="' + m.id + '" ' + checked + '>' +
-      '<span class="rsvp-mem-name">' + escapeHtml(m.name) + role + '</span>' +
-      '<span class="rsvp-mem-state"></span>' +
-    '</label>';
-  }).join('');
+  if (single) {
+    const m = g.members[0];
+    welcome.innerHTML = 'Welcome, <strong>' + escapeHtml(m.name) + '</strong>! ' +
+      'Please let us know if you can make it.';
+    label.textContent = 'Will You Attend?';
+    const declined = m.response === 'no';
+    list.innerHTML =
+      '<select class="rsvp-single-attend" data-id="' + m.id + '">' +
+        '<option value="yes"' + (declined ? '' : ' selected') + '>Joyfully Accept</option>' +
+        '<option value="no"' + (declined ? ' selected' : '') + '>Respectfully Decline</option>' +
+      '</select>';
+  } else {
+    welcome.innerHTML = 'Your invitation includes <strong>' + n + '</strong> guests. ' +
+      'Please tick who will be joining us.';
+    label.textContent = "Who's Attending?";
+    list.innerHTML = g.members.map((m) => {
+      const checked = m.response === 'no' ? '' : 'checked';   // default attending
+      const role = m.role ? '<span class="rsvp-mem-role">' + escapeHtml(m.role) + '</span>' : '';
+      return '<label class="rsvp-member">' +
+        '<input type="checkbox" class="rsvp-mem-check" data-id="' + m.id + '" ' + checked + '>' +
+        '<span class="rsvp-mem-name">' + escapeHtml(m.name) + role + '</span>' +
+        '<span class="rsvp-mem-state"></span>' +
+      '</label>';
+    }).join('');
+  }
 
   document.getElementById('rsvp-mobile').value = '';
   document.getElementById('rsvp-message').value = '';
@@ -131,8 +147,16 @@ function submitRsvp() {
   if (!currentGroup) { showStatus(statusEl, 'Please find your invitation first.', 'error'); return; }
 
   const checks = Array.from(document.querySelectorAll('.rsvp-mem-check'));
-  const m = checks.map((c) => c.dataset.id + ':' + (c.checked ? 'yes' : 'no')).join(';');
-  const attending = checks.filter((c) => c.checked).length;
+  let m, attending;
+  if (checks.length) {                       // multi-person: per-member checkboxes
+    m = checks.map((c) => c.dataset.id + ':' + (c.checked ? 'yes' : 'no')).join(';');
+    attending = checks.filter((c) => c.checked).length;
+  } else {                                    // single-person: accept/decline select
+    const sel = document.querySelector('.rsvp-single-attend');
+    if (!sel) { showStatus(statusEl, 'Please find your invitation first.', 'error'); return; }
+    m = sel.dataset.id + ':' + sel.value;
+    attending = sel.value === 'yes' ? 1 : 0;
+  }
 
   const mobileRaw = document.getElementById('rsvp-mobile').value.trim();
   const mobile = mobileRaw.replace(/[\s-]/g, '');
