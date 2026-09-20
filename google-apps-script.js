@@ -121,13 +121,17 @@ function submit_(p) {
   return { status: 'success', attending: yes, declined: no };
 }
 
-// ── Group the sheet into invitation blocks separated by blank NAME rows ──
+// ── Group the sheet into invitations ──
+// Family (Groom/Bride side) invitations are the blocks of consecutive rows
+// between blank rows. "Mutual" guests (relationship not Groom/Bride, e.g. the
+// couple's shared friends) are NOT grouped — each is its own single invitation.
 function buildGroups_(rows) {
   const groups = [];
-  let cur = null;
+  let fam = null;
+  const closeFam = () => { if (fam) { groups.push(fam); fam = null; } };
   for (let i = DATA_START - 1; i < rows.length; i++) {   // 0-based; DATA_START-1 = first data row
     const raw = String(rows[i][COL.NAME - 1] || '').trim();
-    if (!raw) { if (cur) { groups.push(cur); cur = null; } continue; }
+    if (!raw) { closeFam(); continue; }                 // blank row ends a family block
     const m = {
       id: i + 1,                                         // 1-based sheet row
       name: cleanName_(raw),
@@ -135,11 +139,22 @@ function buildGroups_(rows) {
       role: String(rows[i][COL.ROLE - 1] || '').trim(),
       response: String(rows[i][COL.RESPONSE - 1] || '').trim(),
     };
-    if (!cur) cur = [];
-    cur.push(m);
+    if (sideOf_(rows[i][COL.RELATIONSHIP - 1]) === 'mutual') {
+      closeFam();                                        // mutual guest = individual invitation
+      groups.push([m]);
+    } else {
+      if (!fam) fam = [];
+      fam.push(m);
+    }
   }
-  if (cur) groups.push(cur);
+  closeFam();
   return groups;
+}
+
+// Which side a relationship belongs to (matches the entourage logic).
+function sideOf_(relationship) {
+  const r = String(relationship || '');
+  return /groom/i.test(r) ? 'groom' : /bride/i.test(r) ? 'bride' : 'mutual';
 }
 
 // ── Helpers ──
