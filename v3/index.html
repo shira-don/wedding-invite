@@ -1413,6 +1413,12 @@
     .rsvp-deadline { text-align: center; max-width: 460px; margin: 0 auto 2rem; color: #6f6880; font-size: .9rem; line-height: 1.7; }
     .rsvp-card { max-width: 520px; margin: 0 auto; }
     .rsvp-card .rsvp-form { max-width: none; margin: 0; }
+    .rsvp-closed { text-align: center; padding: 1rem .5rem; }
+    .rsvp-closed-head {
+      font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 1.6rem;
+      color: #7b5ea7; margin-bottom: .6rem; letter-spacing: 1px;
+    }
+    .rsvp-closed-body { font-size: .92rem; line-height: 1.75; color: #4a4652; max-width: 400px; margin: 0 auto; }
     .rsvp-welcome { text-align: center; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: #4a4652; margin-bottom: 1.25rem; line-height: 1.5; }
     .rsvp-welcome strong { color: #7b5ea7; }
     .rsvp-update-note { text-align: center; font-size: .8rem; color: #7b5ea7; margin: -.5rem 0 1.25rem; }
@@ -2201,11 +2207,18 @@
         <p class="sec-pre">Kindly Respond</p>
         <h2 class="sec-heading">RSVP</h2>
       </div>
-      <p class="rsvp-deadline reveal">
-        Kindly respond by <strong>October 1, 2026</strong>. We can't wait to celebrate with you!
+      <p class="rsvp-deadline reveal" id="rsvp-deadline">
+        Kindly respond by <strong>November 8, 2026</strong>. We can't wait to celebrate with you!
       </p>
 
       <div class="sec-card rsvp-card reveal">
+        <!-- Shown instead of the form once the deadline has passed -->
+        <div id="rsvp-closed" class="rsvp-closed" hidden>
+          <p class="rsvp-closed-head">RSVP is now closed</p>
+          <p class="rsvp-closed-body">The deadline to respond has passed. If you still need to
+            reach us about your attendance, please contact our wedding coordinator.</p>
+        </div>
+
         <!-- Step 1 — find your invitation -->
         <div id="rsvp-step1" class="rsvp-form">
           <div class="form-group">
@@ -2896,7 +2909,7 @@
     })();
 
   </script>
-  <script src="../rsvp.js?v=20260920b"></script>
+  <script src="../rsvp.js?v=20260920c"></script>
 
 </body>
 </html>

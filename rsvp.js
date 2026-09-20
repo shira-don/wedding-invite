@@ -19,6 +19,10 @@ const COORDINATOR_CONTACT = 'our wedding coordinator';
 // PH mobile: 09xxxxxxxxx or +639xxxxxxxxx (spaces/dashes tolerated).
 const PH_MOBILE_RE = /^(09\d{9}|\+639\d{9})$/;
 
+// RSVP closes end of this day (PH time). Past it, the form is replaced with a notice.
+const RSVP_DEADLINE = new Date('2026-11-08T23:59:59+08:00');
+const RSVP_DEADLINE_LABEL = 'November 8, 2026';
+
 let currentGroup = null;   // { headId, members: [{ id, name, role, response }] }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -27,6 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const submitBtn = document.getElementById('rsvp-submit');
   const backBtn   = document.getElementById('rsvp-back');
   if (!findBtn) return;   // RSVP not on this page
+
+  if (Date.now() > RSVP_DEADLINE.getTime()) { showClosed(); return; }   // deadline passed
 
   findBtn.addEventListener('click', lookupInvitation);
   nameInput.addEventListener('keydown', (e) => {
@@ -38,6 +44,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function configured() {
   return RSVP_SCRIPT_URL && RSVP_SCRIPT_URL !== 'YOUR_RSVP_APPS_SCRIPT_WEB_APP_URL';
+}
+
+// Replace the form with a "closed" notice once the deadline has passed.
+function showClosed() {
+  const closed = document.getElementById('rsvp-closed');
+  const step1 = document.getElementById('rsvp-step1');
+  const step2 = document.getElementById('rsvp-step2');
+  const note = document.getElementById('rsvp-deadline');
+  if (step1) step1.hidden = true;
+  if (step2) step2.hidden = true;
+  if (note) note.textContent = 'RSVPs closed on ' + RSVP_DEADLINE_LABEL + '.';
+  if (closed) {
+    const body = closed.querySelector('.rsvp-closed-body');
+    if (body) {
+      body.textContent = 'The deadline to respond has passed. If you still need to reach us ' +
+        'about your attendance, please contact ' + COORDINATOR_CONTACT + '.';
+    }
+    closed.hidden = false;
+  }
 }
 
 function lookupInvitation() {
