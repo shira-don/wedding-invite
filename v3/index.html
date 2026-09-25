@@ -809,11 +809,6 @@
       letter-spacing: 1.5px;
     }
     .bridal-honor .honor-spacer { width: 1px; }
-    /* little bride & groom featured above the bearers columns */
-    .bearers-honor .accent {
-      display: block; font-size: 1.5rem; color: #b7a5cd;
-      margin-bottom: .45rem; line-height: 1;
-    }
     .bridal-party {
       display: grid;
       grid-template-columns: 1fr auto 1fr;
@@ -2814,42 +2809,28 @@
           }
           if (g.style === 'bearers') {
             const isGirl = p => /flower ?girl|little bride|\bgirl\b/i.test(p.role);
-            // the little bride & groom are featured on top, above the two columns
-            const littleBride = g.people.find(p => /little bride/i.test(p.role));
-            const littleGroom = g.people.find(p => /little groom/i.test(p.role));
-            const isLittle = p => p === littleBride || p === littleGroom;
-            const rest  = g.people.filter(p => !isLittle(p));
-            const girls = rest.filter(isGirl);
-            const boys  = rest.filter(p => !isGirl(p));
+            // the little bride / groom lead their column
+            const leadFirst = re => (a, b) => (re.test(b.role) ? 1 : 0) - (re.test(a.role) ? 1 : 0);
+            const girls = g.people.filter(isGirl).sort(leadFirst(/little bride/i));
+            const boys  = g.people.filter(p => !isGirl(p)).sort(leadFirst(/little groom/i));
             const bearerItem = p => `
               <div class="bearer-item">
                 <span class="accent">${roleIcon(p.role)}</span>
                 <span class="role">${esc(p.role)}</span>
                 <span class="name">${esc(p.name)}</span>
               </div>`;
-            const littleOne = p => `
-                  <span class="accent">${roleIcon(p.role)}</span>
-                  <p class="honor-head">${esc(p.role)}</p>
-                  <p class="honor-name">${esc(p.name)}</p>`;
-            const littleBlock = (littleBride || littleGroom) ? `
-              <div class="bridal-honor bearers-honor">
-                <div>${littleBride ? littleOne(littleBride) : ''}</div>
-                <div class="honor-spacer"></div>
-                <div>${littleGroom ? littleOne(littleGroom) : ''}</div>
-              </div>` : '';
-            const columns = (girls.length && boys.length)
+            const inner = (girls.length && boys.length)
               ? `<div class="bearers-two">
                    <div><p class="bridal-col-head">Girls</p><div class="bearers-col">${girls.map(bearerItem).join('')}</div></div>
                    <div class="bridal-divider"><div class="bridal-divider-mid">${LEAF_MID}</div></div>
                    <div><p class="bridal-col-head">Boys</p><div class="bearers-col">${boys.map(bearerItem).join('')}</div></div>
                  </div>`
-              : (rest.length ? `<div class="bearers-row">${rest.map(bearerItem).join('')}</div>` : '');
+              : `<div class="bearers-row">${g.people.slice().sort(leadFirst(/little (bride|groom)/i)).map(bearerItem).join('')}</div>`;
             return `
               <div class="entourage-group card">
                 ${sectionTitle(g.title)}
                 ${scriptTagline(g.tagline)}
-                ${littleBlock}
-                ${columns}
+                ${inner}
               </div>
             `;
           }
