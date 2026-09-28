@@ -813,10 +813,14 @@
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       gap: 0 1.25rem;
-      align-items: stretch;
+      align-items: start;
       max-width: 560px;
       margin: 0 auto;
     }
+    /* each bridesmaid/groomsman pair shares one grid row, so they stay aligned */
+    .bridal-party > .bm { grid-column: 1; }
+    .bridal-party > .gm { grid-column: 3; }
+    .bridal-party > .bridal-divider { grid-column: 2; align-self: stretch; }
     .bridal-col-head {
       font-family: 'Cormorant Garamond', serif;
       font-weight: 400;
@@ -832,7 +836,8 @@
       padding: 0;
       margin: 0;
     }
-    .bridal-list li {
+    .bridal-list li,
+    .bridal-entry {
       font-family: 'Cormorant Garamond', serif;
       font-weight: 400;
       -webkit-text-stroke: .35px currentColor;
@@ -844,7 +849,8 @@
       gap: .75rem;
       align-items: baseline;
     }
-    .bridal-list .num {
+    .bridal-list .num,
+    .bridal-entry .num {
       color: #a89bbb;
       font-weight: 500;
       min-width: 1.5em;
@@ -2772,9 +2778,13 @@
               .sort(byLastName);
             const bridesmaids = g.people.filter(p => /bridesmaid/i.test(p.role) && !/maid of honor/i.test(p.role))
               .sort(byLastName);
-            const numList = list => `<ol class="bridal-list">${list.map((p, i) =>
-              `<li><span class="num">${String(i + 1).padStart(2, '0')}</span><span>${esc(p.name)}</span></li>`
-            ).join('')}</ol>`;
+            const entry = (p, i, side) => p ? `
+              <div class="bridal-entry ${side}" style="grid-row:${i + 2}">
+                <span class="num">${String(i + 1).padStart(2, '0')}</span><span>${esc(p.name)}</span>
+              </div>` : '';
+            const pairCount = Math.max(bridesmaids.length, groomsmen.length);
+            const pairRows = Array.from({ length: pairCount }, (_, i) =>
+              entry(bridesmaids[i], i, 'bm') + entry(groomsmen[i], i, 'gm')).join('');
             const honorBlock = (maidOfHonor || bestMan) ? `
               <div class="bridal-honor">
                 <div>
@@ -2792,17 +2802,12 @@
                 ${scriptTagline(g.tagline)}
                 ${honorBlock}
                 <div class="bridal-party">
-                  <div>
-                    <p class="bridal-col-head">Bridesmaids</p>
-                    ${numList(bridesmaids)}
-                  </div>
-                  <div class="bridal-divider">
+                  <p class="bridal-col-head bm" style="grid-row:1">Bridesmaids</p>
+                  <p class="bridal-col-head gm" style="grid-row:1">Groomsmen</p>
+                  <div class="bridal-divider" style="grid-row:1/${pairCount + 2}">
                     <div class="bridal-divider-mid">${LEAF_MID}</div>
                   </div>
-                  <div>
-                    <p class="bridal-col-head">Groomsmen</p>
-                    ${numList(groomsmen)}
-                  </div>
+                  ${pairRows}
                 </div>
               </div>
             `;
