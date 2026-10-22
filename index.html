@@ -948,7 +948,7 @@
     /* ── Shared entourage-style design system (applied to every content section) ── */
     .countdown-section, .couple-section, .details-section,
     .dresscode-section, .timeline-section, .gallery-section, .gifts-section,
-    .rsvp-section {
+    .rsvp-section, .seats-section {
       background:
         radial-gradient(120% 55% at 50% 0%, rgba(255,255,255,.55), rgba(255,255,255,0) 60%),
         linear-gradient(180deg, rgba(250,247,255,.94), rgba(238,231,246,.88)) !important;
@@ -1077,6 +1077,10 @@
     .gallery-section   { border-top: 1.75rem solid transparent; }
     .gifts-section     { border-top: 1.75rem solid transparent; padding: 5rem 0; }
     .rsvp-section      { border-top: 1.75rem solid transparent; }
+    .seats-section     { border-top: 1.75rem solid transparent; padding: 5rem 0; }
+    .seats-lead { text-align: center; max-width: 460px; margin: 0 auto 1.75rem; color: #6f6880; font-size: .9rem; line-height: 1.7; }
+    .seats-actions { text-align: center; }
+    .seats-actions .btn { text-decoration: none; display: inline-block; }
     .gift-note {
       max-width: 540px; margin: 0 auto; text-align: center;
       font-family: 'Cormorant Garamond', serif; font-size: 1.18rem;
@@ -1889,6 +1893,7 @@
       <li><a href="#schedule">Schedule</a></li>
       <li><a href="#gallery">Gallery</a></li>
       <li><a href="#rsvp">RSVP</a></li>
+      <li><a href="#seats">Seats</a></li>
     </ul>
   </nav>
 
@@ -2276,6 +2281,25 @@
           Need to change your response? Call our coordinator at
           <a href="tel:+639652076143">0965&nbsp;207&nbsp;6143</a>.
         </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Find your seat -->
+  <section class="seats-section" id="seats">
+    <div class="container">
+      <div class="sec-hero reveal align-right">
+        <img class="sec-accent left" src="images/compressed/lilac-bouquet.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+        <img class="sec-accent right" src="images/compressed/lilac-bouquet.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+        <p class="sec-pre">Reception</p>
+        <h2 class="sec-heading">Find Your Seat</h2>
+      </div>
+      <p class="seats-lead">
+        We&rsquo;ve saved a place for you. Look up your name to see your table
+        &mdash; and who you&rsquo;ll be sitting with.
+      </p>
+      <div class="seats-actions reveal">
+        <a class="btn" href="seat-plan.html">&#128205;&nbsp; Find my table</a>
       </div>
     </div>
   </section>
