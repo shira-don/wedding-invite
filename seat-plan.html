@@ -101,6 +101,16 @@
     .t-id { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 1.2rem; color: #7b5ea7; letter-spacing: 1px; }
     .t-note { font-size: .62rem; letter-spacing: 1.5px; text-transform: uppercase; color: #52734d; }
     .t-guests { font-family: 'Cormorant Garamond', serif; font-size: 1rem; color: #3a3a3a; line-height: 1.9; }
+    .g-list {
+      list-style: none; padding: 0; margin: .4rem 0 0; text-align: left;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap: .2rem .9rem;
+    }
+    .g-list li {
+      position: relative; padding-left: .95rem;
+      font-family: 'Cormorant Garamond', serif; font-size: 1rem; line-height: 1.75; color: #3a3a3a;
+    }
+    .g-list li::before { content: '\2022'; position: absolute; left: 0; color: #b7a5cd; }
+    .g-list li strong { color: #7b5ea7; }
 
     .back { display: inline-block; margin-top: 3rem; padding: .85rem 2.4rem; border: 1px solid #7b5ea7; border-radius: 3px;
       color: #7b5ea7; text-decoration: none; font-size: .72rem; letter-spacing: 3px; text-transform: uppercase; transition: background .3s, color .3s; }
@@ -450,7 +460,7 @@ function search() {
       '<div class="r-name">' + esc(h.guest) + '</div>' +
       '<div class="r-table">' + esc(h.table.id) + '</div>' +
       '<div class="r-note">' + esc(h.table.note) + '</div>' +
-      (others.length ? '<div class="r-with"><span>Seated with</span>' + others.map(esc).join(' &middot; ') + '</div>' : '') +
+      (others.length ? '<div class="r-with"><span>Seated with</span>' + '<ul class="g-list">' + others.map(esc).map(x => '<li>' + x + '</li>').join('') + '</ul>' + '</div>' : '') +
     '</div>';
   }).join('');
 }
@@ -472,7 +482,7 @@ function showTable(id, who){
   d.innerHTML = '<div class="result-card">' +
     '<div class="r-table">' + esc(t.id) + '</div>' +
     '<div class="r-note">' + esc(t.note) + ' &middot; ' + t.guests.length + ' seated</div>' +
-    '<div class="r-with"><span>At this table</span>' + list.join(' &middot; ') + '</div></div>';
+    '<div class="r-with"><span>At this table</span>' + '<ul class="g-list">' + list.map(x => '<li>' + x + '</li>').join('') + '</ul>' + '</div></div>';
   d.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
@@ -487,7 +497,7 @@ const chart = document.getElementById('chart');
 chart.innerHTML = TABLES.map(t =>
   '<div class="t-card"><div class="t-head"><span class="t-id">' + esc(t.id) + '</span>' +
   '<span class="t-note">' + esc(t.note) + '</span></div>' +
-  '<div class="t-guests">' + t.guests.map(esc).join(' &middot; ') + '</div></div>').join('');
+  '<ul class="g-list">' + t.guests.map(esc).map(x => '<li>' + x + '</li>').join('') + '</ul>' + '</div>').join('');
 
 document.getElementById('toggle').addEventListener('click', () => {
   chart.hidden = !chart.hidden;
