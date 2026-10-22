@@ -172,7 +172,7 @@
 <script>
 // home.exe's Apps Script deployment — the project that owns the sheet.
 // Paste that project's /exec URL here (no query string).
-const SEATS_URL = 'HOME_EXE_EXEC_URL';
+const SEATS_URL = 'https://script.google.com/macros/s/AKfycbw6GYm5tCHnaHgVBDPLB74okn0CmsQiG5uSzuRdKvXSnssh-mkVWVaDVq0zha9XZDQ1IQ/exec';
 const CAP = { 'VIP 1': 16, 'VIP 2': 16 };   // round tables default to 10
 const NOTE = { 'VIP 1': "Groom's Family", 'VIP 2': "Bride's Family & Principal Sponsors" };
 
@@ -314,7 +314,7 @@ function failed(msg) {
     'We could not load the seating chart just now. Please refresh, or ask our coordinator at 0965 207 6143.';
 }
 
-if (SEATS_URL === 'HOME_EXE_EXEC_URL') {
+if (!SEATS_URL) {
   failed('The seating chart is not connected yet.');
 } else {
   fetch(SEATS_URL + '?view=seats')
