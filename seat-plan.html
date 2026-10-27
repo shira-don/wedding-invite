@@ -222,6 +222,8 @@
 // Paste that project's /exec URL here (no query string).
 const SEATS_URL = 'https://script.google.com/macros/s/AKfycbw6GYm5tCHnaHgVBDPLB74okn0CmsQiG5uSzuRdKvXSnssh-mkVWVaDVq0zha9XZDQ1IQ/exec';
 const CAP = { 'VIP 1': 17, 'VIP 2': 16, 'VIP 3': 10 };   // round tables default to 10
+// Column D's dropdown has no "VIP 3" yet, so the sheet stores it as TABLE 28.
+const ALIAS = { 'Table 28': 'VIP 3' };
 const NOTE = { 'VIP 1': "Groom's Family", 'VIP 2': "Bride's Family & Principal Sponsors", 'VIP 3': "Groom's Relatives" };
 
 let TABLES = [];
@@ -232,7 +234,8 @@ function tableLabel(raw) {
   const v = String(raw || '').trim();
   if (!v) return '';
   let m = v.match(/^vip\s*(\d+)$/i);     if (m) return 'VIP ' + m[1];
-  m = v.match(/^(?:table\s*)?(\d+)$/i);   if (m) return 'Table ' + Number(m[1]);
+  m = v.match(/^(?:table\s*)?(\d+)$/i);
+  if (m) { const id = 'Table ' + Number(m[1]); return ALIAS[id] || id; }
   return v;
 }
 const capOf = id => CAP[id] || 10;
