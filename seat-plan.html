@@ -166,6 +166,15 @@
     @media (min-width: 601px) {
       .plan-scroll { width: fit-content; max-width: 100%; margin: 0 auto; }
       #map { min-width: 0; width: min(914px, calc(100vw - 90px), calc((100vh - 325px) * 1.5625)); }
+      .modal-card { max-width: 640px; max-height: 85vh; padding: 1.5rem 2rem 1.7rem; border-radius: 18px; }
+      .m-close { top: .7rem; right: .8rem; width: 2.6rem; height: 2.6rem; font-size: 2rem; }
+      .m-head, .m-match { padding-right: 2.8rem; padding-bottom: .7rem; margin-bottom: .8rem; }
+      .m-title, .m-tbl { font-size: 2.1rem; }
+      .m-name { font-size: 1.8rem; }
+      .m-note, .m-label { font-size: .72rem; }
+      .m-warn { font-size: .85rem; }
+      .modal-card .m-list { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: .1rem 1.6rem; }
+      .modal-card .m-list li { font-size: 1.15rem; line-height: 1.75; }
     }
   </style>
 </head>
