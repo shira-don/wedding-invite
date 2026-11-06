@@ -144,6 +144,12 @@
     }
     .g-list li::before { content: '\2022'; position: absolute; left: 0; color: #b7a5cd; }
     .g-list li strong { color: #7b5ea7; }
+    @font-face { font-family: 'FA Solid'; font-weight: 900; font-display: block; src: url(fonts/fa/fa-solid-900.woff2) format('woff2'); }
+    .g-list li.baby::before, .m-name.baby::before { content: '\f77c'; font-family: 'FA Solid'; font-weight: 900; color: #7b5ea7; }
+    .g-list li.baby::before { font-size: .72em; line-height: 2.43; }
+    .m-name.baby::before { font-size: .7em; margin-right: .45rem; vertical-align: .08em; }
+    .chair { margin-left: .45rem; font-family: 'Montserrat', sans-serif; font-size: .56rem; letter-spacing: 1.2px;
+      text-transform: uppercase; color: #52734d; white-space: nowrap; vertical-align: middle; }
 
     .topbar { padding-top: .7rem; }
     .topbar a { font-size: .66rem; letter-spacing: 2px; text-transform: uppercase; color: #7b5ea7; text-decoration: none; }
@@ -237,6 +243,7 @@ const NOTE = { 'VIP 1': "Groom's Family", 'VIP 2': "Bride's Family & Principal S
 
 let TABLES = [];
 let UNASSIGNED = [];
+let HIGH_CHAIRS = new Set();   // babies on a high chair don't take one of the table's seats
 
 // The sheet's TABLE NO. is free text — accept "3", "Table 3", "VIP 1", "vip2".
 function tableLabel(raw) {
@@ -248,10 +255,12 @@ function tableLabel(raw) {
   return v;
 }
 const capOf = id => CAP[id] || 10;
+const seated = t => t.guests.filter(n => !HIGH_CHAIRS.has(n)).length;
 
 function buildTables(guests) {
   const by = new Map();
   UNASSIGNED = [];
+  HIGH_CHAIRS = new Set(guests.filter(g => g.highChair).map(g => g.name));
   guests.forEach(g => {
     const id = tableLabel(g.table);
     if (!id) { UNASSIGNED.push(g.name); return; }
@@ -319,8 +328,11 @@ function highlight(id) {
   if (hit) centerOn(hit);
 }
 
+const chairTag = n => HIGH_CHAIRS.has(n) ? '<span class="chair">High chair</span>' : '';
+const nameItem = n => '<li' + (HIGH_CHAIRS.has(n) ? ' class="baby"' : '') + '>' + esc(n) + chairTag(n) + '</li>';
+
 function guestList(names) {
-  return '<ul class="g-list m-list">' + names.map(n => '<li>' + esc(n) + '</li>').join('') + '</ul>';
+  return '<ul class="g-list m-list">' + names.map(nameItem).join('') + '</ul>';
 }
 
 function showTable(id) {
@@ -328,10 +340,12 @@ function showTable(id) {
   if (!t) return;
   highlight(id);
   const cap = capOf(t.id);
-  const over = t.guests.length - cap;
+  const n = seated(t), chairs = t.guests.length - n;
+  const over = n - cap;
   openModal(
     '<div class="m-head"><span class="m-title" id="m-title">' + esc(t.id) + '</span>' +
-    '<span class="m-note">' + (t.note ? esc(t.note) + ' \u00b7 ' : '') + t.guests.length + ' seated</span></div>' +
+    '<span class="m-note">' + (t.note ? esc(t.note) + ' \u00b7 ' : '') + n + ' seated' +
+    (chairs ? ' + ' + chairs + ' high chair' + (chairs > 1 ? 's' : '') : '') + '</span></div>' +
     (over > 0 ? '<p class="m-warn">' + over + ' over the ' + cap + ' seats at this table</p>' : '') +
     guestList(t.guests));
 }
@@ -341,7 +355,8 @@ function openMatch(h) {
   highlight(h.table.id);
   const others = h.table.guests.filter(g => g !== h.guest);
   openModal(
-    '<div class="m-match"><div class="m-name" id="m-title">' + esc(h.guest) + '</div>' +
+    '<div class="m-match"><div class="m-name' + (HIGH_CHAIRS.has(h.guest) ? ' baby' : '') + '" id="m-title">' +
+    esc(h.guest) + chairTag(h.guest) + '</div>' +
     '<div class="m-where"><span class="m-tbl">' + esc(h.table.id) + '</span>' +
     (h.table.note ? '<span class="m-note">' + esc(h.table.note) + '</span>' : '') + '</div></div>' +
     (others.length ? '<p class="m-label">Seated with</p>' + guestList(others)
@@ -392,9 +407,8 @@ const chart = document.getElementById('chart');
 function paintMap() {
   document.querySelectorAll('#map .tbl').forEach(el => {
     const t = tableById(el.dataset.table);
-    const n = t ? t.guests.length : 0;
-    el.classList.toggle('empty', n === 0);
-    el.classList.toggle('over', n > capOf(el.dataset.table));
+    el.classList.toggle('empty', !t || !t.guests.length);
+    el.classList.toggle('over', !!t && seated(t) > capOf(el.dataset.table));
   });
 }
 
@@ -402,9 +416,9 @@ function renderNotices() {
   const box = document.getElementById('notices');
   const msgs = [];
   TABLES.forEach(t => {
-    const c = capOf(t.id);
-    if (t.guests.length > c) msgs.push('<strong>' + esc(t.id) + '</strong> has ' + t.guests.length +
-      ' seated but only ' + c + ' seats — ' + (t.guests.length - c) + ' over.');
+    const c = capOf(t.id), n = seated(t);
+    if (n > c) msgs.push('<strong>' + esc(t.id) + '</strong> has ' + n +
+      ' seated but only ' + c + ' seats — ' + (n - c) + ' over.');
   });
   if (UNASSIGNED.length) msgs.push('<strong>' + UNASSIGNED.length + '</strong> guest' +
     (UNASSIGNED.length > 1 ? 's have' : ' has') + ' no table yet: ' + UNASSIGNED.map(esc).join(', ') + '.');
@@ -415,8 +429,8 @@ function boot(guests) {
   TABLES = buildTables(guests);
   chart.innerHTML = TABLES.map(t =>
     '<div class="t-card"><div class="t-head"><span class="t-id">' + esc(t.id) + '</span>' +
-    '<span class="t-note">' + esc(t.note || (t.guests.length + ' seated')) + '</span></div>' +
-    '<ul class="g-list">' + t.guests.map(g => '<li>' + esc(g) + '</li>').join('') + '</ul></div>').join('');
+    '<span class="t-note">' + esc(t.note || (seated(t) + ' seated')) + '</span></div>' +
+    '<ul class="g-list">' + t.guests.map(nameItem).join('') + '</ul></div>').join('');
   paintMap();
   renderNotices();
   document.getElementById('loading').hidden = true;
