@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Raffle Draw</title>
+<link rel="stylesheet" href="fonts/google-fonts.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Allura&display=swap">
+<style>
+  :root { --D: min(86vh, 54vw); --ink: #3d3349; --plum: #5e4590; --lilac: #b7a5cd; --purple: #7b5ea7; --sage: #52734d; --muted: #6f6880; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  html, body { height: 100%; }
+  body { background: radial-gradient(ellipse at 40% 50%, #f3eef9, #ddd3eb 78%); color: var(--ink);
+    font-family: 'Montserrat', sans-serif; overflow: hidden; user-select: none; -webkit-user-select: none; }
+  body.idle { cursor: none; }
+
+  .stage { height: 100vh; display: grid; grid-template-columns: 1.15fr 1fr; align-items: center; gap: 2vw; padding: 0 4vw 4vh; }
+  .wheel-wrap { position: relative; justify-self: center; width: var(--D); height: var(--D); }
+  #wheel { display: block; width: 100%; height: 100%; border-radius: 50%; will-change: transform;
+    box-shadow: 0 0 0 .5vh rgba(123,94,167,.3), 0 2vh 6vh rgba(74,56,100,.28); }
+  .hub { position: absolute; left: 50%; top: 50%; width: 26%; height: 26%; transform: translate(-50%, -50%); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; background: #fff;
+    border: .45vh solid var(--lilac); box-shadow: 0 .6vh 2vh rgba(74,56,100,.3); }
+  .hub img { height: 74%; width: auto; }
+  /* The pointer sits at 3 o'clock, so the winning slice's name ends up level and readable. */
+  .pointer { position: absolute; top: 50%; right: calc(var(--D) * -.06); width: calc(var(--D) * .11); height: calc(var(--D) * .08);
+    transform: translateY(-50%); transform-origin: 90% 50%; filter: drop-shadow(0 .4vh .8vh rgba(74,56,100,.35)); }
+
+  .side { text-align: center; }
+  .kicker { padding-left: .35em; font-size: clamp(.6rem, .95vw, 1rem); letter-spacing: .35em; text-transform: uppercase; color: var(--purple); }
+  .title { margin-top: .4vh; font-family: 'Allura', 'Pinyon Script', cursive; font-weight: 400; font-size: clamp(3rem, 7vw, 7.5rem); line-height: 1; color: var(--plum); }
+  .now { display: flex; align-items: center; justify-content: center; min-height: 2.3em; margin-top: 5vh; padding: 0 1vw;
+    font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: clamp(1.8rem, 3.6vw, 4.2rem); line-height: 1.1; }
+  .now-table { min-height: 1.4em; margin-top: 1vh; padding-left: .4em; font-size: clamp(.75rem, 1.4vw, 1.4rem); letter-spacing: .4em; text-transform: uppercase; color: var(--sage); }
+  .count { margin-top: 5vh; padding-left: .3em; font-size: clamp(.65rem, 1vw, .95rem); letter-spacing: .3em; text-transform: uppercase; color: var(--muted); }
+
+  @media (max-aspect-ratio: 1/1) {
+    :root { --D: min(86vw, 52vh); }
+    .stage { grid-template-columns: 1fr; grid-template-rows: auto auto; align-content: center; gap: 4vh; padding: 0 5vw 10vh; }
+    .side { order: -1; }
+    .now { margin-top: 2vh; }
+    .count { margin-top: 2vh; }
+  }
+
+  .win { position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 0 5vw 8vh; text-align: center; background: rgba(242,237,248,.97); opacity: 0; transition: opacity .5s; }
+  .win.show { opacity: 1; }
+  .win-kicker { padding-left: .5em; font-size: clamp(.8rem, 1.6vw, 1.5rem); letter-spacing: .5em; text-transform: uppercase; color: var(--purple); }
+  .win-name { margin: 2vh 0 1.5vh; font-family: 'Allura', 'Pinyon Script', cursive; font-size: clamp(3.5rem, 10vw, 11rem); line-height: 1.1; color: var(--plum);
+    transform: scale(.85); transition: transform .9s cubic-bezier(.2, 1.4, .4, 1); }
+  .win.show .win-name { transform: none; }
+  .win-table { padding-left: .4em; font-size: clamp(.9rem, 2vw, 1.9rem); letter-spacing: .4em; text-transform: uppercase; color: var(--sage); }
+  #confetti { position: fixed; inset: 0; z-index: 11; width: 100%; height: 100%; pointer-events: none; }
+
+  /* Operator controls fade out when the mouse is still, so the LED wall shows only the draw. */
+  .controls { position: fixed; left: 0; right: 0; bottom: 3vh; z-index: 12; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .6rem; transition: opacity .6s; }
+  body.idle .controls { opacity: 0; }
+  .controls button, .panel button { padding: .6rem 1.2rem; border: 1px solid rgba(123,94,167,.35); border-radius: 999px; background: rgba(255,255,255,.8);
+    color: var(--ink); font: 500 .7rem 'Montserrat', sans-serif; letter-spacing: .18em; text-transform: uppercase; cursor: pointer; }
+  .controls button:hover, .panel button:hover { background: #fff; }
+  .controls .primary { min-width: 9rem; padding: .8rem 2.2rem; border-color: var(--purple); background: var(--purple); color: #fff; font-size: .85rem; }
+  .controls .primary:hover { background: #6a4d97; }
+  .keys { width: 100%; text-align: center; font-size: .65rem; letter-spacing: .12em; color: var(--muted); }
+
+  .panel { position: fixed; top: 0; right: 0; bottom: 0; z-index: 13; width: min(400px, 92vw); padding: 2rem 1.6rem; overflow-y: auto;
+    background: #fff; border-left: 1px solid rgba(123,94,167,.25); box-shadow: -1vh 0 4vh rgba(74,56,100,.15); }
+  .panel h2 { font-family: 'Allura', 'Pinyon Script', cursive; font-weight: 400; font-size: 2.8rem; line-height: 1; color: var(--plum); }
+  .panel ol { margin: 1.2rem 0 0 1.4rem; font-size: .9rem; line-height: 1.9; }
+  .panel li small, .panel .absent { font-size: .72rem; letter-spacing: .08em; color: var(--muted); }
+  .panel li small { margin-left: .5rem; text-transform: uppercase; }
+  .panel .absent { margin-top: 1.2rem; line-height: 1.7; }
+  .panel .empty { margin-top: 1rem; font-size: .85rem; color: var(--muted); }
+  .panel-actions { display: flex; gap: .6rem; margin-top: 1.6rem; }
+</style>
+</head>
+<body>
+  <main class="stage">
+    <div class="wheel-wrap" id="wrap">
+      <canvas id="wheel"></canvas>
+      <div class="hub"><img src="images/compressed/monogram.png" alt="Shira &amp; Leendon monogram"></div>
+      <svg class="pointer" id="pointer" viewBox="0 0 44 32" aria-hidden="true"><path d="M2 16 L43 2 L36 16 L43 30 Z" fill="#7b5ea7" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="side">
+      <p class="kicker">Shira &amp; Leendon · December 6, 2026</p>
+      <h1 class="title">Raffle Draw</h1>
+      <p class="now" id="now"></p>
+      <p class="now-table" id="now-table"></p>
+      <p class="count" id="count">Loading the guest list…</p>
+    </div>
+  </main>
+
+  <div class="win" id="win" hidden>
+    <p class="win-kicker">Congratulations</p>
+    <p class="win-name" id="win-name"></p>
+    <p class="win-table" id="win-table"></p>
+  </div>
+  <canvas id="confetti"></canvas>
+
+  <div class="controls" id="controls">
+    <button type="button" class="primary" id="go">Spin</button>
+    <button type="button" id="redraw" hidden>Not here · Redraw</button>
+    <button type="button" id="list-btn">Winners</button>
+    <button type="button" id="sound-btn">Sound on</button>
+    <button type="button" id="fs-btn">Fullscreen</button>
+    <p class="keys">Space spin / stop / next · R redraw · W winners · M sound · F fullscreen</p>
+  </div>
+
+  <aside class="panel" id="panel" hidden>
+    <h2>Winners</h2>
+    <div id="winners"></div>
+    <div class="panel-actions">
+      <button type="button" id="close-btn">Close</button>
+      <button type="button" id="reset-btn">Reset raffle</button>
+    </div>
+  </aside>
+
+<script>
+const SEATS_URL = 'https://script.google.com/macros/s/AKfycbyTuqgUu9wSuGxurX-VFAjPWzx7jsEm-IkYZpl4tld5ngMIGu4EBcFXSL8QnvOOCcZO2A/exec';
+const ALIAS = { 'Table 28': 'VIP 3' };
+const STATE_KEY = 'raffle-state', GUESTS_KEY = 'raffle-guests';
+const TAU = Math.PI * 2;
+const MAX_SPIN = 10;     // radians per second at full spin (~1.6 turns)
+const IDLE_SPIN = .06;
+const STOP_SECONDS = 4.5;   // shortest slowdown from full spin; it runs up to a turn longer to land on the winner
+const SLICES = ['#b7a5cd', '#dbe7d6', '#9fbb99', '#ece5f5'];   // lilac, pale sage, sage, pale lilac
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const load = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) || fallback; } catch (e) { return fallback; } };
+const save = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {} };
+const rand = n => crypto.getRandomValues(new Uint32Array(1))[0] % n;
+const mod = (a, n) => ((a % n) + n) % n;
+
+let order = [];          // every attending guest, shuffled once so families don't sit together on the wheel
+let wheel = [];          // the slices: guests still in the draw, in wheel order
+let state = load(STATE_KEY, { winners: [], absent: [] });
+let phase = 'loading';   // loading → idle → spinning → stopping → winner → idle
+let theta = 0, spin = 0, last = 0, lastSlice = -1, lastTick = 0;
+let stop = null, current = null;
+let sound = true, audio = null;
+
+function tableLabel(raw) {
+  const v = String(raw || '').trim();
+  if (!v) return '';
+  let m = v.match(/^vip\s*(\d+)$/i);     if (m) return 'VIP ' + m[1];
+  m = v.match(/^(?:table\s*)?(\d+)$/i);
+  if (m) { const id = 'Table ' + Number(m[1]); return ALIAS[id] || id; }
+  return v;
+}
+
+// Slices are narrow, so they carry a short form: "Very Rev. Fr. Edmund Chavez Castillo" → "Fr. Edmund Castillo".
+function wheelLabel(name) {
+  const w = name.split(' ').filter(x => !/^(atty|engr|very|rev|dr|hon)\.?$/i.test(x));
+  const suffix = w.length > 2 && /^(jr|sr)\.?$|^(ii|iii|iv)$/i.test(w[w.length - 1]) ? ' ' + w.pop() : '';
+  let i = w.length - 1;
+  while (i > 1 && /^(de|del|dela|la|delos|los|san|sta\.|santa)$/i.test(w[i - 1])) i--;
+  const lead = /^(fr\.?|sister)$/i.test(w[0]) ? w.slice(0, 2) : w.slice(0, 1);
+  return (i >= lead.length ? lead.concat(w.slice(i)) : w).join(' ') + suffix;
+}
+
+function pool() {
+  const out = new Set(state.winners.concat(state.absent).map(g => g.name));
+  return order.filter(g => !out.has(g.name));
+}
+
+function drawWheel() {
+  wheel = pool();
+  const c = $('wheel'), x = c.getContext('2d'), dpr = window.devicePixelRatio || 1;
+  const D = $('wrap').clientWidth, R = D / 2, n = wheel.length, s = TAU / Math.max(n, 1);
+  const rim = R * .94, textEnd = R * .9, hub = R * .31;
+  c.width = c.height = Math.round(D * dpr);
+  x.setTransform(dpr, 0, 0, dpr, R * dpr, R * dpr);
+
+  const labels = wheel.map(g => wheelLabel(g.name));
+  const sizes = labels.map(label => {
+    let f = Math.min(R * .06, TAU * textEnd / Math.max(n, 1) * .68);
+    for (; f > 6; f -= .5) {
+      x.font = '500 ' + f + 'px Montserrat';
+      if (x.measureText(label).width <= textEnd - Math.max(hub, f * 1.15 * n / TAU)) break;
+    }
+    return f;
+  });
+  const cap = sizes.slice().sort((a, b) => a - b)[Math.floor(n / 2)];   // short names match the typical size; only long ones shrink
+
+  x.fillStyle = '#9d86c2';
+  x.beginPath(); x.arc(0, 0, R, 0, TAU); x.fill();
+  wheel.forEach((g, i) => {
+    let k = i % SLICES.length;
+    if (i === n - 1 && n > 1 && k === 0) k = 2;   // keep the last slice from matching the first one it touches
+    x.fillStyle = SLICES[k];
+    x.beginPath(); x.moveTo(0, 0); x.arc(0, 0, rim, i * s, (i + 1) * s); x.closePath(); x.fill();
+    x.save();
+    x.rotate((i + .5) * s);
+    x.fillStyle = '#362d43';
+    x.textAlign = 'right';
+    x.textBaseline = 'middle';
+    x.font = '500 ' + Math.min(sizes[i], cap) + 'px Montserrat';
+    x.fillText(labels[i], textEnd, 0);
+    x.restore();
+  });
+  if (n > 1) {
+    x.strokeStyle = 'rgba(255,255,255,.75)';
+    x.lineWidth = 1;
+    for (let i = 0; i < n; i++) { x.beginPath(); x.moveTo(0, 0); x.lineTo(Math.cos(i * s) * rim, Math.sin(i * s) * rim); x.stroke(); }
+  }
+  x.strokeStyle = '#fff';
+  x.lineWidth = Math.max(1.5, R * .006);
+  x.beginPath(); x.arc(0, 0, rim, 0, TAU); x.stroke();
+  x.fillStyle = '#fff';
+  for (let i = 0; i < 36; i++) { x.beginPath(); x.arc(Math.cos(i * TAU / 36) * R * .97, Math.sin(i * TAU / 36) * R * .97, R * .009, 0, TAU); x.fill(); }
+  lastSlice = -1;
+}
+
+const sliceAtPointer = () => wheel.length ? Math.min(wheel.length - 1, Math.floor(mod(-theta, TAU) / (TAU / wheel.length))) : -1;
+
+function tone(freq, dur, vol) {
+  if (!sound) return;
+  try {
+    audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+    const o = audio.createOscillator(), g = audio.createGain(), t = audio.currentTime;
+    o.type = 'triangle';
+    o.frequency.value = freq;
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.connect(g).connect(audio.destination);
+    o.start(t);
+    o.stop(t + dur);
+  } catch (e) {}
+}
+
+function frame(t) {
+  const dt = Math.min(.05, (t - last) / 1000);
+  last = t;
+  if (phase === 'spinning') {
+    spin = Math.min(MAX_SPIN, spin + MAX_SPIN * dt / .8);
+    theta += spin * dt;
+  } else if (phase === 'stopping') {
+    const k = Math.min(1, (t - stop.t0) / stop.dur);
+    theta = stop.from + (stop.to - stop.from) * (1 - Math.pow(1 - k, 4));
+    spin = 4 * (stop.to - stop.from) / (stop.dur / 1000) * Math.pow(1 - k, 3);
+    if (k === 1) reveal();
+  } else if (phase === 'idle') {
+    theta += IDLE_SPIN * dt;
+  }
+  $('wheel').style.transform = 'rotate(' + theta + 'rad)';
+  const i = sliceAtPointer();
+  if (i !== lastSlice && i >= 0) {
+    lastSlice = i;
+    $('now').textContent = wheel[i].name;
+    $('now-table').textContent = wheel[i].table;
+    if ((phase === 'spinning' || phase === 'stopping') && t - lastTick > 45) {
+      lastTick = t;
+      tone(1500, .035, .06);
+      if (spin < 4) $('pointer').animate([{ transform: 'translateY(-50%) rotate(-16deg)' }, { transform: 'translateY(-50%)' }], { duration: 140, easing: 'ease-out' });
+    }
+  }
+  requestAnimationFrame(frame);
+}
+
+function startSpin() {
+  if (!pool().length) { $('count').textContent = 'Everyone has been drawn — reset the raffle to start over'; return; }
+  hideWinner();
+  drawWheel();
+  spin = Math.max(spin, IDLE_SPIN);
+  phase = 'spinning';
+  render();
+}
+
+// The winner is picked at random the moment Stop is pressed; the slowdown only lands the wheel on them.
+function stopSpin() {
+  const n = wheel.length, s = TAU / n, w = rand(n);
+  current = wheel[w];
+  const base = theta + Math.max(TAU, spin * STOP_SECONDS / 4);
+  const to = base + mod(-(w + .2 + .6 * Math.random()) * s - base, TAU);
+  stop = { from: theta, to, t0: performance.now(), dur: Math.min(7500, Math.max(3500, 4000 * (to - theta) / Math.max(spin, .5))) };
+  phase = 'stopping';
+  render();
+}
+
+function reveal() {
+  theta = stop.to;
+  phase = 'winner';
+  state.winners.push(current);
+  save(STATE_KEY, state);
+  $('win-name').textContent = current.name;
+  $('win-table').textContent = current.table;
+  $('win').hidden = false;
+  requestAnimationFrame(() => $('win').classList.add('show'));
+  [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => tone(f, .7, .14), i * 120));
+  confetti();
+  render();
+}
+
+function hideWinner() {
+  $('win').classList.remove('show');
+  $('win').hidden = true;
+}
+
+function next() {
+  hideWinner();
+  phase = 'idle';
+  spin = 0;
+  drawWheel();
+  render();
+}
+
+function redraw() {
+  if (phase !== 'winner') return;
+  state.absent.push(state.winners.pop());
+  save(STATE_KEY, state);
+  startSpin();
+}
+
+function advance() {
+  if (phase === 'idle') startSpin();
+  else if (phase === 'spinning') stopSpin();
+  else if (phase === 'winner') next();
+}
+
+function render() {
+  const left = pool().length;
+  $('go').textContent = { idle: 'Spin', spinning: 'Stop', stopping: '…', winner: 'Next' }[phase] || 'Spin';
+  $('go').disabled = phase === 'stopping' || phase === 'loading';
+  $('redraw').hidden = phase !== 'winner';
+  $('list-btn').textContent = 'Winners (' + state.winners.length + ')';
+  $('sound-btn').textContent = sound ? 'Sound on' : 'Sound off';
+  if (phase !== 'loading') $('count').textContent = left + (left === 1 ? ' guest' : ' guests') + ' in the draw';
+  $('winners').innerHTML = state.winners.length
+    ? '<ol>' + state.winners.map(w => '<li>' + esc(w.name) + (w.table ? '<small>' + esc(w.table) + '</small>' : '') + '</li>').join('') + '</ol>'
+    : '<p class="empty">No winners yet.</p>';
+  if (state.absent.length) $('winners').innerHTML += '<p class="absent">Not present, redrawn: ' + esc(state.absent.map(g => g.name).join(', ')) + '</p>';
+}
+
+function confetti() {
+  const c = $('confetti'), x = c.getContext('2d'), dpr = window.devicePixelRatio || 1;
+  const W = c.width = innerWidth * dpr, H = c.height = innerHeight * dpr;
+  const colors = ['#b7a5cd', '#7b5ea7', '#9fbb99', '#52734d', '#d9c38f'];
+  const bits = Array.from({ length: 180 }, () => ({
+    x: W * (.25 + Math.random() * .5), y: H * .5, vx: (Math.random() - .5) * W * .014, vy: -(H * .006 + Math.random() * H * .022),
+    r: (5 + Math.random() * 7) * dpr, a: Math.random() * 6.3, va: (Math.random() - .5) * .3, c: colors[rand(colors.length)],
+  }));
+  const t0 = performance.now();
+  (function step(t) {
+    x.clearRect(0, 0, W, H);
+    if (t - t0 > 5000 || phase !== 'winner') return;
+    bits.forEach(b => {
+      b.vy += H * .0005; b.vx *= .99; b.x += b.vx; b.y += b.vy; b.a += b.va;
+      x.save(); x.translate(b.x, b.y); x.rotate(b.a); x.fillStyle = b.c; x.fillRect(-b.r / 2, -b.r / 4, b.r, b.r / 2); x.restore();
+    });
+    requestAnimationFrame(step);
+  })(t0);
+}
+
+function togglePanel() { $('panel').hidden = !$('panel').hidden; }
+function toggleSound() { sound = !sound; render(); }
+function toggleFullscreen() {
+  if (document.fullscreenElement) document.exitFullscreen();
+  else document.documentElement.requestFullscreen().catch(() => {});
+}
+
+$('go').onclick = advance;
+$('redraw').onclick = redraw;
+$('list-btn').onclick = togglePanel;
+$('close-btn').onclick = togglePanel;
+$('sound-btn').onclick = toggleSound;
+$('fs-btn').onclick = toggleFullscreen;
+$('reset-btn').onclick = () => {
+  if (!confirm('Clear all winners and start the raffle over?')) return;
+  state = { winners: [], absent: [] };
+  save(STATE_KEY, state);
+  if (phase === 'winner') next(); else drawWheel();
+  render();
+};
+document.querySelectorAll('button').forEach(b => b.addEventListener('mousedown', e => e.preventDefault()));   // keep focus off buttons so Space never double-fires
+
+document.addEventListener('keydown', e => {
+  if (e.repeat || e.metaKey || e.ctrlKey || e.altKey) return;
+  const k = e.key.toLowerCase();
+  if ([' ', 'enter', 'arrowright', 'arrowdown', 'pagedown'].includes(k)) { e.preventDefault(); advance(); }
+  else if (k === 'r') redraw();
+  else if (k === 'w') togglePanel();
+  else if (k === 'm') toggleSound();
+  else if (k === 'f') toggleFullscreen();
+  else if (k === 'escape') $('panel').hidden = true;
+});
+
+let idleTimer;
+function wake() {
+  document.body.classList.remove('idle');
+  clearTimeout(idleTimer);
+  idleTimer = setTimeout(() => document.body.classList.add('idle'), 2500);
+}
+document.addEventListener('mousemove', wake);
+window.addEventListener('resize', () => { if (phase !== 'loading') drawWheel(); });
+
+// Falls back to the last list this browser saw, in case the venue wifi drops.
+fetch(SEATS_URL + '?view=seats')
+  .then(r => r.json())
+  .then(data => {
+    const list = data.guests.filter(g => g.response === 'yes' && !g.highChair)
+      .map(g => ({ name: g.name.replace(/\s+/g, ' ').trim(), table: tableLabel(g.table) }));
+    save(GUESTS_KEY, list);
+    return list;
+  })
+  .catch(() => load(GUESTS_KEY, []))
+  .then(list => Promise.all(['500 20px Montserrat', '600 40px "Cormorant Garamond"', '40px Allura'].map(f => document.fonts.load(f))).catch(() => {}).then(() => list))
+  .then(list => {
+    if (!list.length) { $('count').textContent = 'Couldn’t load the guest list — check the connection and reload'; return; }
+    order = list.slice();
+    for (let i = order.length - 1; i > 0; i--) { const j = rand(i + 1); [order[i], order[j]] = [order[j], order[i]]; }
+    phase = 'idle';
+    drawWheel();
+    wake();
+    render();
+    requestAnimationFrame(t => { last = t; requestAnimationFrame(frame); });
+  });
+</script>
+</body>
+</html>
