@@ -19,9 +19,11 @@
   body.idle { cursor: none; }
 
   .stage { height: 100vh; display: grid; grid-template-columns: 1.15fr 1fr; align-items: center; gap: 2vw; padding: 0 4vw 4vh; }
-  .wheel-wrap { position: relative; justify-self: center; width: var(--D); height: var(--D); }
-  #wheel { display: block; width: 100%; height: 100%; border-radius: 50%; will-change: transform;
-    box-shadow: 0 0 0 .5vh rgba(123,94,167,.3), 0 2vh 6vh rgba(74,56,100,.28); }
+  .wheel-wrap { position: relative; justify-self: center; width: var(--D); height: var(--D); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .wheel-wrap::before { content: ''; position: absolute; inset: 0; border-radius: 50%; box-shadow: 0 0 0 .5vh rgba(123,94,167,.3), 0 2vh 6vh rgba(74,56,100,.28); }
+  /* Clipped to the circle: the spinning square canvas would otherwise poke past the screen edge and make phones zoom out. */
+  .disc { position: relative; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; isolation: isolate; -webkit-mask-image: -webkit-radial-gradient(white, black); }
+  #wheel { display: block; width: 100%; height: 100%; will-change: transform; }
   .hub { position: absolute; left: 50%; top: 50%; width: 26%; height: 26%; transform: translate(-50%, -50%); border-radius: 50%;
     display: flex; align-items: center; justify-content: center; background: #fff;
     border: .45vh solid var(--lilac); box-shadow: 0 .6vh 2vh rgba(74,56,100,.3); }
@@ -38,12 +40,34 @@
   .now-table { min-height: 1.4em; margin-top: 1vh; padding-left: .4em; font-size: clamp(.75rem, 1.4vw, 1.4rem); letter-spacing: .4em; text-transform: uppercase; color: var(--sage); }
   .count { margin-top: 5vh; padding-left: .3em; font-size: clamp(.65rem, 1vw, .95rem); letter-spacing: .3em; text-transform: uppercase; color: var(--muted); }
 
+  /* Portrait (phones, tablets): title above the wheel, the name under the pointer below it, buttons at the bottom. */
   @media (max-aspect-ratio: 1/1) {
-    :root { --D: min(86vw, 52vh); }
-    .stage { grid-template-columns: 1fr; grid-template-rows: auto auto; align-content: center; gap: 4vh; padding: 0 5vw 10vh; }
-    .side { order: -1; }
-    .now { margin-top: 2vh; }
-    .count { margin-top: 2vh; }
+    /* The wheel gets whatever height the text and buttons leave: the text scales with width up to a cap, the buttons need ~120px. */
+    :root { --D: min(84vw, calc(91vh - 150px - min(38vw, 250px))); }
+    .stage { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2vh 4vw 120px; }
+    .side { display: contents; }
+    .side > * { width: 100%; }
+    .kicker { order: 1; padding-left: .3em; font-size: clamp(.55rem, 2.5vw, 1rem); letter-spacing: .3em; }
+    .title { order: 2; margin-bottom: 2.4vh; font-size: clamp(2.6rem, 12vw, 4.5rem); }
+    .wheel-wrap { order: 3; flex: none; }
+    .now { order: 4; margin-top: 2.4vh; font-size: clamp(1.3rem, 6vw, 2.2rem); }
+    .now-table { order: 5; margin-top: .4vh; font-size: clamp(.65rem, 3vw, 1.2rem); }
+    .count { order: 6; margin-top: 1.4vh; font-size: clamp(.55rem, 2.4vw, .9rem); }
+  }
+  /* Phones turned sideways: very little height, so size everything off it. */
+  @media (min-aspect-ratio: 1/1) and (max-height: 520px) {
+    :root { --D: min(calc(100vh - 84px), 48vw); }
+    .stage { padding: 1.5vh 3vw 64px; gap: 3vw; }
+    .kicker { font-size: 2.6vh; }
+    .title { font-size: 13vh; }
+    .now { margin-top: 3vh; font-size: 7vh; }
+    .now-table { margin-top: .5vh; font-size: 3.4vh; }
+    .count { margin-top: 3vh; font-size: 2.6vh; }
+  }
+  @supports (height: 100dvh) {
+    .stage { height: 100dvh; }
+    @media (max-aspect-ratio: 1/1) { :root { --D: min(84vw, calc(91dvh - 150px - min(38vw, 250px))); } }
+    @media (min-aspect-ratio: 1/1) and (max-height: 520px) { :root { --D: min(calc(100dvh - 84px), 48vw); } }
   }
 
   .win { position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -65,6 +89,30 @@
   .controls .primary { min-width: 9rem; padding: .8rem 2.2rem; border-color: var(--purple); background: var(--purple); color: #fff; font-size: .85rem; }
   .controls .primary:hover { background: #6a4d97; }
   .keys { width: 100%; text-align: center; font-size: .65rem; letter-spacing: .12em; color: var(--muted); }
+  .controls .row { display: contents; }
+
+  @media (max-aspect-ratio: 1/1), (max-width: 600px) {
+    .controls { flex-direction: column; gap: .5rem; bottom: max(2vh, env(safe-area-inset-bottom)); padding: 0 4vw; }
+    .controls .row { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; width: 100%; }
+    .controls button { padding: .55rem .9rem; font-size: .62rem; letter-spacing: .12em; white-space: nowrap; }
+    .controls .primary { flex: 1 1 auto; min-width: 0; max-width: 16rem; padding: .8rem 1rem; font-size: .8rem; }
+  }
+  @media (max-width: 400px) {
+    .controls button { padding: .55rem .7rem; letter-spacing: .08em; }
+  }
+  @media (min-aspect-ratio: 1/1) and (max-height: 520px) {
+    .controls { bottom: 10px; }
+    .controls button { padding: .45rem .9rem; font-size: .6rem; }
+    .controls .primary { padding: .6rem 1.6rem; font-size: .72rem; }
+  }
+  @media (max-aspect-ratio: 1/1), (max-width: 600px), (max-height: 520px), (hover: none) {
+    .keys { display: none; }
+  }
+  /* Touch screens have no mouse to wake the controls, so they stay put. */
+  @media (hover: none) {
+    body.idle { cursor: auto; }
+    body.idle .controls { opacity: 1; }
+  }
 
   .panel { position: fixed; top: 0; right: 0; bottom: 0; z-index: 13; width: min(400px, 92vw); padding: 2rem 1.6rem; overflow-y: auto;
     background: #fff; border-left: 1px solid rgba(123,94,167,.25); box-shadow: -1vh 0 4vh rgba(74,56,100,.15); }
@@ -80,7 +128,7 @@
 <body>
   <main class="stage">
     <div class="wheel-wrap" id="wrap">
-      <canvas id="wheel"></canvas>
+      <div class="disc"><canvas id="wheel"></canvas></div>
       <div class="hub"><img src="images/compressed/monogram.png" alt="Shira &amp; Leendon monogram"></div>
       <svg class="pointer" id="pointer" viewBox="0 0 44 32" aria-hidden="true"><path d="M2 16 L43 2 L36 16 L43 30 Z" fill="#7b5ea7" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>
     </div>
@@ -101,11 +149,15 @@
   <canvas id="confetti"></canvas>
 
   <div class="controls" id="controls">
-    <button type="button" class="primary" id="go">Spin</button>
-    <button type="button" id="redraw" hidden>Not here · Redraw</button>
-    <button type="button" id="list-btn">Winners</button>
-    <button type="button" id="sound-btn">Sound on</button>
-    <button type="button" id="fs-btn">Fullscreen</button>
+    <div class="row">
+      <button type="button" class="primary" id="go">Spin</button>
+      <button type="button" id="redraw" hidden>Not here · Redraw</button>
+    </div>
+    <div class="row">
+      <button type="button" id="list-btn">Winners</button>
+      <button type="button" id="sound-btn">Sound on</button>
+      <button type="button" id="fs-btn">Fullscreen</button>
+    </div>
     <p class="keys">Space spin / stop / next · R redraw · W winners · M sound · F fullscreen</p>
   </div>
 
@@ -368,6 +420,9 @@ $('list-btn').onclick = togglePanel;
 $('close-btn').onclick = togglePanel;
 $('sound-btn').onclick = toggleSound;
 $('fs-btn').onclick = toggleFullscreen;
+$('fs-btn').hidden = !document.fullscreenEnabled;   // iPhone Safari can't fullscreen a page
+$('wrap').onclick = advance;
+$('win').onclick = advance;
 $('reset-btn').onclick = () => {
   if (!confirm('Clear all winners and start the raffle over?')) return;
   state = { winners: [], absent: [] };
@@ -395,6 +450,7 @@ function wake() {
   idleTimer = setTimeout(() => document.body.classList.add('idle'), 2500);
 }
 document.addEventListener('mousemove', wake);
+document.addEventListener('pointerdown', wake);
 window.addEventListener('resize', () => { if (phase !== 'loading') drawWheel(); });
 
 // Falls back to the last list this browser saw, in case the venue wifi drops.
