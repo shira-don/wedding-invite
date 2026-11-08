@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Shira &amp; Leendon</title>
+<link rel="stylesheet" href="fonts/google-fonts.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Allura&display=block">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body { overflow: hidden; background: radial-gradient(ellipse at 50% 42%, #f3eef9, #ddd3eb 78%); cursor: none; }
+  canvas { position: fixed; inset: 0; display: block; }
+  .caption { position: fixed; left: 0; right: 0; bottom: 8vh; text-align: center; pointer-events: none; }
+  .names { font-family: 'Allura', 'Pinyon Script', cursive; font-size: 10vh; line-height: 1; color: #5e4590; }
+  .when { margin-top: 1.6vh; padding-left: .45em; font-family: 'Montserrat', sans-serif; font-size: 1.9vh; letter-spacing: .45em; text-transform: uppercase; color: #52734d; }
+</style>
+<script src="images/compressed/monogram-data.js"></script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
+</head>
+<body>
+  <div class="caption">
+    <p class="names">Shira &amp; Leendon</p>
+    <p class="when">December 6, 2026 · Soirée Events Place</p>
+  </div>
+
+<script type="module">
+import * as THREE from 'three';
+
+// Every motion repeats exactly once per LOOP seconds, so a recording of one loop plays back seamlessly.
+const LOOP = 12;
+const LAYERS = 28, DEPTH = .16;   // stacked copies behind the face give the monogram its thickness
+const RENDER = new URLSearchParams(location.search).has('render');
+
+THREE.ColorManagement.enabled = false;
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: RENDER });
+renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
+renderer.setClearColor(0x000000, 0);
+document.body.prepend(renderer.domElement);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(35, 1, .1, 100);
+camera.position.z = 6;
+
+const tex = await new THREE.TextureLoader().loadAsync(window.MONOGRAM_SRC);
+tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+const H = 2.25, W = H * tex.image.width / tex.image.height;
+const plane = new THREE.PlaneGeometry(W, H);
+
+const UV_VERTEX = 'varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }';
+const mono = new THREE.Group();
+scene.add(mono);
+const sideNear = new THREE.Color('#8f52c4'), sideFar = new THREE.Color('#4a2370');
+for (let k = LAYERS; k >= 1; k--) {
+  const layer = new THREE.Mesh(plane, new THREE.ShaderMaterial({
+    uniforms: { map: { value: tex }, color: { value: sideNear.clone().lerp(sideFar, k / LAYERS) } },
+    vertexShader: UV_VERTEX,
+    fragmentShader: 'uniform sampler2D map; uniform vec3 color; varying vec2 vUv; void main() { if (texture2D(map, vUv).a < .5) discard; gl_FragColor = vec4(color, 1.0); }',
+  }));
+  layer.position.z = -DEPTH * k / LAYERS;
+  mono.add(layer);
+}
+const face = new THREE.Mesh(plane, new THREE.ShaderMaterial({
+  uniforms: { map: { value: tex }, sweep: { value: -1 } },
+  transparent: true,
+  depthWrite: false,
+  vertexShader: UV_VERTEX,
+  fragmentShader: `
+    uniform sampler2D map; uniform float sweep; varying vec2 vUv;
+    void main() {
+      vec4 c = texture2D(map, vUv);
+      float d = vUv.x * .8 + vUv.y * .6 - sweep;
+      c.rgb = mix(c.rgb, vec3(1.0, .97, 1.0), exp(-d * d / .0035) * .6);
+      gl_FragColor = c;
+    }`,
+}));
+face.renderOrder = 1;
+mono.add(face);
+
+// Glints that flash on the strokes, placed in the monogram's own coordinates so they turn with it.
+const glintAt = [[.19, .45], [-.09, .35], [.48, -.31], [-.45, -.17], [.14, -.05], [-.15, -.47]];   // fractions of width/height from the centre
+const glints = new THREE.Points(new THREE.BufferGeometry()
+  .setAttribute('position', new THREE.Float32BufferAttribute(glintAt.flatMap(([x, y]) => [x * W, y * H, .01]), 3))
+  .setAttribute('aPhase', new THREE.Float32BufferAttribute(glintAt.map((_, i) => i / glintAt.length), 1)),
+  new THREE.ShaderMaterial({
+    uniforms: { uT: { value: 0 }, uPx: { value: 1 } },
+    transparent: true, depthTest: false, depthWrite: false,
+    vertexShader: `
+      uniform float uT; uniform float uPx; attribute float aPhase; varying float vA;
+      void main() {
+        vA = pow(max(0.0, sin(6.2831853 * (uT * 2.0 + aPhase))), 12.0);
+        vec4 mv = modelViewMatrix * vec4(position, 1.0);
+        gl_Position = projectionMatrix * mv;
+        gl_PointSize = (.12 + .28 * vA) * uPx / -mv.z;
+      }`,
+    fragmentShader: `
+      varying float vA;
+      void main() {
+        vec2 p = gl_PointCoord - .5;
+        float star = exp(-abs(p.x) * 70.0) * exp(-abs(p.y) * 5.0) + exp(-abs(p.y) * 70.0) * exp(-abs(p.x) * 5.0) + exp(-dot(p, p) * 90.0);
+        gl_FragColor = vec4(1.0, .97, 1.0, clamp(star * vA, 0.0, 1.0));
+      }`,
+  }));
+glints.renderOrder = 2;
+mono.add(glints);
+
+const shadowTex = (() => {
+  const c = document.createElement('canvas');
+  c.width = c.height = 128;
+  const x = c.getContext('2d'), g = x.createRadialGradient(64, 64, 0, 64, 64, 64);
+  g.addColorStop(0, 'rgba(74,56,100,.45)');
+  g.addColorStop(1, 'rgba(74,56,100,0)');
+  x.fillStyle = g;
+  x.fillRect(0, 0, 128, 128);
+  return new THREE.CanvasTexture(c);
+})();
+const shadow = new THREE.Mesh(new THREE.PlaneGeometry(W * 1.1, .32), new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false }));
+scene.add(shadow);
+
+// Soft bokeh drifting upward; each dot rises a whole number of screen-heights per loop so the loop has no seam.
+const COUNT = 130, SPAN = 6.6;
+const colors = ['#b7a5cd', '#9d7fd0', '#9fbb99', '#d9c38f', '#ffffff'].map(c => new THREE.Color(c));
+const rnd = (a, b) => a + Math.random() * (b - a);
+const base = [], speed = [], phase = [], size = [], tint = [];
+for (let i = 0; i < COUNT; i++) {
+  const front = i < 14, z = front ? rnd(1.2, 2.6) : rnd(-3.5, .4);
+  base.push(rnd(-5.4, 5.4), rnd(0, SPAN), z);
+  speed.push(Math.random() < .7 ? 1 : 2);
+  phase.push(Math.random());
+  size.push(front ? rnd(.35, .6) : rnd(.05, .2));
+  const c = colors[Math.floor(Math.random() * colors.length)];
+  tint.push(c.r, c.g, c.b, front ? .18 : rnd(.35, .75));
+}
+const bokeh = new THREE.Points(new THREE.BufferGeometry()
+  .setAttribute('position', new THREE.Float32BufferAttribute(base, 3))
+  .setAttribute('aSpeed', new THREE.Float32BufferAttribute(speed, 1))
+  .setAttribute('aPhase', new THREE.Float32BufferAttribute(phase, 1))
+  .setAttribute('aSize', new THREE.Float32BufferAttribute(size, 1))
+  .setAttribute('aTint', new THREE.Float32BufferAttribute(tint, 4)),
+  new THREE.ShaderMaterial({
+    uniforms: { uT: { value: 0 }, uPx: { value: 1 } },
+    transparent: true, depthWrite: false,
+    vertexShader: `
+      uniform float uT; uniform float uPx;
+      attribute float aSpeed; attribute float aPhase; attribute float aSize; attribute vec4 aTint;
+      varying vec4 vTint;
+      void main() {
+        float h = mod(position.y + aSpeed * uT * ${SPAN.toFixed(1)}, ${SPAN.toFixed(1)});
+        vec3 p = vec3(position.x + .18 * sin(6.2831853 * (uT * aSpeed + aPhase)), h - ${(SPAN / 2).toFixed(1)}, position.z);
+        vec4 mv = modelViewMatrix * vec4(p, 1.0);
+        gl_Position = projectionMatrix * mv;
+        gl_PointSize = aSize * uPx / -mv.z;
+        float fade = smoothstep(0.0, .18, h / ${SPAN.toFixed(1)}) * smoothstep(1.0, .82, h / ${SPAN.toFixed(1)});
+        vTint = vec4(aTint.rgb, aTint.a * fade * (.6 + .4 * sin(6.2831853 * (uT * 3.0 + aPhase))));
+      }`,
+    fragmentShader: `
+      varying vec4 vTint;
+      void main() {
+        float d = length(gl_PointCoord - .5);
+        gl_FragColor = vec4(vTint.rgb, vTint.a * smoothstep(.5, .2, d));
+      }`,
+  }));
+scene.add(bokeh);
+
+function resize() {
+  const w = innerWidth, h = innerHeight;
+  renderer.setPixelRatio(RENDER ? 1 : Math.min(devicePixelRatio, 2));
+  renderer.setSize(w, h);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  const px = renderer.getDrawingBufferSize(new THREE.Vector2()).y / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)));
+  glints.material.uniforms.uPx.value = bokeh.material.uniforms.uPx.value = px;
+}
+
+function renderAt(seconds) {
+  const u = (seconds % LOOP) / LOOP, a = u * Math.PI * 2;
+  const lift = .05 * Math.sin(a * 2);
+  mono.rotation.y = .42 * Math.sin(a);
+  mono.rotation.x = .05 * Math.sin(a + Math.PI / 2);
+  mono.position.y = .38 + lift;
+  shadow.position.set(0, .38 - H / 2 - .2, -.3);
+  shadow.scale.setScalar(1 - lift * 1.6);
+  shadow.material.opacity = .9 - lift * 3;
+  face.material.uniforms.sweep.value = -.6 + 3.2 * ((u * 2) % 1);   // a sheen passes twice per loop, off-face for most of each pass
+  glints.material.uniforms.uT.value = bokeh.material.uniforms.uT.value = u;
+  renderer.render(scene, camera);
+}
+
+resize();
+window.addEventListener('resize', resize);
+document.addEventListener('keydown', e => {
+  if (e.key.toLowerCase() !== 'f') return;
+  if (document.fullscreenElement) document.exitFullscreen();
+  else document.documentElement.requestFullscreen().catch(() => {});
+});
+await Promise.all(['40px Allura', '400 20px Montserrat'].map(f => document.fonts.load(f))).catch(() => {});
+if (RENDER) {
+  window.renderAt = renderAt;
+  renderAt(0);
+  window.ready = true;
+} else {
+  renderer.setAnimationLoop(t => renderAt(t / 1000));
+}
+</script>
+</body>
+</html>
