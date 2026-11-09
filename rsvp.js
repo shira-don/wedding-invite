@@ -19,8 +19,8 @@ const COORDINATOR_CONTACT = 'our wedding coordinator at 0965 207 6143';
 const PH_MOBILE_RE = /^(09\d{9}|\+639\d{9})$/;
 
 // RSVP closes end of this day (PH time). Past it, the form is replaced with a notice.
-const RSVP_DEADLINE = new Date('2026-11-08T23:59:59+08:00');
-const RSVP_DEADLINE_LABEL = 'November 8, 2026';
+const RSVP_DEADLINE = new Date('2026-11-10T23:59:59+08:00');
+const RSVP_DEADLINE_LABEL = 'November 10, 2026';
 
 let currentGroup = null;   // { headId, members: [{ id, name, role, response }] }
 
