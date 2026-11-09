@@ -10,7 +10,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Allura&display=swap">
 <style>
-  :root { --D: min(86vh, 54vw); --ink: #3d3349; --plum: #5e4590; --lilac: #b7a5cd; --purple: #7b5ea7; --sage: #52734d; --muted: #6f6880; }
+  :root { --D: min(86vh, 54vw); --P: 0px; --ink: #3d3349; --plum: #5e4590; --lilac: #b7a5cd; --purple: #7b5ea7; --sage: #52734d; --muted: #6f6880; }
+  :root.has-prize { --P: 80px; }   /* room the prize card takes above the wheel in portrait */
   * { box-sizing: border-box; margin: 0; padding: 0; }
   [hidden] { display: none !important; }
   html, body { height: 100%; }
@@ -39,20 +40,29 @@
     font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: clamp(1.8rem, 3.6vw, 4.2rem); line-height: 1.1; }
   .now-table { min-height: 1.4em; margin-top: 1vh; padding-left: .4em; font-size: clamp(.75rem, 1.4vw, 1.4rem); letter-spacing: .4em; text-transform: uppercase; color: var(--sage); }
   .count { margin-top: 5vh; padding-left: .3em; font-size: clamp(.65rem, 1vw, .95rem); letter-spacing: .3em; text-transform: uppercase; color: var(--muted); }
+  .prize { display: inline-flex; align-items: center; gap: 1.2vw; max-width: 100%; margin-top: 4vh; padding: 1.2vh 1.8vw; text-align: left;
+    border: 1px solid rgba(123,94,167,.22); border-radius: 2vh; background: rgba(255,255,255,.55); }
+  .prize img { flex: none; width: 11vh; height: 11vh; object-fit: contain; }
+  .prize-tier { font-size: clamp(.55rem, .85vw, .9rem); letter-spacing: .3em; text-transform: uppercase; color: var(--purple); }
+  .prize-name { margin-top: .5vh; font-weight: 500; font-size: clamp(.85rem, 1.5vw, 1.6rem); line-height: 1.25; color: var(--ink); }
 
   /* Portrait (phones, tablets): title above the wheel, the name under the pointer below it, buttons at the bottom. */
   @media (max-aspect-ratio: 1/1) {
     /* The wheel gets whatever height the text and buttons leave: the text scales with width up to a cap, the buttons need ~120px. */
-    :root { --D: min(84vw, calc(91vh - 150px - min(38vw, 250px))); }
+    :root { --D: min(84vw, calc(91vh - 150px - min(38vw, 250px) - var(--P))); }
     .stage { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2vh 4vw 120px; }
     .side { display: contents; }
     .side > * { width: 100%; }
     .kicker { order: 1; padding-left: .3em; font-size: clamp(.55rem, 2.5vw, 1rem); letter-spacing: .3em; }
     .title { order: 2; margin-bottom: 2.4vh; font-size: clamp(2.6rem, 12vw, 4.5rem); }
-    .wheel-wrap { order: 3; flex: none; }
-    .now { order: 4; margin-top: 2.4vh; font-size: clamp(1.3rem, 6vw, 2.2rem); }
-    .now-table { order: 5; margin-top: .4vh; font-size: clamp(.65rem, 3vw, 1.2rem); }
-    .count { order: 6; margin-top: 1.4vh; font-size: clamp(.55rem, 2.4vw, .9rem); }
+    .side > .prize { order: 3; width: auto; max-width: 92vw; margin: 0 0 2vh; padding: 8px 16px; gap: 12px; border-radius: 12px; }
+    .prize img { width: 44px; height: 44px; }
+    .prize-tier { font-size: clamp(.5rem, 2.2vw, .75rem); letter-spacing: .25em; }
+    .prize-name { margin-top: 2px; font-size: clamp(.8rem, 3.6vw, 1.1rem); }
+    .wheel-wrap { order: 4; flex: none; }
+    .now { order: 5; margin-top: 2.4vh; font-size: clamp(1.3rem, 6vw, 2.2rem); }
+    .now-table { order: 6; margin-top: .4vh; font-size: clamp(.65rem, 3vw, 1.2rem); }
+    .count { order: 7; margin-top: 1.4vh; font-size: clamp(.55rem, 2.4vw, .9rem); }
   }
   /* Phones turned sideways: very little height, so size everything off it. */
   @media (min-aspect-ratio: 1/1) and (max-height: 520px) {
@@ -63,10 +73,14 @@
     .now { margin-top: 3vh; font-size: 7vh; }
     .now-table { margin-top: .5vh; font-size: 3.4vh; }
     .count { margin-top: 3vh; font-size: 2.6vh; }
+    .prize { margin-top: 3vh; padding: 1.5vh 2.5vw; gap: 2vw; }
+    .prize img { width: 12vh; height: 12vh; }
+    .prize-tier { font-size: 2.4vh; }
+    .prize-name { font-size: 4vh; }
   }
   @supports (height: 100dvh) {
     .stage { height: 100dvh; }
-    @media (max-aspect-ratio: 1/1) { :root { --D: min(84vw, calc(91dvh - 150px - min(38vw, 250px))); } }
+    @media (max-aspect-ratio: 1/1) { :root { --D: min(84vw, calc(91dvh - 150px - min(38vw, 250px) - var(--P))); } }
     @media (min-aspect-ratio: 1/1) and (max-height: 520px) { :root { --D: min(calc(100dvh - 84px), 48vw); } }
   }
 
@@ -78,6 +92,14 @@
     transform: scale(.85); transition: transform .9s cubic-bezier(.2, 1.4, .4, 1); }
   .win.show .win-name { transform: none; }
   .win-table { padding-left: .4em; font-size: clamp(.9rem, 2vw, 1.9rem); letter-spacing: .4em; text-transform: uppercase; color: var(--sage); }
+  .win .prize { margin-top: 4vh; padding: 2vh 2.6vw; gap: 2vw; border-radius: 2.4vh; background: #fff; }
+  .win .prize img { width: 18vh; height: 18vh; }
+  .win .prize-tier { font-size: clamp(.65rem, 1.2vw, 1.2rem); }
+  .win .prize-name { font-size: clamp(1rem, 2.4vw, 2.4rem); }
+  @media (max-aspect-ratio: 1/1) {
+    .win .prize { padding: 1.6vh 5vw; gap: 4vw; }
+    .win .prize img { width: 11vh; height: 11vh; }
+  }
   #confetti { position: fixed; inset: 0; z-index: 11; width: 100%; height: 100%; pointer-events: none; }
 
   /* Operator controls fade out when the mouse is still, so the LED wall shows only the draw. */
@@ -120,6 +142,7 @@
   .panel ol { margin: 1.2rem 0 0 1.4rem; font-size: .9rem; line-height: 1.9; }
   .panel li small, .panel .absent { font-size: .72rem; letter-spacing: .08em; color: var(--muted); }
   .panel li small { margin-left: .5rem; text-transform: uppercase; }
+  .panel .won { display: block; margin-top: -.35rem; font-size: .75rem; line-height: 1.6; color: var(--sage); }
   .panel .absent { margin-top: 1.2rem; line-height: 1.7; }
   .panel .empty { margin-top: 1rem; font-size: .85rem; color: var(--muted); }
   .panel-actions { display: flex; gap: .6rem; margin-top: 1.6rem; }
@@ -135,6 +158,7 @@
     <div class="side">
       <p class="kicker">Shira &amp; Leendon · December 6, 2026</p>
       <h1 class="title">Raffle Draw</h1>
+      <div class="prize" id="prize" hidden></div>
       <p class="now" id="now"></p>
       <p class="now-table" id="now-table"></p>
       <p class="count" id="count">Loading the guest list…</p>
@@ -145,6 +169,7 @@
     <p class="win-kicker">Congratulations</p>
     <p class="win-name" id="win-name"></p>
     <p class="win-table" id="win-table"></p>
+    <div class="prize" id="win-prize" hidden></div>
   </div>
   <canvas id="confetti"></canvas>
 
@@ -173,7 +198,8 @@
 <script>
 const SEATS_URL = 'https://script.google.com/macros/s/AKfycbyTuqgUu9wSuGxurX-VFAjPWzx7jsEm-IkYZpl4tld5ngMIGu4EBcFXSL8QnvOOCcZO2A/exec';
 const ALIAS = { 'Table 28': 'VIP 3' };
-const STATE_KEY = 'raffle-state', GUESTS_KEY = 'raffle-guests';
+const STATE_KEY = 'raffle-state', GUESTS_KEY = 'raffle-guests', PRIZES_KEY = 'raffle-prizes';
+const TIERS = ['minor', 'major', 'grand'];   // prizes are drawn tier by tier in this order, so the grand prize comes last
 const TAU = Math.PI * 2;
 const MAX_SPIN = 10;     // radians per second at full spin (~1.6 turns)
 const IDLE_SPIN = .06;
@@ -189,6 +215,7 @@ const mod = (a, n) => ((a % n) + n) % n;
 
 let order = [];          // every attending guest, shuffled once so families don't sit together on the wheel
 let wheel = [];          // the slices: guests still in the draw, in wheel order
+let prizes = [];         // one entry per prize to give away, in draw order; the next draw is for prizes[winners.length]
 let state = load(STATE_KEY, { winners: [], absent: [] });
 let phase = 'loading';   // loading → idle → spinning → stopping → winner → idle
 let theta = 0, spin = 0, last = 0, lastSlice = -1, lastTick = 0;
@@ -336,7 +363,8 @@ function stopSpin() {
 function reveal() {
   theta = stop.to;
   phase = 'winner';
-  state.winners.push(current);
+  const prize = prizes[state.winners.length];
+  state.winners.push(prize ? { ...current, prize } : current);
   save(STATE_KEY, state);
   $('win-name').textContent = current.name;
   $('win-table').textContent = current.table;
@@ -380,9 +408,17 @@ function render() {
   $('redraw').hidden = phase !== 'winner';
   $('list-btn').textContent = 'Winners (' + state.winners.length + ')';
   $('sound-btn').textContent = sound ? 'Sound on' : 'Sound off';
-  if (phase !== 'loading') $('count').textContent = left + (left === 1 ? ' guest' : ' guests') + ' in the draw';
+  const upcoming = prizes[state.winners.length], won = state.winners.length && state.winners[state.winners.length - 1].prize;
+  if (phase !== 'loading') $('count').textContent = prizes.length && !upcoming ? 'All prizes drawn' : left + (left === 1 ? ' guest' : ' guests') + ' in the draw';
+  [['prize', upcoming], ['win-prize', won]].forEach(([id, p]) => {
+    const html = p ? (p.image ? '<img src="' + esc(p.image) + '" alt="" onerror="this.remove()">' : '') +
+      '<div><p class="prize-tier">' + esc(p.tier + ' prize' + (p.of > 1 ? ' · ' + p.unit + ' of ' + p.of : '')) + '</p><p class="prize-name">' + esc(p.name) + '</p></div>' : '';
+    if ($(id).dataset.html !== html) { $(id).innerHTML = html; $(id).dataset.html = html; }   // left alone when unchanged so the photo doesn't flicker
+    $(id).hidden = !p;
+  });
   $('winners').innerHTML = state.winners.length
-    ? '<ol>' + state.winners.map(w => '<li>' + esc(w.name) + (w.table ? '<small>' + esc(w.table) + '</small>' : '') + '</li>').join('') + '</ol>'
+    ? '<ol>' + state.winners.map(w => '<li>' + esc(w.name) + (w.table ? '<small>' + esc(w.table) + '</small>' : '') +
+      (w.prize ? '<span class="won">' + esc(w.prize.name) + '</span>' : '') + '</li>').join('') + '</ol>'
     : '<p class="empty">No winners yet.</p>';
   if (state.absent.length) $('winners').innerHTML += '<p class="absent">Not present, redrawn: ' + esc(state.absent.map(g => g.name).join(', ')) + '</p>';
 }
@@ -453,6 +489,18 @@ document.addEventListener('mousemove', wake);
 document.addEventListener('pointerdown', wake);
 window.addEventListener('resize', () => { if (phase !== 'loading') drawWheel(); });
 
+// Offline it falls back to the last copy this browser saw; a typo in the file shows no prizes instead, so a bad edit gets noticed.
+const prizesReady = fetch('raffle-prizes.json', { cache: 'no-cache' })
+  .then(r => r.json().then(list => { save(PRIZES_KEY, list); return list; }, () => []), () => load(PRIZES_KEY, []))
+  .then(list => {
+    prizes = (Array.isArray(list) ? list : []).filter(p => p && p.name)
+      .map(p => ({ name: p.name, tier: p.tier || 'minor', image: p.image || '', of: p.quantity || 1 }))
+      .sort((a, b) => TIERS.indexOf(a.tier) - TIERS.indexOf(b.tier))
+      .flatMap(p => Array.from({ length: p.of }, (_, i) => ({ ...p, unit: i + 1 })));
+    prizes.forEach(p => { if (p.image) new Image().src = p.image; });   // fetched now so the photos still show if the wifi drops
+    document.documentElement.classList.toggle('has-prize', prizes.length > 0);
+  });
+
 // Falls back to the last list this browser saw, in case the venue wifi drops.
 fetch(SEATS_URL + '?view=seats')
   .then(r => r.json())
@@ -463,7 +511,7 @@ fetch(SEATS_URL + '?view=seats')
     return list;
   })
   .catch(() => load(GUESTS_KEY, []))
-  .then(list => Promise.all(['500 20px Montserrat', '600 40px "Cormorant Garamond"', '40px Allura'].map(f => document.fonts.load(f))).catch(() => {}).then(() => list))
+  .then(list => Promise.all([prizesReady, Promise.all(['500 20px Montserrat', '600 40px "Cormorant Garamond"', '40px Allura'].map(f => document.fonts.load(f))).catch(() => {})]).then(() => list))
   .then(list => {
     if (!list.length) { $('count').textContent = 'Couldn’t load the guest list — check the connection and reload'; return; }
     order = list.slice();
