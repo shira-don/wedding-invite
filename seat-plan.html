@@ -63,23 +63,36 @@
     .modal { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center;
       padding: 1rem; background: rgba(40,28,56,.45); }
     .modal[hidden] { display: none; }
-    .modal-card { position: relative; width: 100%; max-width: 420px; max-height: 80vh; overflow-y: auto;
+    .modal-card { position: relative; width: 100%; max-width: 420px; max-height: 88vh; max-height: 88dvh; overflow-y: auto;
       background: #fff; border-radius: 14px; padding: .9rem 1.1rem 1rem; box-shadow: 0 18px 40px -12px rgba(40,28,56,.45); }
-    .m-close { position: absolute; top: .35rem; right: .45rem; width: 2.2rem; height: 2.2rem; border: none; background: none;
+    .m-close { position: absolute; top: .3rem; right: .35rem; width: 2.7rem; height: 2.7rem; border: none; background: none;
       font-size: 1.6rem; line-height: 1; color: #8a8398; cursor: pointer; border-radius: 50%; }
     .m-close:hover, .m-close:focus-visible { background: #f3eef9; color: #5d3f87; outline: none; }
-    .m-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: .2rem .7rem; padding: 0 2.2rem .5rem 0;
+    .m-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: .2rem .7rem; padding: 0 2.6rem .5rem 0;
       border-bottom: 1px solid rgba(168,155,187,.3); margin-bottom: .45rem; }
     .m-title { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 1.5rem; color: #7b5ea7; letter-spacing: .5px; }
     .m-note { font-size: .62rem; letter-spacing: 1.5px; text-transform: uppercase; color: #52734d; }
-    .m-match { padding: 0 2.2rem .5rem 0; border-bottom: 1px solid rgba(168,155,187,.3); margin-bottom: .5rem; }
+    .m-match { padding: 0 2.6rem .5rem 0; border-bottom: 1px solid rgba(168,155,187,.3); margin-bottom: .5rem; }
     .m-name { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 1.35rem; color: #3a3a3a; line-height: 1.2; }
     .m-where { display: flex; align-items: baseline; flex-wrap: wrap; gap: .1rem .6rem; margin-top: .1rem; }
     .m-tbl { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 1.6rem; color: #7b5ea7; letter-spacing: .5px; }
     .m-label { font-size: .62rem; letter-spacing: 1.5px; text-transform: uppercase; color: #7b5ea7; margin-bottom: .2rem; }
     .m-warn { font-size: .75rem; color: #8a5a1c; background: #fff6ec; border-radius: 6px; padding: .35rem .6rem; margin-bottom: .45rem; }
-    .modal-card .m-list { margin-top: 0; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 0 .9rem; }
+    .modal-card .m-list { margin-top: 0; columns: 1; }   /* one name per line on phones: two columns wrapped most names */
     .modal-card .m-list li { line-height: 1.55; font-size: .92rem; }
+    /* the table as it sits on the floor plan, seats numbered */
+    .m-svg { display: block; width: 100%; max-width: 210px; height: auto; margin: .2rem auto .8rem; }
+    .m-svg.long { max-width: 150px; }
+    .d-top { fill: #c6ad93; }
+    .d-num { font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: 500; fill: #fff; text-anchor: middle; }
+    .d-num.vip { font-size: 13px; }
+    .d-seat circle { fill: #fff; stroke: #b9a089; stroke-width: 1.5; }
+    .d-seat text { font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 500; fill: #6f6880; text-anchor: middle; pointer-events: none; }
+    .d-seat.free circle { fill: #faf8fc; stroke: #d9d0e4; stroke-dasharray: 3 2; }
+    .d-seat.free text { fill: #c3bacd; }
+    .d-seat.hl circle { fill: #efe7f7; stroke: #7b5ea7; stroke-width: 2; }
+    .d-seat.you circle { fill: #7b5ea7; stroke: #5d3f87; }
+    .d-seat.you text { fill: #fff; }
     .msg { text-align: center; margin-top: 1.25rem; font-size: .9rem; color: #c0392b; }
 
     .toggle { display: block; margin: 1.25rem auto 0; background: none; border: none; cursor: pointer;
@@ -118,6 +131,7 @@
     .tbl.extra .disc { fill: #cfc3d8; stroke: #7b5ea7; stroke-width: 1.5; stroke-dasharray: 3 2; }
     .tbl.on .disc, .tbl.on .vip-top { fill: #7b5ea7; stroke: #5d3f87; }
     .tbl.on .seat { stroke: #7b5ea7; }
+    .tbl .seat.you { fill: #7b5ea7; stroke: #5d3f87; }
     .tbl:focus { outline: none; }
     .legend { display: flex; flex-wrap: wrap; gap: .75rem 1.5rem; justify-content: center;
       margin-top: .6rem; font-size: .68rem; letter-spacing: 1px; color: #6f6880; }
@@ -134,19 +148,24 @@
     .t-id { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 1.2rem; color: #7b5ea7; letter-spacing: 1px; }
     .t-note { font-size: .62rem; letter-spacing: 1.5px; text-transform: uppercase; color: #52734d; }
     .t-guests { font-family: 'Cormorant Garamond', serif; font-size: 1rem; color: #3a3a3a; line-height: 1.9; }
-    .g-list {
-      list-style: none; padding: 0; margin: .4rem 0 0; text-align: left;
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap: .2rem .9rem;
-    }
+    /* columns rather than a grid, so seat numbers read down then across */
+    .g-list { list-style: none; padding: 0; margin: .4rem 0 0; text-align: left; columns: 185px; column-gap: .9rem; }
+    /* every row gets the same marker slot (seat number, baby or bullet) so the names line up; a flex row keeps the
+       marker on the first line when a name wraps */
     .g-list li {
-      position: relative; padding-left: .95rem;
+      display: flex; align-items: baseline; gap: .55rem; break-inside: avoid;
       font-family: 'Cormorant Garamond', serif; font-size: 1rem; line-height: 1.75; color: #3a3a3a;
     }
-    .g-list li::before { content: '\2022'; position: absolute; left: 0; color: #b7a5cd; }
+    .g-list li::before { content: '\2022'; flex: none; width: 1.35rem; text-align: center; color: #b7a5cd; }
+    .g-list li[data-seat]::before {
+      content: attr(data-seat); height: 1.35rem; border: 1px solid #c9bcd9; border-radius: 50%;
+      font-family: 'Montserrat', sans-serif; font-size: .6rem; font-weight: 500; line-height: 1.25rem; color: #7b5ea7;
+    }
+    .g-list li.hl::before { background: #efe7f7; border-color: #7b5ea7; }
     .g-list li strong { color: #7b5ea7; }
     @font-face { font-family: 'FA Solid'; font-weight: 900; font-display: block; src: url(fonts/fa/fa-solid-900.woff2) format('woff2'); }
     .g-list li.baby::before, .m-name.baby::before { content: '\f77c'; font-family: 'FA Solid'; font-weight: 900; color: #7b5ea7; }
-    .g-list li.baby::before { font-size: .72em; line-height: 2.43; }
+    .g-list li.baby::before { font-size: .72em; }
     .m-name.baby::before { font-size: .7em; margin-right: .45rem; vertical-align: .08em; }
 
     .topbar { padding-top: .7rem; }
@@ -169,16 +188,19 @@
        fit on one screen (1000x640 viewBox, so width = height x 1.5625) */
     @media (min-width: 601px) {
       .plan-scroll { width: fit-content; max-width: 100%; margin: 0 auto; }
-      #map { min-width: 0; width: min(914px, calc(100vw - 90px), calc((100vh - 325px) * 1.5625)); }
+      #map { min-width: 0; width: min(914px, calc(100vw - 90px), max(560px, calc((100vh - 325px) * 1.5625))); }   /* floor: a phone on its side has almost no height */
       .modal-card { max-width: 640px; max-height: 85vh; padding: 1.5rem 2rem 1.7rem; border-radius: 18px; }
-      .m-close { top: .7rem; right: .8rem; width: 2.6rem; height: 2.6rem; font-size: 2rem; }
+      .m-close { top: .7rem; right: .8rem; font-size: 2rem; }
       .m-head, .m-match { padding-right: 2.8rem; padding-bottom: .7rem; margin-bottom: .8rem; }
       .m-title, .m-tbl { font-size: 2.1rem; }
       .m-name { font-size: 1.8rem; }
       .m-note, .m-label { font-size: .72rem; }
       .m-warn { font-size: .85rem; }
-      .modal-card .m-list { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: .1rem 1.6rem; }
+      .modal-card .m-list { columns: 230px; column-gap: 1.6rem; }
       .modal-card .m-list li { font-size: 1.15rem; line-height: 1.75; }
+      .m-layout { display: grid; grid-template-columns: 190px 1fr; gap: 0 1.8rem; align-items: start; }
+      .m-svg { margin: .3rem 0 0; }
+      .m-svg.long { justify-self: center; }
     }
   </style>
 </head>
@@ -235,13 +257,13 @@
 // Paste that project's /exec URL here (no query string).
 const SEATS_URL = 'https://script.google.com/macros/s/AKfycbyTuqgUu9wSuGxurX-VFAjPWzx7jsEm-IkYZpl4tld5ngMIGu4EBcFXSL8QnvOOCcZO2A/exec';
 const CAP = { 'VIP 1': 17, 'VIP 2': 16, 'VIP 3': 10 };   // round tables default to 10
+const LONG = new Set(['VIP 1', 'VIP 2']);   // seats down both sides; VIP 1's odd seat is at the far end
 // Column D's dropdown has no "VIP 3" yet, so the sheet stores it as TABLE 28.
 const ALIAS = { 'Table 28': 'VIP 3' };
 const NOTE = { 'VIP 1': "Groom's Family", 'VIP 2': "Bride's Family & Principal Sponsors", 'VIP 3': "Groom's Relatives" };
 
 let TABLES = [];
 let UNASSIGNED = [];
-let BABIES = new Set();   // babies (** in the sheet) sit on a lap, so they don't take one of the table's seats
 
 // The sheet's TABLE NO. is free text — accept "3", "Table 3", "VIP 1", "vip2".
 function tableLabel(raw) {
@@ -253,22 +275,148 @@ function tableLabel(raw) {
   return v;
 }
 const capOf = id => CAP[id] || 10;
-const seated = t => t.guests.filter(n => !BABIES.has(n)).length;
+const seated = t => t.guests.filter(g => !g.baby).length;
 
+// Babies (** in the sheet) sit on a lap, so they don't take one of the table's seats.
 function buildTables(guests) {
   const by = new Map();
   UNASSIGNED = [];
-  BABIES = new Set(guests.filter(g => g.highChair).map(g => g.name));
   guests.forEach(g => {
     const id = tableLabel(g.table);
     if (!id) { UNASSIGNED.push(g.name); return; }
     if (!by.has(id)) by.set(id, []);
-    by.get(id).push(g.name);
+    by.get(id).push({ name: g.name, baby: !!g.highChair, group: g.group || 0, pin: parseInt(String(g.seat || '').replace(/\D/g, ''), 10) || 0, seat: 0 });
   });
   const rank = id => id.startsWith('VIP') ? [0, id] : [1, parseInt(id.replace(/\D/g, ''), 10) || 999];
   return [...by.entries()]
     .sort((a, b) => { const x = rank(a[0]), y = rank(b[0]); return x[0] - y[0] || (x[1] > y[1] ? 1 : -1); })
-    .map(([id, guests]) => ({ id, note: NOTE[id] || '', guests }));
+    .map(([id, guests]) => seatTable({ id, note: NOTE[id] || '', guests, conflicts: [] }));
+}
+
+// Seats first whoever the sheet's SEAT column places, then each family (a block of rows between blank
+// rows in the sheet) side by side.
+function seatTable(t) {
+  const cap = capOf(t.id), taken = [];
+  const adults = t.guests.filter(g => !g.baby);
+  adults.forEach(g => {
+    if (!g.pin) return;
+    if (g.pin > cap) t.conflicts.push(esc(g.name) + ' is marked for seat ' + g.pin + ', but the table has ' + cap + ' seats');
+    else if (taken[g.pin]) t.conflicts.push('seat ' + g.pin + ' is marked for both ' + esc(taken[g.pin].name) + ' and ' + esc(g.name));
+    else { g.seat = g.pin; taken[g.pin] = g; }
+  });
+  const families = [...new Set(adults.map(g => g.group))].map(k => adults.filter(g => g.group === k));
+  if (LONG.has(t.id)) seatLong(t, families, taken);
+  else seatRound(cap, families, taken);
+  t.order = adults.slice().sort((a, b) => (a.seat || 999) - (b.seat || 999));
+  t.guests.forEach((g, i) => {   // a baby is listed after the guest above them in the sheet, usually a parent
+    if (!g.baby) return;
+    const parent = t.guests.slice(0, i).reverse().find(x => !x.baby);
+    let at = parent ? t.order.indexOf(parent) + 1 : 0;
+    while (t.order[at] && t.order[at].baby) at++;
+    t.order.splice(at, 0, g);
+  });
+  return t;
+}
+
+// Long tables: each side runs top to bottom (1–8 down the left, 9–16 down the right), and VIP 1's far-end
+// seat, 17, is only used once both sides are full. A family keeps to one side when it fits, and the sides
+// are evened out as far as whole families allow; a family too big for one side is split where it evens them.
+function seatLong(t, families, taken) {
+  const S = Math.floor(capOf(t.id) / 2);
+  const sideOf = s => s <= S ? 0 : s <= S * 2 ? 1 : -1;
+  const count = [0, 0], plan = [], open = [];
+  taken.forEach((g, s) => { if (g && sideOf(s) >= 0) count[sideOf(s)]++; });
+  families.forEach((f, i) => {
+    const rest = f.filter(g => !g.seat), placed = f.find(g => g.seat && sideOf(g.seat) >= 0);
+    if (!rest.length) return;
+    if (placed) {
+      plan.push([i, rest, sideOf(placed.seat)]);
+      count[sideOf(placed.seat)] += rest.length;
+    } else if (rest.length > S) {
+      const k = Math.max(0, Math.min(rest.length, Math.ceil((count[0] + count[1] + rest.length) / 2) - count[0]));
+      plan.push([i, rest.slice(0, k), 0], [i, rest.slice(k), 1]);
+      count[0] += k;
+      count[1] += rest.length - k;
+    } else open.push([i, rest]);
+  });
+  // Every way of sending the remaining families left or right: fewest left without a seat, then the most even
+  // sides, then earlier families on the left.
+  let best = 0, bestScore = Infinity;
+  for (let mask = 0; mask < 1 << open.length; mask++) {
+    const c = count.slice();
+    let late = 0;
+    open.forEach(([, rest], j) => { const side = mask >> j & 1; c[side] += rest.length; if (side) late += open.length - j; });
+    const score = (Math.max(0, c[0] - S) + Math.max(0, c[1] - S)) * 1e6 + Math.abs(c[0] - c[1]) * 1e3 + late;
+    if (score < bestScore) { bestScore = score; best = mask; }
+  }
+  open.forEach(([i, rest], j) => plan.push([i, rest, best >> j & 1]));
+  const spill = [];
+  plan.sort((a, b) => a[0] - b[0]).forEach(([i, rest, side]) => rest.forEach(g => {
+    const mate = families[i].filter(x => x.seat && sideOf(x.seat) === side).pop();
+    let seat = 0, score = Infinity;
+    for (let s = side * S + 1; s <= side * S + S; s++) {
+      if (taken[s]) continue;
+      const d = mate ? Math.abs(s - mate.seat) * 2 + (s < mate.seat ? 1 : 0) : s;   // next to family, below first
+      if (d < score) { score = d; seat = s; }
+    }
+    if (seat) { g.seat = seat; taken[seat] = g; } else spill.push(g);
+  }));
+  spill.forEach(g => {   // a side ran out: any open seat, the far end last
+    let seat = 0;
+    for (let s = 1; s <= S * 2 && !seat; s++) if (!taken[s]) seat = s;
+    if (!seat && capOf(t.id) > S * 2 && !taken[S * 2 + 1]) seat = S * 2 + 1;
+    if (seat) { g.seat = seat; taken[seat] = g; }
+  });
+}
+
+// Round tables: next to a member already seated, else in the first empty stretch long enough to hold the
+// whole family. Seats run in a loop, so the last seat sits next to the first.
+function seatRound(cap, families, taken) {
+  const gap = (a, b) => (b - a + cap) % cap;   // steps clockwise from seat a to seat b
+  families.slice().sort((a, b) => b.some(g => g.seat) - a.some(g => g.seat)).forEach(members => {   // families someone is already placed in go first
+    let near = (members.find(g => g.seat) || {}).seat;
+    for (let s = 1; s <= cap && !near; s++) if (members.every((_, i) => !taken[(s + i - 1) % cap + 1])) near = s;
+    members.filter(g => !g.seat).forEach(g => {
+      let best = 0, score = Infinity;
+      for (let s = 1; s <= cap; s++) {
+        if (taken[s]) continue;
+        const d = near ? Math.min(gap(near, s), gap(s, near)) * 2 + (gap(near, s) <= gap(s, near) ? 0 : 1) : s;   // closest, clockwise first
+        if (d < score) { score = d; best = s; }
+      }
+      if (!best) return;   // the table is full
+      g.seat = near = best;
+      taken[best] = g;
+    });
+  });
+}
+
+// Drawn as the table sits on the floor plan: round tables number clockwise from the top; long tables
+// number down the left side, then down the right, with VIP 1's far-end seat last.
+function tableSvg(t, you) {
+  const cap = capOf(t.id), who = [];
+  t.guests.forEach(g => { if (g.seat) who[g.seat] = g.name; });
+  let w = 200, h = 200, top, at;
+  if (LONG.has(t.id)) {
+    const side = Math.floor(cap / 2), end = cap - side * 2;
+    w = 170; h = 40 + side * 30 + end * 30;
+    top = '<rect class="d-top" x="62" y="20" width="46" height="' + side * 30 + '" rx="4"/>' +
+      '<text class="d-num vip" x="85" y="' + (25 + side * 15) + '">' + esc(t.id) + '</text>';
+    at = k => k <= side ? [36, 35 + (k - 1) * 30] : k <= side * 2 ? [134, 35 + (k - side - 1) * 30] : [85, 35 + side * 30];
+  } else {
+    top = '<circle class="d-top" cx="100" cy="100" r="52"/>' + (t.id.startsWith('VIP')
+      ? '<text class="d-num vip" x="100" y="105">' + esc(t.id) + '</text>'
+      : '<text class="d-num" x="100" y="108">' + esc(t.id.replace(/\D/g, '')) + '</text>');
+    at = k => { const a = (k - 1) * 2 * Math.PI / cap; return [100 + 78 * Math.sin(a), 100 - 78 * Math.cos(a)]; };
+  }
+  let seats = '';
+  for (let k = 1; k <= cap; k++) {
+    const [x, y] = at(k).map(v => v.toFixed(1));
+    seats += '<g class="d-seat' + (who[k] ? '' : ' free') + (k === you ? ' you' : '') + '" data-seat="' + k + '">' +
+      '<title>' + (who[k] ? 'Seat ' + k + ': ' + esc(who[k]) : 'Seat ' + k + ' (open)') + '</title>' +
+      '<circle cx="' + x + '" cy="' + y + '" r="12"/><text x="' + x + '" y="' + (+y + 4.2).toFixed(1) + '">' + k + '</text></g>';
+  }
+  return '<svg class="m-svg' + (LONG.has(t.id) ? ' long' : '') + '" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="' +
+    esc(t.id) + ' seat layout">' + top + seats + '</svg>';
 }
 
 const tokens = s => (s || '')
@@ -285,7 +433,7 @@ function find(q) {
   if (!t.length) return [];
   const hits = [];
   TABLES.forEach(tb => tb.guests.forEach(g => {
-    const gt = tokens(g);
+    const gt = tokens(g.name);
     if (t.every(x => gt.includes(x))) hits.push({ guest: g, table: tb });
   }));
   return hits;
@@ -320,16 +468,25 @@ function centerOn(el) {
   box.scrollLeft += (r.left + r.width / 2) - (b.left + b.width / 2);
 }
 
-function highlight(id) {
+function highlight(id, seat) {
   document.querySelectorAll('#map .tbl').forEach(el => el.classList.toggle('on', el.dataset.table === id));
+  document.querySelectorAll('#map .seat.you').forEach(el => el.classList.remove('you'));
   const hit = document.querySelector('#map .tbl.on');
-  if (hit) centerOn(hit);
+  if (!hit) return;
+  if (seat) {
+    // the map draws a long table row by row, left seat then right, with the far-end seat last
+    const side = Math.floor(capOf(id) / 2);
+    const i = !LONG.has(id) ? seat - 1 : seat <= side ? (seat - 1) * 2 : seat <= side * 2 ? (seat - side - 1) * 2 + 1 : side * 2;
+    const el = hit.querySelectorAll('.seat')[i];
+    if (el) el.classList.add('you');
+  }
+  centerOn(hit);
 }
 
-const nameItem = n => '<li' + (BABIES.has(n) ? ' class="baby"' : '') + '>' + esc(n) + '</li>';
+const nameItem = g => '<li' + (g.baby ? ' class="baby"' : g.seat ? ' data-seat="' + g.seat + '"' : '') + '>' + esc(g.name) + '</li>';
 
-function guestList(names) {
-  return '<ul class="g-list m-list">' + names.map(nameItem).join('') + '</ul>';
+function guestList(guests) {
+  return '<ul class="g-list m-list">' + guests.map(nameItem).join('') + '</ul>';
 }
 
 function showTable(id) {
@@ -344,20 +501,21 @@ function showTable(id) {
     '<span class="m-note">' + (t.note ? esc(t.note) + ' \u00b7 ' : '') + n + ' seated' +
     (babies ? ' + ' + babies + (babies > 1 ? ' babies' : ' baby') : '') + '</span></div>' +
     (over > 0 ? '<p class="m-warn">' + over + ' over the ' + cap + ' seats at this table</p>' : '') +
-    guestList(t.guests));
+    '<div class="m-layout">' + tableSvg(t) + '<div>' + guestList(t.order) + '</div></div>');
 }
 
-// A search hit: the guest and their table first, then who they're sitting with.
+// A search hit: the guest, their table and seat first, then who they're sitting with.
 function openMatch(h) {
-  highlight(h.table.id);
-  const others = h.table.guests.filter(g => g !== h.guest);
+  const g = h.guest;
+  highlight(h.table.id, g.seat);
+  const others = h.table.order.filter(x => x !== g);
   openModal(
-    '<div class="m-match"><div class="m-name' + (BABIES.has(h.guest) ? ' baby' : '') + '" id="m-title">' +
-    esc(h.guest) + '</div>' +
-    '<div class="m-where"><span class="m-tbl">' + esc(h.table.id) + '</span>' +
+    '<div class="m-match"><div class="m-name' + (g.baby ? ' baby' : '') + '" id="m-title">' + esc(g.name) + '</div>' +
+    '<div class="m-where"><span class="m-tbl">' + esc(h.table.id) + (g.seat ? ' \u00b7 Seat ' + g.seat : '') + '</span>' +
     (h.table.note ? '<span class="m-note">' + esc(h.table.note) + '</span>' : '') + '</div></div>' +
+    '<div class="m-layout">' + tableSvg(h.table, g.seat) + '<div>' +
     (others.length ? '<p class="m-label">Seated with</p>' + guestList(others)
-                   : '<p class="m-label">No one else is seated here yet</p>'));
+                   : '<p class="m-label">No one else is seated here yet</p>') + '</div></div>');
 }
 
 function openMatches(hits) {
@@ -365,8 +523,8 @@ function openMatches(hits) {
     '<div class="m-head"><span class="m-title" id="m-title">' + hits.length + ' matches</span>' +
     '<span class="m-note">Tap your name</span></div>' +
     hits.map((h, i) => '<button type="button" class="hit" data-i="' + i + '">' +
-      '<span class="hit-name">' + esc(h.guest) + '</span>' +
-      '<span class="hit-table">' + esc(h.table.id) + '</span></button>').join(''));
+      '<span class="hit-name">' + esc(h.guest.name) + '</span>' +
+      '<span class="hit-table">' + esc(h.table.id) + (h.guest.seat ? ' \u00b7 Seat ' + h.guest.seat : '') + '</span></button>').join(''));
   document.querySelectorAll('#m-body .hit').forEach(b =>
     b.addEventListener('click', () => openMatch(hits[+b.dataset.i])));
 }
@@ -391,6 +549,12 @@ function closeModal() {
 
 document.getElementById('m-close').addEventListener('click', closeModal);
 modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+// Pointing at a seat or a name lights up both, so you can see who sits where.
+document.getElementById('m-body').addEventListener('pointerover', e => {
+  const hit = e.target.closest('[data-seat]');
+  document.querySelectorAll('#m-body .hl').forEach(el => el.classList.remove('hl'));
+  if (hit) document.querySelectorAll('#m-body [data-seat="' + hit.dataset.seat + '"]').forEach(el => el.classList.add('hl'));
+});
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
 document.querySelectorAll('#map .tbl').forEach(el => {
@@ -416,6 +580,7 @@ function renderNotices() {
     const c = capOf(t.id), n = seated(t);
     if (n > c) msgs.push('<strong>' + esc(t.id) + '</strong> has ' + n +
       ' seated but only ' + c + ' seats — ' + (n - c) + ' over.');
+    t.conflicts.forEach(m => msgs.push('<strong>' + esc(t.id) + '</strong>: ' + m + '.'));
   });
   if (UNASSIGNED.length) msgs.push('<strong>' + UNASSIGNED.length + '</strong> guest' +
     (UNASSIGNED.length > 1 ? 's have' : ' has') + ' no table yet: ' + UNASSIGNED.map(esc).join(', ') + '.');
@@ -427,7 +592,7 @@ function boot(guests) {
   chart.innerHTML = TABLES.map(t =>
     '<div class="t-card"><div class="t-head"><span class="t-id">' + esc(t.id) + '</span>' +
     '<span class="t-note">' + esc(t.note || (seated(t) + ' seated')) + '</span></div>' +
-    '<ul class="g-list">' + t.guests.map(nameItem).join('') + '</ul></div>').join('');
+    '<ul class="g-list">' + t.order.map(nameItem).join('') + '</ul></div>').join('');
   paintMap();
   renderNotices();
   document.getElementById('loading').hidden = true;
