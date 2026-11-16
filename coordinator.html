@@ -23,6 +23,9 @@
     .times { list-style: none; display: grid; grid-template-columns: max-content 1fr; gap: .15rem .9rem; font-size: .85rem; }
     .times b { font-weight: 600; color: #5e4590; white-space: nowrap; }
     .times span { color: #8a8398; }
+    .times .sec { grid-column: 1 / -1; margin-top: .7rem; font-size: .66rem; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: #52734d; }
+    .times .sec:first-child { margin-top: 0; }
+    .times .key { font-weight: 500; color: #5e4590; }
     .notes { padding-left: 1.1rem; font-size: .85rem; display: grid; gap: .35rem; }
     .notes li::marker { color: #9fbb99; }
 
@@ -190,12 +193,13 @@ const VENUE_SVG = '<svg class="plan" id="map-venue" viewBox="0 0 1000 720" role=
   '<rect class="zone pool" x="250" y="20" width="200" height="280" rx="10"/><path class="water" d="M275 70 H425 V190 H355 V275 H275 Z"/>' +
   '<text class="zone-t" x="350" y="52">POOL</text>' +
   '<rect class="zone garden" x="470" y="20" width="510" height="280" rx="10"/><text class="zone-t" x="725" y="150">CEREMONY GARDEN</text>' +
-  '<text class="zone-s" x="725" y="172">3:30 PM arrival · 4:00 PM ceremony</text>' +
+  '<text class="zone-s" x="725" y="172">3:00 PM arrival · 3:30 PM ceremony</text>' +
+  '<text class="zone-s" x="870" y="262">8:55 PM fireworks:</text><text class="zone-s" x="870" y="278">guests gather on this side</text>' +
   '<rect x="610" y="303" width="160" height="34" fill="url(#hatch-v)" stroke="#8a8398" stroke-width="1"/>' +
   '<text class="zone-s" x="782" y="324" style="text-anchor:start">stairs up to 2F ③</text>' +
   '<rect class="zone parking" x="20" y="340" width="430" height="360" rx="10"/><text class="zone-t" x="235" y="600">PARKING</text>' +
   '<rect class="zone hall" x="470" y="340" width="510" height="360" rx="6"/>' +
-  '<text class="zone-t" x="735" y="515">RECEPTION HALL</text><text class="zone-s" x="735" y="537">6:00 PM dinner</text>' +
+  '<text class="zone-t" x="735" y="515">RECEPTION HALL</text><text class="zone-s" x="735" y="537">6:00 PM seated · 6:30 PM dinner</text>' +
   '<rect class="box" x="935" y="430" width="30" height="180" rx="3"/><text class="box-t" x="950" y="520" transform="rotate(90 950 520)">STAGE</text>' +
   '<rect class="stairs-down" x="492" y="465" width="44" height="110" rx="6"/><text class="zone-s" x="514" y="520" transform="rotate(-90 514 520)">grand stairs</text>' +
   '<rect class="gap" x="650" y="337" width="50" height="6"/><text class="door-t" x="675" y="366">①</text><text class="zone-s" x="675" y="384">buffet side</text>' +
@@ -230,7 +234,7 @@ const UPPER_SVG = '<svg class="plan" id="map-upper" viewBox="' + VIEW + '" role=
 
 // Added on top of the seat plan's hall: the foyer partitions, the entrances, the archway and the kids corner.
 const GROUND_EXTRA =
-  '<path class="partition" d="M292 634 V556 H420"/><path class="partition" d="M760 634 V556 H632"/>' +
+  '<path class="partition" d="M292 556 H420"/><path class="partition" d="M632 556 H760"/>' +   // the foyers are open at the sides; only the hall side has a partition
   '<text class="mini" x="356" y="574">LEFT FOYER</text><text class="mini" x="696" y="574">RIGHT FOYER</text>' +
   '<rect class="gap" x="0" y="455" width="12" height="50"/><text class="door-t" x="-20" y="486">①</text>' +
   '<rect class="gap" x="988" y="236" width="12" height="58"/>' +
@@ -275,7 +279,8 @@ function renderLists() {
 
 function renderData(d) {
   suppliers = (d.suppliers || []).map((s, n) => ({ ...s, i: n + 1, k: String.fromCharCode(65 + n) }));   // lettered, so they can't be mistaken for table numbers
-  $('times').innerHTML = (d.times || []).map(([t, what, where]) => '<li><b>' + esc(t) + '</b></li><li>' + esc(what) + (where ? ' <span>· ' + esc(where) + '</span>' : '') + '</li>').join('');
+  $('times').innerHTML = (d.times || []).map(row => typeof row === 'string' ? '<li class="sec">' + esc(row) + '</li>' :   // a plain string is a section heading
+    '<li><b>' + esc(row[0]) + '</b></li><li' + (row[3] ? ' class="key"' : '') + '>' + esc(row[1]) + (row[2] ? ' <span>· ' + esc(row[2]) + '</span>' : '') + '</li>').join('');
   $('notes').innerHTML = (d.notes || []).map(n => '<li>' + esc(n) + '</li>').join('');
   renderLists();
   ['venue', 'upper', 'ground'].forEach(map => { const svg = $('map-' + map); if (svg) markers(svg, suppliers.filter(s => s.map === map)); });
