@@ -31,7 +31,7 @@
   "notes": [
     "Guests go from the ceremony past the pool to the cocktail area, then into the reception through entrance ② on the parking side.",
     "From 6:00 PM guests are seated and free to visit the souvenir stations until the host's welcome at 6:25.",
-    "Keep the walkway from entrance ② clear between the 360 booth (left foyer) and Cutie Pans (right foyer).",
+    "Keep the walkway from entrance ② clear between the audio guestbook (left foyer) and the 360 booth (right foyer).",
     "The mobile bar has two setups: the cocktail area for cocktail hour, then beside the buffet for the reception.",
     "Second-floor suppliers load in through entrance ③, up the outdoor stairs on the garden side.",
     "Keep clear all night: the service archway (caterers and restrooms), the prep rooms on the second floor, and the middle of the stair landing for the grand entrance.",
@@ -43,9 +43,9 @@
     { "map": "venue", "x": 75, "y": 225, "name": "The Empanada", "service": "Kakanin station", "spot": "Cocktail area", "contact": "Howard Castillo", "arrive": "", "notes": "" },
     { "map": "venue", "x": 175, "y": 225, "name": "The Greasy Lab", "service": "Street food station", "spot": "Cocktail area", "contact": "Tel Del Castillo", "arrive": "", "notes": "" },
 
-    { "map": "ground", "x": 444, "y": 612, "name": "Audio Guestbook", "service": "Audio guestbook", "spot": "By entrance ②, with the welcome table", "contact": "", "arrive": "", "notes": "First stop inside. The partition keeps it away from the hall's noise." },
-    { "map": "ground", "x": 356, "y": 598, "name": "360 Photo Booth", "service": "360 photo booth", "spot": "Left foyer", "contact": "", "arrive": "", "notes": "Needs about 3 × 3 m plus room for a queue; confirm the exact size with the supplier. Ground floor, as the second floor costs extra." },
-    { "map": "ground", "x": 696, "y": 598, "name": "Cutie Pans", "service": "Leather stamping & perfume bar", "spot": "Right foyer", "contact": "", "arrive": "", "notes": "Ground floor, as the second floor costs extra." },
+    { "map": "ground", "x": 356, "y": 598, "name": "Audio Guestbook", "service": "Audio guestbook", "spot": "Left foyer, by entrance ②", "contact": "", "arrive": "", "notes": "One of the first stops inside. The partition keeps it away from the hall's noise." },
+    { "map": "ground", "x": 696, "y": 598, "name": "360 Photo Booth", "service": "360 photo booth", "spot": "Right foyer", "contact": "", "arrive": "", "notes": "Needs about 3 × 3 m plus room for a queue; confirm the exact size with the supplier. Ground floor, as the second floor costs extra." },
+    { "map": "ground", "x": 828, "y": 598, "name": "Cutie Pans", "service": "Leather stamping & perfume bar", "spot": "Beside the right foyer, next to the 360 booth", "contact": "", "arrive": "", "notes": "Ground floor, as the second floor costs extra. On the 360's side, as the stamping is loud and the audio guestbook needs quiet." },
     { "map": "ground", "x": 118, "y": 178, "name": "Blaze and Blend", "service": "Mobile bar · reception setup", "spot": "Beside the buffet, near entrance ①", "contact": "Cyries Evan", "arrive": "", "notes": "Second setup, after cocktail hour." },
     { "map": "ground", "x": 866, "y": 390, "name": "Kids Corner", "service": "Small table with toys, set up by the family", "spot": "Right wall, clear of the service archway", "contact": "", "arrive": "", "notes": "Unattended. Add a small sign: “Little ones, please stay with a grown-up.”" },
 
