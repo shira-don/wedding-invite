@@ -82,21 +82,20 @@
     .plan .private { fill: #eeeaf2; stroke: #c9bcd9; stroke-width: 1.2; }
     .plan .route { fill: none; stroke: #7b5ea7; stroke-width: 3; stroke-dasharray: 8 6; }
     .plan .note-t { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 15px; fill: #6f6880; text-anchor: middle; }
-    .plan .kids { fill: #fff6ec; stroke: #d9a05b; stroke-width: 1.5; }
     .plan .lounge { fill: #f6efe7; stroke: #c6ad93; stroke-width: 1.2; }
     .plan .stairs-down { fill: #f3eef9; stroke: #8a8398; stroke-width: 1.2; stroke-dasharray: 4 3; }
-    .plan .mk { cursor: pointer; }
-    .plan .mk circle { fill: #7b5ea7; stroke: #fff; stroke-width: 2.5; }
-    .plan .mk text { font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 600; fill: #fff; text-anchor: middle; pointer-events: none; }
-    .plan .mk:focus { outline: none; }
-    .plan .mk.on circle { fill: #52734d; stroke: #fff6b8; stroke-width: 4; }
+    /* suppliers: labelled boxes like the backdrop and LED wall, in lilac so they stand apart from the venue's fixtures */
+    .plan .sup { cursor: pointer; }
+    .plan .sup rect { fill: #f3eef9; stroke: #7b5ea7; stroke-width: 1.5; }
+    .plan .sup text { font-family: 'Montserrat', sans-serif; font-size: 10.5px; font-weight: 500; letter-spacing: .5px; fill: #5d3f87; text-anchor: middle; pointer-events: none; }
+    .plan .sup text.sub { font-size: 8.5px; font-weight: 400; fill: #7b5ea7; }
+    .plan .sup:focus { outline: none; }
+    .plan .sup.on rect { fill: #eef4ea; stroke: #52734d; stroke-width: 3; }
+    .plan .sup.on text { fill: #3f5a3b; }
 
     .list { list-style: none; display: grid; gap: .6rem; margin-top: .9rem; }
     .item { display: flex; gap: .8rem; padding: .85rem 1rem; background: #fff; border: 1px solid rgba(168,155,187,.35); border-radius: 12px; cursor: pointer; scroll-margin-top: 4.5rem; }
     .item.on { border-color: #52734d; box-shadow: 0 0 0 2px rgba(82,115,77,.25); }
-    .no { flex: none; width: 1.9rem; height: 1.9rem; border-radius: 50%; background: #7b5ea7; color: #fff; font-weight: 600; font-size: .8rem;
-      display: flex; align-items: center; justify-content: center; }
-    .item.on .no { background: #52734d; }
     .name { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 1.2rem; line-height: 1.2; color: #3a3a3a; }
     .svc { font-size: .72rem; letter-spacing: 1px; text-transform: uppercase; color: #7b5ea7; margin-bottom: .35rem; }
     .facts { display: grid; grid-template-columns: max-content 1fr; gap: .05rem .7rem; font-size: .8rem; }
@@ -222,7 +221,6 @@ const UPPER_SVG = '<svg class="plan" id="map-upper" viewBox="' + VIEW + '" role=
   '<text class="zone-s" x="526" y="538">grand stairs ↓</text><text class="zone-t" x="526" y="624">STAIR LANDING</text></g>' +
   '<rect class="lounge" x="215" y="660" width="72" height="40" rx="8"/><text class="zone-s" x="251" y="684">lounge</text>' +
   '<text class="note-t" x="712" y="666">keep clear: route from</text><text class="note-t" x="712" y="684">prep rooms to the stairs</text>' +
-  '<text class="zone-t" x="40" y="560" transform="rotate(-90 40 560)">SUPPLIER LANE</text>' +
   '<rect class="gap" x="0" y="298" width="12" height="62"/><rect x="-44" y="298" width="40" height="62" fill="url(#hatch-u)" stroke="#8a8398" stroke-width="1"/>' +
   '<text class="door-t" x="26" y="335">③</text>' +
   '<text class="edge-t" x="526" y="-10">STAGE END</text>' +
@@ -236,29 +234,33 @@ const UPPER_SVG = '<svg class="plan" id="map-upper" viewBox="' + VIEW + '" role=
 const GROUND_EXTRA =
   '<path class="partition" d="M292 656 H420"/><path class="partition" d="M632 656 H760"/>' +   // the foyers are open at the sides; only the hall side has a partition
   '<text class="mini" x="356" y="674">LEFT FOYER</text><text class="mini" x="696" y="674">RIGHT FOYER</text>' +
-  '<rect class="gap" x="0" y="455" width="12" height="50"/><text class="door-t" x="-20" y="486">①</text>' +
+  '<rect class="gap" x="0" y="152" width="12" height="54"/><text class="door-t" x="-20" y="185">①</text>' +
   '<rect class="gap" x="988" y="236" width="12" height="58"/>' +
-  '<rect class="kids" x="878" y="362" width="96" height="56" rx="6"/><text class="mini" x="934" y="394">KIDS</text><text class="mini" x="934" y="406">CORNER</text>' +
   '<text class="edge-t" x="526" y="-12">STAGE END</text>' +
   '<text class="edge-t" x="526" y="762">PARKING SIDE · GUESTS ENTER AT ②</text>' +
-  '<text class="edge-t" x="-24" y="230" transform="rotate(-90 -24 230)">GARDEN &amp; POOL SIDE</text>' +
+  '<text class="edge-t" x="-24" y="440" transform="rotate(-90 -24 440)">GARDEN &amp; POOL SIDE</text>' +
   '<text class="edge-t" x="1028" y="265" transform="rotate(90 1028 265)">ARCHWAY · SERVICE &amp; RESTROOMS</text>';
 
 let suppliers = [];
 
 function markers(svg, list) {
   const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-  g.innerHTML = list.map(s => '<g class="mk" data-i="' + s.i + '" tabindex="0" role="button" aria-label="' + esc(s.k + '. ' + s.name) + '">' +
-    '<circle cx="' + s.x + '" cy="' + s.y + '" r="15"/><text x="' + s.x + '" y="' + (s.y + 5) + '">' + s.k + '</text></g>').join('');
+  g.innerHTML = list.map(s => {
+    const w = s.w || 110, h = s.h || 40, lines = (s.label || s.name.toUpperCase()).split('\n');
+    const top = s.y - (lines.length - 1) * 6.5 + 3.8;   // centre the lines in the box
+    return '<g class="sup" data-i="' + s.i + '" tabindex="0" role="button" aria-label="' + esc(s.name) + '">' +
+      '<rect x="' + (s.x - w / 2) + '" y="' + (s.y - h / 2) + '" width="' + w + '" height="' + h + '" rx="4"/>' +
+      lines.map((t, n) => '<text' + (n ? ' class="sub"' : '') + ' x="' + s.x + '" y="' + (top + n * 13) + '">' + esc(t) + '</text>').join('') + '</g>';
+  }).join('');
   svg.appendChild(g);
 }
 
 function select(i, from) {
-  document.querySelectorAll('.mk, .item').forEach(el => el.classList.toggle('on', +el.dataset.i === i));
+  document.querySelectorAll('.sup, .item').forEach(el => el.classList.toggle('on', +el.dataset.i === i));
   const s = suppliers.find(x => x.i === i);
   if (!s) return;
   if (from === 'map') { const card = document.querySelector('.item[data-i="' + i + '"]'); if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); return; }
-  const mk = document.querySelector('.mk[data-i="' + i + '"]'), box = $('box-' + s.map);
+  const mk = document.querySelector('.sup[data-i="' + i + '"]'), box = $('box-' + s.map);
   if (!mk || !box) return;
   const r = mk.getBoundingClientRect(), b = box.getBoundingClientRect();
   box.scrollLeft += (r.left + r.width / 2) - (b.left + b.width / 2);
@@ -269,7 +271,7 @@ function renderLists() {
   ['venue', 'ground', 'upper'].forEach(map => {
     $('list-' + map).innerHTML = suppliers.filter(s => s.map === map).map(s => {
       const fact = (label, v) => '<dt>' + label + '</dt>' + (v ? '<dd>' + esc(v) + '</dd>' : '<dd class="tbc">TBC</dd>');
-      return '<li class="item" data-i="' + s.i + '"><span class="no">' + s.k + '</span><div>' +
+      return '<li class="item" data-i="' + s.i + '"><div>' +
         '<p class="name">' + esc(s.name) + '</p><p class="svc">' + esc(s.service) + '</p>' +
         '<dl class="facts"><dt>Spot</dt><dd>' + esc(s.spot) + '</dd>' + fact('Contact', s.contact) + fact('Arrival', s.arrive) + '</dl>' +
         (s.notes ? '<p class="note">' + esc(s.notes) + '</p>' : '') + '</div></li>';
@@ -278,7 +280,7 @@ function renderLists() {
 }
 
 function renderData(d) {
-  suppliers = (d.suppliers || []).map((s, n) => ({ ...s, i: n + 1, k: String.fromCharCode(65 + n) }));   // lettered, so they can't be mistaken for table numbers
+  suppliers = (d.suppliers || []).map((s, n) => ({ ...s, i: n + 1 }));
   $('times').innerHTML = (d.times || []).map(row => typeof row === 'string' ? '<li class="sec">' + esc(row) + '</li>' :   // a plain string is a section heading
     '<li><b>' + esc(row[0]) + '</b></li><li' + (row[3] ? ' class="key"' : '') + '>' + esc(row[1]) + (row[2] ? ' <span>· ' + esc(row[2]) + '</span>' : '') + '</li>').join('');
   $('notes').innerHTML = (d.notes || []).map(n => '<li>' + esc(n) + '</li>').join('');
@@ -305,11 +307,11 @@ $('box-upper').innerHTML = UPPER_SVG;
 document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
 showTab(['venue', 'ground', 'upper'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'venue');
 document.addEventListener('click', e => {
-  const el = e.target.closest('.mk, .item');
-  if (el) select(+el.dataset.i, el.classList.contains('mk') ? 'map' : 'list');
+  const el = e.target.closest('.sup, .item');
+  if (el) select(+el.dataset.i, el.classList.contains('sup') ? 'map' : 'list');
 });
 document.addEventListener('keydown', e => {
-  const el = e.target.closest && e.target.closest('.mk');
+  const el = e.target.closest && e.target.closest('.sup');
   if (el && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); select(+el.dataset.i, 'map'); }
 });
 
