@@ -617,9 +617,9 @@ function failed(msg) {
 const planBox = document.querySelector('.plan-scroll');
 if (planBox) planBox.scrollLeft = (planBox.scrollWidth - planBox.clientWidth) / 2;
 
-// The coordinator's stations (lechon, bar, booths and the like), so guests can find them too.
-stationsLoad().then(([d, directory]) => {
-  if (d) stationsDraw(document.getElementById('map'), stationsMerge(d.suppliers, directory).filter(s => s.map === 'ground'), false);
+// The coordinator's stations (lechon, bar, booths and the like), labelled by what they are; guests don't need the supplier names.
+stationsLoad(false).then(([d]) => {
+  if (d) stationsDraw(document.getElementById('map'), stationsMerge(d.suppliers).filter(s => s.map === 'ground').map(s => ({ ...s, supplier: '', title: s.type })), false);
 });
 
 if (!SEATS_URL) {

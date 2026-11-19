@@ -4,15 +4,15 @@
 
 const STATIONS_SHEET = 'https://script.google.com/macros/s/AKfycbyTuqgUu9wSuGxurX-VFAjPWzx7jsEm-IkYZpl4tld5ngMIGu4EBcFXSL8QnvOOCcZO2A/exec';
 
-// Resolves to [coordinator.json, directory rows]. Offline, each falls back to the last copy this browser loaded,
-// as venue wifi is unreliable; either can come back null.
-function stationsLoad() {
+// Resolves to [coordinator.json, directory rows]; withSheet false skips the sheet when only the layout is needed.
+// Offline, each falls back to the last copy this browser loaded, as venue wifi is unreliable; either can come back null.
+function stationsLoad(withSheet = true) {
   const load = key => { try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; } };
   const save = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {} };
   const data = fetch('coordinator.json', { cache: 'no-cache' })
     .then(r => r.json()).then(d => { save('coordinator-data', d); return d; })
     .catch(() => load('coordinator-data'));
-  const directory = fetch(STATIONS_SHEET + '?view=suppliers')
+  const directory = !withSheet ? null : fetch(STATIONS_SHEET + '?view=suppliers')
     .then(r => r.json()).then(d => { if (!d.ok) throw new Error(d.error); save('coordinator-directory', d.suppliers); return d.suppliers; })
     .catch(() => load('coordinator-directory'));
   return Promise.all([data, directory]);
