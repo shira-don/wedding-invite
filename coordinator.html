@@ -172,10 +172,9 @@
     </footer>
   </div>
 
+<script src="stations.js"></script>
 <script>
-const DATA_KEY = 'coordinator-data', HALL_KEY = 'coordinator-hall', DIR_KEY = 'coordinator-directory';
-// home.exe's Apps Script deployment, the same one the seat plan reads; ?view=suppliers is the SUPPLIERS DIRECTORY tab.
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyTuqgUu9wSuGxurX-VFAjPWzx7jsEm-IkYZpl4tld5ngMIGu4EBcFXSL8QnvOOCcZO2A/exec';
+const HALL_KEY = 'coordinator-hall';
 const VIEW = '-50 -30 1110 815';   // the seat plan's 1000×740 room, with margins for the wall labels
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const load = key => { try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; } };
@@ -234,30 +233,13 @@ const UPPER_SVG = '<svg class="plan" id="map-upper" viewBox="' + VIEW + '" role=
 
 // Added on top of the seat plan's hall: the foyer partitions, the entrances, the archway and the kids corner.
 const GROUND_EXTRA =
-  '<path class="partition" d="M292 656 H420"/><path class="partition" d="M632 656 H760"/>' +   // the foyers are open at the sides; only the hall side has a partition
-  '<text class="mini" x="356" y="674">LEFT FOYER</text><text class="mini" x="696" y="674">RIGHT FOYER</text>' +
-  '<rect class="gap" x="0" y="152" width="12" height="54"/><text class="door-t" x="-20" y="185">①</text>' +
-  '<rect class="gap" x="988" y="236" width="12" height="58"/>' +
+  '<text class="door-t" x="-20" y="185">①</text>' +
   '<text class="edge-t" x="526" y="-12">STAGE END</text>' +
   '<text class="edge-t" x="526" y="762">PARKING SIDE · GUESTS ENTER AT ②</text>' +
   '<text class="edge-t" x="-24" y="440" transform="rotate(-90 -24 440)">GARDEN &amp; POOL SIDE</text>' +
   '<text class="edge-t" x="1028" y="265" transform="rotate(90 1028 265)">ARCHWAY · SERVICE &amp; RESTROOMS</text>';
 
 let suppliers = [];
-
-function markers(svg, list) {
-  const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-  g.innerHTML = list.map(s => {
-    const w = s.w || 110, h = s.h || 40, lines = s.supplier ? [s.supplier.toUpperCase(), s.type] : [s.type];
-    const top = s.y - (lines.length - 1) * 6.5 + 3.8;   // centre the lines in the box
-    const size = (t, n) => Math.max(7, Math.min(n ? 8.5 : 10.5, (w - 12) / (t.length * .7)));   // a long name from the sheet shrinks to fit
-    return '<g class="sup" data-i="' + s.i + '" tabindex="0" role="button" aria-label="' + esc(s.title) + '">' +
-      '<rect x="' + (s.x - w / 2) + '" y="' + (s.y - h / 2) + '" width="' + w + '" height="' + h + '" rx="4"/>' +
-      lines.map((t, n) => '<text' + (n ? ' class="sub"' : '') + ' x="' + s.x + '" y="' + (top + n * 13) + '" style="font-size:' + size(t, n).toFixed(1) + 'px">' +
-        esc(t) + '</text>').join('') + '</g>';
-  }).join('');
-  svg.appendChild(g);
-}
 
 function select(i, from) {
   document.querySelectorAll('.sup, .item').forEach(el => el.classList.toggle('on', +el.dataset.i === i));
@@ -285,26 +267,13 @@ function renderLists() {
   });
 }
 
-// Each box names its row in the sheet's SUPPLIERS DIRECTORY ("directory"); the sheet's supplier, contact person,
-// arrival time and coverage win over the copies in coordinator.json, which only stand in until the sheet loads.
 function renderData(d, directory) {
-  const key = v => String(v || '').trim().replace(/\s+/g, ' ').toUpperCase();
-  const rows = new Map((directory || []).map(r => [key(r.service), r]));
-  suppliers = (d.suppliers || []).map((s, n) => {
-    const row = s.directory && rows.get(key(s.directory));
-    const listed = row && !/^(to follow|tbc|tba|n\/?a|-*)$/i.test(row.name) ? row.name : '';   // "TO FOLLOW" isn't a supplier yet
-    const fromSheet = !!(directory && s.directory);
-    const supplier = listed || s.supplier || '';
-    return { ...s, i: n + 1, supplier, title: supplier || s.type.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()),
-      contact: fromSheet ? (listed ? row.contact : '') : s.contact,
-      arrive: fromSheet ? (listed ? row.arrive : '') : s.arrive,
-      coverage: listed ? row.coverage : '', pending: fromSheet && !listed };
-  });
+  suppliers = stationsMerge(d.suppliers, directory);
   $('times').innerHTML = (d.times || []).map(row => typeof row === 'string' ? '<li class="sec">' + esc(row) + '</li>' :   // a plain string is a section heading
     '<li><b>' + esc(row[0]) + '</b></li><li' + (row[3] ? ' class="key"' : '') + '>' + esc(row[1]) + (row[2] ? ' <span>· ' + esc(row[2]) + '</span>' : '') + '</li>').join('');
   $('notes').innerHTML = (d.notes || []).map(n => '<li>' + esc(n) + '</li>').join('');
   renderLists();
-  ['venue', 'upper', 'ground'].forEach(map => { const svg = $('map-' + map); if (svg) markers(svg, suppliers.filter(s => s.map === map)); });
+  ['venue', 'upper', 'ground'].forEach(map => { const svg = $('map-' + map); if (svg) stationsDraw(svg, suppliers.filter(s => s.map === map), true); });
 }
 
 function showTab(id) {
@@ -334,15 +303,7 @@ document.addEventListener('keydown', e => {
   if (el && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); select(+el.dataset.i, 'map'); }
 });
 
-// Offline, each falls back to the last copy this browser loaded, as venue wifi is unreliable.
-const dataReady = fetch('coordinator.json', { cache: 'no-cache' })
-  .then(r => r.json()).then(d => { save(DATA_KEY, d); return d; })
-  .catch(() => load(DATA_KEY));
-const directoryReady = fetch(SHEET_URL + '?view=suppliers')
-  .then(r => r.json()).then(d => { if (!d.ok) throw new Error(d.error); save(DIR_KEY, d.suppliers); return d.suppliers; })
-  .catch(() => load(DIR_KEY));
-
-Promise.all([dataReady, hallSvg(), directoryReady]).then(([d, hall, directory]) => {
+Promise.all([stationsLoad(), hallSvg()]).then(([[d, directory], hall]) => {
   if (hall) {
     $('box-ground').innerHTML = hall;
     const svg = $('box-ground').querySelector('svg');
