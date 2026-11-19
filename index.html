@@ -2038,13 +2038,13 @@
             <div class="venue-slot">
               <span class="vt-icon">&#9829;</span>
               <h3>The Ceremony</h3>
-              <div class="vt-time">4:00 PM</div>
+              <div class="vt-time">3:30 PM</div>
               <div class="vt-area">English Garden</div>
             </div>
             <div class="venue-slot">
               <span class="vt-icon">&#9733;</span>
               <h3>The Reception</h3>
-              <div class="vt-time">6:00 PM — Late</div>
+              <div class="vt-time">5:40 PM — 9:30 PM</div>
               <div class="vt-area">Le Grand Maison</div>
             </div>
           </div>
@@ -2104,39 +2104,59 @@
       </div>
       <div class="timeline stagger-children">
         <div class="timeline-item">
-          <div class="time">3:30 PM</div>
+          <div class="time">2:45 PM</div>
           <div class="dot"><i class="fa-solid fa-chair" aria-hidden="true"></i></div>
           <div class="event">Guest Arrival &amp; Seating</div>
         </div>
         <div class="timeline-item">
-          <div class="time">4:00 PM</div>
+          <div class="time">3:30 PM</div>
           <div class="dot"><i class="fa-solid fa-ring" aria-hidden="true"></i></div>
           <div class="event">Wedding Ceremony</div>
         </div>
         <div class="timeline-item">
           <div class="time">5:00 PM</div>
           <div class="dot"><i class="fa-solid fa-martini-glass" aria-hidden="true"></i></div>
-          <div class="event">Cocktail Hour &amp; Hors d'oeuvres</div>
+          <div class="event">Cocktail Hour</div>
         </div>
         <div class="timeline-item">
-          <div class="time">6:00 PM</div>
+          <div class="time">5:40 PM</div>
+          <div class="dot"><i class="fa-solid fa-door-open" aria-hidden="true"></i></div>
+          <div class="event">Reception Begins</div>
+        </div>
+        <div class="timeline-item">
+          <div class="time">6:15 PM</div>
           <div class="dot"><i class="fa-solid fa-utensils" aria-hidden="true"></i></div>
-          <div class="event">Dinner &amp; Toasts</div>
+          <div class="event">Dinner &amp; Messages</div>
         </div>
         <div class="timeline-item">
-          <div class="time">7:30 PM</div>
+          <div class="time">7:00 PM</div>
           <div class="dot"><i class="fa-solid fa-cake-candles" aria-hidden="true"></i></div>
-          <div class="event">Cake Cutting</div>
+          <div class="event">Cake Cutting &amp; Parent Dances</div>
         </div>
         <div class="timeline-item">
-          <div class="time">8:00 PM</div>
+          <div class="time">7:25 PM</div>
+          <div class="dot"><i class="fa-solid fa-dice" aria-hidden="true"></i></div>
+          <div class="event">Games &amp; Guest Awards</div>
+        </div>
+        <div class="timeline-item">
+          <div class="time">8:20 PM</div>
+          <div class="dot"><i class="fa-solid fa-film" aria-hidden="true"></i></div>
+          <div class="event">Same-Day Edit &amp; Thank-You</div>
+        </div>
+        <div class="timeline-item">
+          <div class="time">8:35 PM</div>
           <div class="dot"><i class="fa-solid fa-music" aria-hidden="true"></i></div>
-          <div class="event">Dancing &amp; Celebration</div>
+          <div class="event">After Party</div>
         </div>
         <div class="timeline-item">
-          <div class="time">10:00 PM</div>
+          <div class="time">9:10 PM</div>
           <div class="dot"><i class="fa-solid fa-burst" aria-hidden="true"></i></div>
-          <div class="event">Fireworks Send-Off</div>
+          <div class="event">Fireworks &amp; First Dance</div>
+        </div>
+        <div class="timeline-item">
+          <div class="time">9:20 PM</div>
+          <div class="dot"><i class="fa-solid fa-heart" aria-hidden="true"></i></div>
+          <div class="event">Send-Off</div>
         </div>
       </div>
     </div>
@@ -2497,7 +2517,7 @@
 
     // ── Countdown Timer ──────────────────────────────
     (function countdown() {
-      const wedding = new Date('2026-12-06T16:00:00+08:00').getTime();
+      const wedding = new Date('2026-12-06T15:30:00+08:00').getTime();
       function update() {
         const now = Date.now();
         const diff = Math.max(0, wedding - now);
@@ -2535,15 +2555,15 @@
       const menu = document.getElementById('cal-menu');
       if (!btn || !menu) return;
 
-      // Event details — ceremony 4:00 PM PHT (UTC+8) → end ~11:00 PM PHT
+      // Event details — ceremony 3:30 PM PHT (UTC+8) → send-off ~9:30 PM PHT
       const EV = {
         title: 'Wedding of Shira & Leendon',
-        details: 'Ceremony 4:00 PM, Reception to follow. We cannot wait to celebrate with you!',
+        details: 'Guest arrival 2:45 PM, ceremony 3:30 PM, reception to follow. We cannot wait to celebrate with you!',
         location: 'Soirée Events Place, 347 Nara St., Kayquit 3, Indang, Cavite',
-        startUTC: '20261206T080000Z',
-        endUTC: '20261206T150000Z',
-        startLocal: '2026-12-06T16:00:00+08:00',
-        endLocal: '2026-12-06T23:00:00+08:00',
+        startUTC: '20261206T073000Z',
+        endUTC: '20261206T133000Z',
+        startLocal: '2026-12-06T15:30:00+08:00',
+        endLocal: '2026-12-06T21:30:00+08:00',
       };
 
       // Google Calendar — opens a pre-filled event to save
@@ -2787,9 +2807,12 @@
           }
           return last.toLowerCase();
         };
+        // Couples who don't share a last name: the second is grouped under the first's.
+        const norm = n => String(n).trim().replace(/\s+/g, ' ').toLowerCase();
+        const partnerOf = new Map([['Gualberto Javier', 'Adela Lara']].map(([a, b]) => [norm(b), a]));
         const byLast = new Map();
         people.forEach(p => {
-          const key = lastNameOf(p.name);
+          const key = lastNameOf(partnerOf.get(norm(p.name)) || p.name);
           if (!byLast.has(key)) byLast.set(key, []);
           byLast.get(key).push(p);
         });
