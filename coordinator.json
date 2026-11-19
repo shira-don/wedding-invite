@@ -20,7 +20,7 @@
     ["7:15 PM", "Cake cutting and toast"],
     ["7:30 PM", "Parent dances"],
     ["7:40 – 8:25 PM", "Games: couple trivia, Guess the Tune or Lyrics, other guest games"],
-    ["8:25 PM", "Guest awards"],
+    ["8:25 PM", "Raffle draw", "", true, "raffle.html"],
     ["8:35 PM", "Same-day edit (SDE) screening"],
     ["8:45 PM", "Thank-you speech"],
     ["8:50 PM", "Guests to the right side of the garden; couple up to the balcony"],

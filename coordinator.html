@@ -26,6 +26,9 @@
     .times .sec { grid-column: 1 / -1; margin-top: .7rem; font-size: .66rem; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: #52734d; }
     .times .sec:first-child { margin-top: 0; }
     .times .key { font-weight: 500; color: #5e4590; }
+    .times .go { display: inline-block; margin: .25rem 0 .1rem; padding: .3rem .75rem; border-radius: 999px; background: #7b5ea7; color: #fff; font-weight: 600; font-size: .8rem; text-decoration: none; box-shadow: 0 0 0 3px #e6dcf3; }
+    .times .go:hover, .times .go:focus-visible { background: #5e4590; }
+    @media print { .times .go { background: none; color: #5e4590; box-shadow: none; padding: 0; text-decoration: underline; } }
     .notes { padding-left: 1.1rem; font-size: .85rem; display: grid; gap: .35rem; }
     .notes li::marker { color: #9fbb99; }
 
@@ -271,7 +274,8 @@ function renderLists() {
 function renderData(d, directory) {
   suppliers = stationsMerge(d.suppliers, directory);
   $('times').innerHTML = (d.times || []).map(row => typeof row === 'string' ? '<li class="sec">' + esc(row) + '</li>' :   // a plain string is a section heading
-    '<li><b>' + esc(row[0]) + '</b></li><li' + (row[3] ? ' class="key"' : '') + '>' + esc(row[1]) + (row[2] ? ' <span>· ' + esc(row[2]) + '</span>' : '') + '</li>').join('');
+    '<li><b>' + esc(row[0]) + '</b></li><li' + (row[3] ? ' class="key"' : '') + '>' + esc(row[1]) + (row[2] ? ' <span>· ' + esc(row[2]) + '</span>' : '') +
+    (row[4] ? ' <a class="go" href="' + esc(row[4]) + '" target="_blank" rel="noopener">Open the raffle page →</a>' : '') + '</li>').join('');
   $('notes').innerHTML = (d.notes || []).map(n => '<li>' + esc(n) + '</li>').join('');
   renderLists();
   ['venue', 'upper', 'ground'].forEach(map => { const svg = $('map-' + map); if (svg) stationsDraw(svg, suppliers.filter(s => s.map === map), true); });
