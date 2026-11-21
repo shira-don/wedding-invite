@@ -1,5 +1,9 @@
 [
-  { "name": "Baumann Portable Blender", "tier": "minor", "quantity": 2, "image": "" },
-  { "name": "Single Gas Stove", "tier": "minor", "quantity": 2, "image": "" },
-  { "name": "Kuchenluxe 17-inch Electric Griller", "tier": "grand", "quantity": 1, "image": "" }
+  {"name": "Mug", "tier": "minor", "quantity": 1, "image": ""},
+  {"name": "Throw Pillow", "tier": "minor", "quantity": 2, "image": ""},
+  {"name": "Crocs Gift Card (₱500)", "tier": "minor", "quantity": 3, "image": ""},
+  {"name": "Electric Kettle", "tier": "minor", "quantity": 2, "image": ""},
+  {"name": "Baumann Portable Blender", "tier": "minor", "quantity": 2, "image": ""},
+  {"name": "Single Gas Stove", "tier": "major", "quantity": 2, "image": ""},
+  {"name": "Kuchenluxe 17-inch Electric Griller", "tier": "grand", "quantity": 1, "image": ""}
 ]
