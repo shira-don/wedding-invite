@@ -91,6 +91,18 @@
     .s-opt.dim { opacity: .3; }
     .s-big { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 14vh; line-height: 1; color: #fff; }
     .s-line { font-size: 4vh; color: #cbbbe0; max-width: 90%; line-height: 1.4; }
+    /* Phones held upright: fill the screen, size text from its width, stack the two options */
+    @media (orientation: portrait) {
+      .slide { width: 100vw; height: 100vh; height: 100dvh; aspect-ratio: auto; gap: 3vh; padding: 6vh 6vw; }
+      .s-kicker { font-size: 3.6vw; letter-spacing: .8vw; }
+      .s-title { font-size: 13vw; }
+      .s-q { font-size: 7vw; max-width: 100%; }
+      .s-opts { grid-template-columns: 1fr; gap: 2vh; width: 100%; }
+      .s-opt { font-size: 6vw; padding: 2.2vh 4vw; border-radius: 3vw; border-width: .6vw; }
+      .s-opt small { font-size: 3.2vw; letter-spacing: .4vw; margin-bottom: .6vh; }
+      .s-big { font-size: 22vw; }
+      .s-line { font-size: 4.6vw; max-width: 100%; }
+    }
     .hint { position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%); font-size: .75rem; color: rgba(255,255,255,.55); transition: opacity 1s; }
   </style>
 </head>
