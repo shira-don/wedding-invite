@@ -103,7 +103,7 @@
       .s-big { font-size: 22vw; }
       .s-line { font-size: 4.6vw; max-width: 100%; }
     }
-    /* YouTube's player has to stay visible while it plays, so it sits small in a corner (at least 200 × 200) */
+    /* Hidden while guests guess so the video doesn't give the title away; shown on the reveal */
     .yt-box { position: fixed; right: 12px; bottom: 12px; width: 240px; height: 200px; border-radius: 10px; overflow: hidden; z-index: 3;
       box-shadow: 0 6px 24px rgba(0,0,0,.4); opacity: 0; pointer-events: none; transition: opacity .3s; background: #000; }
     .yt-box.on { opacity: 1; }
@@ -313,7 +313,7 @@ function present(d) {
   const show = () => {
     const step = steps[at];
     $('slide').innerHTML = (step.html || step) + (step.song ? '<p class="s-err">' + esc(error) + '</p>' : '');
-    $('yt-box').classList.toggle('on', !!step.song);
+    $('yt-box').classList.toggle('on', !!step.onwards);
     if (!step.song) return stopClip(player);
     error = ''; $('slide').querySelector('.s-err').textContent = '';
     player ? playClip(player, step.song, step.onwards) : ready.then(p => playClip(p, step.song, step.onwards));
