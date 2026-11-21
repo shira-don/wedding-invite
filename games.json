@@ -150,12 +150,12 @@
   },
   "tune": {
     "rules": [
-      "Each table plays as one team.",
-      "Every song is one the band played earlier tonight (from the planner sheet's MUSIC LIST), so the band plays the first few bars live.",
-      "If a song has a YouTube clip set in home.exe, it plays from the laptop instead.",
-      "The first table to stand and shout the title (and artist, for a bonus) gets the point.",
-      "Wrong guess: that table sits out the rest of that song.",
-      "The table with the most points at the end wins."
+      "Play as yourself, not as a table.",
+      "Every song is one the band played earlier tonight (from the planner sheet's MUSIC LIST), so the band plays the first few bars live. A song with a YouTube clip set in home.exe plays from the laptop instead.",
+      "First to stand up and shout the right title wins that round. The host points to whoever stood first; a wrong guess passes to the next person standing.",
+      "Each round's winner comes up for a small prize right away.",
+      "Once you've won, you sit out the rest of the songs, so more guests get a chance to win.",
+      "Nobody gets it? The band plays a little more, then the host reveals the answer and moves on."
     ],
     "songs": [
       {

@@ -280,16 +280,17 @@ function slidesFor(d) {
     (k === 'A' ? 'A · hands on head' : 'B · hands on hips') + '</small>' + esc(label) + '</div>';
   if (mode === 'tune') {
     const songs = d.tune.songs.filter(s => !/^to follow$/i.test(s.title));
-    return [['<p class="s-kicker">Game time</p><h1 class="s-title">Guess the Tune</h1><p class="s-line">Stand up and shout the title. First table gets the point!</p>']]
+    return [['<p class="s-kicker">Game time</p><h1 class="s-title">Guess the Tune</h1><p class="s-line">Play as yourself: first to stand and shout the title wins the round. Winners sit out the rest of the songs.</p>']]
       .concat(songs.map((s, n) => {
         const head = '<p class="s-kicker">Song ' + (n + 1) + ' of ' + songs.length + '</p>';
-        const reveal = '<p class="s-kicker">Song ' + (n + 1) + '</p><h1 class="s-title">' + esc(s.title) + '</h1><p class="s-line">' + esc(s.artist) + '</p>';
+        const reveal = '<p class="s-kicker">Song ' + (n + 1) + '</p><h1 class="s-title">' + esc(s.title) + '</h1><p class="s-line">' + esc(s.artist) + '</p>' +
+          '<p class="s-kicker">Winner, come up for your prize!</p>';
         if (!clipOf(s).id) return [head + '<p class="s-big">♪</p><p class="s-q">Name that tune!</p>', reveal];
         return [head + '<p class="s-big">♪</p><p class="s-q">Name that tune!</p><p class="s-line">Listen closely…</p>',
           { html: head + '<p class="s-big playing">♪</p><p class="s-q">Name that tune!</p>', song: s },
           { html: reveal, song: s, onwards: true }];
       }))
-      .concat([['<p class="s-kicker">Guess the Tune</p><h1 class="s-title">Thank you for playing!</h1>']]);
+      .concat([['<p class="s-kicker">Guess the Tune</p><h1 class="s-title">Thank you for playing!</h1><p class="s-line">Congratulations to all our winners!</p>']]);
   }
   const qs = d.lms.questions;
   return [['<p class="s-kicker">Game time</p><h1 class="s-title">Last Man Standing</h1><p class="s-line">Everyone stand up! Hands on head = A · Hands on hips = B. Wrong answer, sit down.</p>']]
