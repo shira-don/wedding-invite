@@ -103,6 +103,19 @@
       .s-big { font-size: 22vw; }
       .s-line { font-size: 4.6vw; max-width: 100%; }
     }
+    /* YouTube's player has to stay visible while it plays, so it sits small in a corner (at least 200 × 200) */
+    .yt-box { position: fixed; right: 12px; bottom: 12px; width: 240px; height: 200px; border-radius: 10px; overflow: hidden; z-index: 3;
+      box-shadow: 0 6px 24px rgba(0,0,0,.4); opacity: 0; pointer-events: none; transition: opacity .3s; background: #000; }
+    .yt-box.on { opacity: 1; }
+    .yt-box iframe { width: 100%; height: 100%; display: block; }
+    .s-big.playing { animation: pulse 1s ease-in-out infinite; }
+    @keyframes pulse { 50% { transform: scale(1.12); opacity: .75; } }
+    .s-err { font-size: 2.6vh; color: #f3c6a0; max-width: 80%; }
+    .clip { margin-top: .5rem; display: grid; gap: .4rem; justify-items: start; }
+    .clip .holder { width: 240px; height: 200px; border-radius: 10px; overflow: hidden; background: #000; }
+    .clip .holder:empty { display: none; }
+    .clip .err { font-size: .78rem; color: #a2552b; }
+    .clip-meta { font-size: .75rem; color: #8a8398; }
     .hint { position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%); font-size: .75rem; color: rgba(255,255,255,.55); transition: opacity 1s; }
   </style>
 </head>
@@ -157,6 +170,7 @@
   </div>
 
   <div class="stage" id="stage" role="presentation"><div class="slide" id="slide"></div></div>
+  <div class="yt-box" id="yt-box"><div id="yt"></div></div>
   <p class="hint" id="hint" hidden>Click or → for next · ← back · F full screen</p>
 
 <script src="wedding-games.js"></script>
@@ -165,6 +179,31 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const TBC = '<span class="tbc">couple to fill in</span>';
 const mode = new URLSearchParams(location.search).get('present');
+
+// Guess the Tune clips play straight from YouTube: a link, a start time and a length, so no song files need cutting.
+const ytId = url => { const m = String(url || '').match(/(?:youtu\.be\/|[?&]v=|embed\/|shorts\/|live\/)([\w-]{11})/) || String(url || '').trim().match(/^([\w-]{11})$/); return m ? m[1] : ''; };
+const secs = v => { const parts = String(v == null ? '' : v).trim().split(':').map(Number); return parts.some(isNaN) ? 0 : parts.reduce((a, b) => a * 60 + b, 0); };
+const clipOf = s => ({ id: ytId(s.youtube), start: secs(s.start), length: Number(s.length) || 10 });
+const clipLabel = s => { const c = clipOf(s), t = c.start; return 'Clip from ' + Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0') + ', ' + c.length + ' s'; };
+const EMBED_BLOCKED = 'This video won\'t play outside YouTube. Pick another upload of the song in home.exe.';
+let ytApi = null, clipTimer = 0;
+const youtubeApi = () => ytApi || (ytApi = new Promise(resolve => {
+  window.onYouTubeIframeAPIReady = resolve;
+  const tag = document.createElement('script'); tag.src = 'https://www.youtube.com/iframe_api'; document.head.append(tag);
+}));
+const clipPlayer = (el, onError) => youtubeApi().then(() => new Promise(resolve => {
+  const player = new YT.Player(el, { width: 240, height: 200, playerVars: { controls: 0, rel: 0, playsinline: 1, disablekb: 1 },
+    events: { onReady: () => resolve(player), onError: e => onError([101, 150].includes(e.data) ? EMBED_BLOCKED : 'YouTube couldn\'t play this clip (error ' + e.data + ').') } });
+}));
+// The clip stops itself at its end; "onwards" carries on from wherever it stopped, for the reveal.
+function playClip(player, song, onwards) {
+  clearInterval(clipTimer);
+  const c = clipOf(song);
+  if (onwards && player.getVideoData && player.getVideoData().video_id === c.id) return player.playVideo();
+  player.loadVideoById({ videoId: c.id, startSeconds: c.start });
+  if (!onwards) clipTimer = setInterval(() => { if (player.getCurrentTime() >= c.start + c.length) { player.pauseVideo(); clearInterval(clipTimer); } }, 150);
+}
+function stopClip(player) { clearInterval(clipTimer); if (player && player.pauseVideo) player.pauseVideo(); }
 
 function load() {
   const cached = () => { try { return JSON.parse(localStorage.getItem('games-data')); } catch (e) { return null; } };
@@ -209,7 +248,18 @@ function renderPage(d) {
 
   $('tune-songs').innerHTML = d.tune.songs.map((s, n) => '<li class="q"><p><span class="n">' + (n + 1) + '.</span>' +
     (/^to follow$/i.test(s.title) ? TBC : esc(s.title) + (s.artist ? ' <span style="color:#8a8398">· ' + esc(s.artist) + '</span>' : '')) + '</p>' +
-    (s.note ? '<p class="ans">' + esc(s.note) + '</p>' : '') + '</li>').join('');
+    (s.note ? '<p class="ans">' + esc(s.note) + '</p>' : '') +
+    (clipOf(s).id ? '<div class="clip"><span class="clip-meta">' + esc(clipLabel(s)) + '</span><button type="button" class="go" data-song="' + n + '">▶ Play the clip</button><div class="holder"></div><span class="err"></span></div>' : '') +
+    '</li>').join('');
+  let preview = null;
+  document.querySelectorAll('#tune-songs [data-song]').forEach(b => b.addEventListener('click', () => {
+    const song = d.tune.songs[+b.dataset.song], box = b.closest('.clip');
+    if (preview) { stopClip(preview); preview.destroy(); preview = null; }
+    document.querySelectorAll('#tune-songs .holder').forEach(h => { h.innerHTML = ''; });
+    box.querySelector('.err').textContent = '';
+    const el = document.createElement('div'); box.querySelector('.holder').append(el);
+    clipPlayer(el, msg => { box.querySelector('.err').textContent = msg; }).then(p => { preview = p; playClip(p, song); });
+  }));
 
   document.querySelectorAll('.ans button').forEach(b => b.addEventListener('click', () => b.closest('.q').classList.add('reveal')));
   $('show-all').addEventListener('change', e => document.querySelectorAll('#lms-qs .q').forEach(q => q.classList.toggle('reveal', e.target.checked)));
@@ -231,9 +281,14 @@ function slidesFor(d) {
   if (mode === 'tune') {
     const songs = d.tune.songs.filter(s => !/^to follow$/i.test(s.title));
     return [['<p class="s-kicker">Game time</p><h1 class="s-title">Guess the Tune</h1><p class="s-line">Stand up and shout the title. First table gets the point!</p>']]
-      .concat(songs.map((s, n) => [
-        '<p class="s-kicker">Song ' + (n + 1) + ' of ' + songs.length + '</p><p class="s-big">♪</p><p class="s-q">Name that tune!</p>',
-        '<p class="s-kicker">Song ' + (n + 1) + '</p><h1 class="s-title">' + esc(s.title) + '</h1><p class="s-line">' + esc(s.artist) + '</p>']))
+      .concat(songs.map((s, n) => {
+        const head = '<p class="s-kicker">Song ' + (n + 1) + ' of ' + songs.length + '</p>';
+        const reveal = '<p class="s-kicker">Song ' + (n + 1) + '</p><h1 class="s-title">' + esc(s.title) + '</h1><p class="s-line">' + esc(s.artist) + '</p>';
+        if (!clipOf(s).id) return [head + '<p class="s-big">♪</p><p class="s-q">Name that tune!</p>', reveal];
+        return [head + '<p class="s-big">♪</p><p class="s-q">Name that tune!</p><p class="s-line">Listen closely…</p>',
+          { html: head + '<p class="s-big playing">♪</p><p class="s-q">Name that tune!</p>', song: s },
+          { html: reveal, song: s, onwards: true }];
+      }))
       .concat([['<p class="s-kicker">Guess the Tune</p><h1 class="s-title">Thank you for playing!</h1>']]);
   }
   const qs = d.lms.questions;
@@ -250,14 +305,26 @@ function present(d) {
   document.title = (mode === 'tune' ? 'Guess the Tune' : 'Last Man Standing') + ' — LED';
   const steps = slidesFor(d).flat();
   let at = 0;
-  const show = () => { $('slide').innerHTML = steps[at]; };
+  const clips = mode === 'tune' && steps.some(st => st.song);
+  let player = null, error = '';
+  const ready = clips ? clipPlayer('yt', msg => { error = msg; const e = document.querySelector('.s-err'); if (e) e.textContent = msg; }).then(p => (player = p)) : null;
+  const show = () => {
+    const step = steps[at];
+    $('slide').innerHTML = (step.html || step) + (step.song ? '<p class="s-err">' + esc(error) + '</p>' : '');
+    $('yt-box').classList.toggle('on', !!step.song);
+    if (!step.song) return stopClip(player);
+    error = ''; $('slide').querySelector('.s-err').textContent = '';
+    player ? playClip(player, step.song, step.onwards) : ready.then(p => playClip(p, step.song, step.onwards));
+  };
   const go = n => { at = Math.max(0, Math.min(steps.length - 1, at + n)); show(); };
   $('stage').addEventListener('click', () => go(1));
   addEventListener('keydown', e => {
     if (['ArrowRight', ' ', 'PageDown', 'Enter'].includes(e.key)) { e.preventDefault(); go(1); }
     else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); go(-1); }
+    else if ((e.key === 'r' || e.key === 'R') && steps[at].song && player) playClip(player, steps[at].song);
     else if (e.key === 'f' || e.key === 'F') document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen().catch(() => {});
   });
+  if (clips) $('hint').textContent = 'Click or → for next · ← back · R replay the clip · F full screen';
   $('hint').hidden = false;
   setTimeout(() => { $('hint').style.opacity = 0; }, 4000);
   show();

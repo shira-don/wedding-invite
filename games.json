@@ -39,7 +39,7 @@
   "tune": {
     "rules": [
       "Each table plays as one team.",
-      "The band or tech plays the first few seconds of a song.",
+      "Each song plays a short clip straight from YouTube; click once to play it, again to reveal the answer (the song carries on).",
       "The first table to stand and shout the title (and artist, for a bonus) gets the point.",
       "Wrong guess: that table sits out the rest of that song.",
       "The table with the most points at the end wins."
