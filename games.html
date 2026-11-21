@@ -121,6 +121,8 @@
     .s-replay { font: inherit; font-size: 2.8vh; color: #fff; background: transparent; border: .3vh solid rgba(255,255,255,.4); border-radius: 99px;
       padding: 1vh 3vh; cursor: pointer; }
     .s-replay:hover { background: rgba(255,255,255,.12); }
+    .s-replay.on { background: #fff; color: #2b1d3d; border-color: #fff; }
+    .s-parts { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.6vh; }
     .s-status { font-size: 3.4vh; font-weight: 600; letter-spacing: .3vh; text-transform: uppercase; padding: 1.2vh 3.6vh; border-radius: 99px;
       background: rgba(255,255,255,.1); color: #cbbbe0; }
     .s-status.on { background: #c0392b; color: #fff; animation: pulse 1.4s ease-in-out infinite; }
@@ -131,6 +133,7 @@
     .clip .holder:empty { display: none; }
     .clip .err { font-size: .78rem; color: #a2552b; }
     .clip-meta { font-size: .75rem; color: #8a8398; }
+    .clip .parts { display: flex; flex-wrap: wrap; gap: .4rem; }
     .hint { position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%); font-size: .75rem; color: rgba(255,255,255,.55); transition: opacity 1s; }
   </style>
 </head>
@@ -198,8 +201,10 @@ const mode = new URLSearchParams(location.search).get('present');
 // Guess the Tune clips play straight from YouTube: a link, a start time and a length, so no song files need cutting.
 const ytId = url => { const m = String(url || '').match(/(?:youtu\.be\/|[?&]v=|embed\/|shorts\/|live\/)([\w-]{11})/) || String(url || '').trim().match(/^([\w-]{11})$/); return m ? m[1] : ''; };
 const secs = v => { const parts = String(v == null ? '' : v).trim().split(':').map(Number); return parts.some(isNaN) ? 0 : parts.reduce((a, b) => a * 60 + b, 0); };
-const clipOf = s => ({ id: ytId(s.youtube), start: secs(s.start), length: Number(s.length) || 10 });
-const clipLabel = s => { const c = clipOf(s), t = c.start; return 'Clip from ' + Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0') + ', ' + c.length + ' s'; };
+const PART_KEYS = ['start', 'start2', 'start3'];
+const partsOf = s => PART_KEYS.map((k, n) => n === 0 || String(s[k] == null ? '' : s[k]).trim() ? n : -1).filter(n => n >= 0);
+const clipOf = (s, part) => ({ id: ytId(s.youtube), start: secs(s[PART_KEYS[part || 0]]), length: Number(s.length) || 10 });
+const mss = t => Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0');
 const EMBED_BLOCKED = 'This video won\'t play outside YouTube. Pick another upload of the song in home.exe.';
 let ytApi = null, clipTimer = 0;
 const youtubeApi = () => ytApi || (ytApi = new Promise(resolve => {
@@ -211,9 +216,9 @@ const clipPlayer = (el, onError, onState) => youtubeApi().then(() => new Promise
     events: { onReady: () => resolve(player), onStateChange: e => onState && onState(e.data), onError: e => onError([101, 150].includes(e.data) ? EMBED_BLOCKED : 'YouTube couldn\'t play this clip (error ' + e.data + ').') } });
 }));
 // The clip stops itself at its end; "onwards" carries on from wherever it stopped, for the reveal.
-function playClip(player, song, onwards) {
+function playClip(player, song, onwards, part) {
   clearInterval(clipTimer);
-  const c = clipOf(song);
+  const c = clipOf(song, part);
   const loaded = player.getVideoData && player.getVideoData();
   player.unMute();
   if (onwards && loaded && loaded.video_id === c.id) return player.playVideo();
@@ -280,7 +285,9 @@ function renderPage(d) {
   $('tune-songs').innerHTML = d.tune.songs.map((s, n) => '<li class="q"><p><span class="n">' + (n + 1) + '.</span>' +
     (/^to follow$/i.test(s.title) ? TBC : esc(s.title) + (s.artist ? ' <span style="color:#8a8398">· ' + esc(s.artist) + '</span>' : '')) + '</p>' +
     (s.note ? '<p class="ans">' + esc(s.note) + '</p>' : '') +
-    (clipOf(s).id ? '<div class="clip"><span class="clip-meta">' + esc(clipLabel(s)) + '</span><button type="button" class="go" data-song="' + n + '">▶ Play the clip</button><div class="holder"></div><span class="err"></span></div>' : '') +
+    (clipOf(s).id ? '<div class="clip"><span class="clip-meta">' + clipOf(s).length + '-second clips</span><span class="parts">' +
+      partsOf(s).map(p => '<button type="button" class="go" data-song="' + n + '" data-part="' + p + '">▶ Part ' + (p + 1) + ' · ' + mss(clipOf(s, p).start) + '</button>').join('') +
+      '</span><div class="holder"></div><span class="err"></span></div>' : '') +
     '</li>').join('');
   let preview = null;
   document.querySelectorAll('#tune-songs [data-song]').forEach(b => b.addEventListener('click', () => {
@@ -289,7 +296,7 @@ function renderPage(d) {
     document.querySelectorAll('#tune-songs .holder').forEach(h => { h.innerHTML = ''; });
     box.querySelector('.err').textContent = '';
     const el = document.createElement('div'); box.querySelector('.holder').append(el);
-    clipPlayer(el, msg => { box.querySelector('.err').textContent = msg; }).then(p => { preview = p; playClip(p, song); });
+    clipPlayer(el, msg => { box.querySelector('.err').textContent = msg; }).then(p => { preview = p; playClip(p, song, false, +b.dataset.part); });
   }));
 
   document.querySelectorAll('.ans button').forEach(b => b.addEventListener('click', () => b.closest('.q').classList.add('reveal')));
@@ -318,7 +325,7 @@ function slidesFor(d) {
           '<p class="s-kicker">Winner, come up for your prize!</p>';
         if (!clipOf(s).id) return [head + '<p class="s-big">♪</p><p class="s-q">Name that tune!</p>', reveal];
         return [{ html: head + '<p class="s-big">♪</p><p class="s-q">Name that tune!</p><p class="s-line">Listen closely…</p>', preload: s },
-          { html: head + '<div class="eq">' + Array.from({ length: 28 }, () => '<i style="animation-duration:' + (0.45 + Math.random() * 0.6).toFixed(2) + 's;animation-delay:-' + Math.random().toFixed(2) + 's"></i>').join('') + '</div><p class="s-q">Name that tune!</p><p class="s-status">Loading the clip…</p><button type="button" class="s-replay">↻ Restart clip</button>', song: s },
+          { html: head + '<div class="eq">' + Array.from({ length: 28 }, () => '<i style="animation-duration:' + (0.45 + Math.random() * 0.6).toFixed(2) + 's;animation-delay:-' + Math.random().toFixed(2) + 's"></i>').join('') + '</div><p class="s-q">Name that tune!</p><p class="s-status">Loading the clip…</p><div class="s-parts">' + partsOf(s).map(p => '<button type="button" class="s-replay' + (p ? '' : ' on') + '" data-part="' + p + '">▶ ' + (p ? 'Hint ' + (p + 1) : 'Part 1') + '</button>').join('') + '</div>', song: s },
           { html: reveal, song: s, onwards: true }];
       }))
       .concat([['<p class="s-kicker">Guess the Tune</p><h1 class="s-title">Thank you for playing!</h1><p class="s-line">Congratulations to all our winners!</p>']]);
@@ -354,21 +361,33 @@ function present(d) {
     $('yt-box').classList.toggle('on', !!step.onwards);
     if (step.preload) return player ? preloadClip(player, step.preload) : ready.then(p => preloadClip(p, step.preload));
     if (!step.song) return stopClip(player);
+    part = 0;
     error = ''; $('slide').querySelector('.s-err').textContent = '';
     player ? playClip(player, step.song, step.onwards) : ready.then(p => playClip(p, step.song, step.onwards));
   };
+  let part = 0;
+  const playPart = n => {
+    const btn = document.querySelector('.s-replay[data-part="' + n + '"]');
+    if (!player || !btn) return;
+    part = n;
+    document.querySelectorAll('.s-replay').forEach(b => b.classList.toggle('on', b === btn));
+    playClip(player, steps[at].song, false, n);
+  };
   const go = n => { at = Math.max(0, Math.min(steps.length - 1, at + n)); show(); };
   $('stage').addEventListener('click', e => {
-    if (!e.target.closest('.s-replay')) return go(1);
-    if (player) playClip(player, steps[at].song);
+    const btn = e.target.closest('.s-replay');
+    if (!btn) return go(1);
+    btn.blur();
+    playPart(+btn.dataset.part);
   });
   addEventListener('keydown', e => {
     if (['ArrowRight', ' ', 'PageDown', 'Enter'].includes(e.key)) { e.preventDefault(); go(1); }
     else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); go(-1); }
-    else if ((e.key === 'r' || e.key === 'R') && steps[at].song && player) playClip(player, steps[at].song);
+    else if ((e.key === 'r' || e.key === 'R') && steps[at].song) playPart(part);
+    else if (['1', '2', '3'].includes(e.key) && steps[at].song && !steps[at].onwards) playPart(+e.key - 1);
     else if (e.key === 'f' || e.key === 'F') document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen().catch(() => {});
   });
-  if (clips) $('hint').textContent = 'Click or → for next · ← back · R replay the clip · F full screen';
+  if (clips) $('hint').textContent = 'Click or → for next · ← back · 1 2 3 play a part · R replay · F full screen';
   $('hint').hidden = false;
   setTimeout(() => { $('hint').style.opacity = 0; }, 4000);
   show();

@@ -156,7 +156,7 @@
       "First to stand up and shout the right title wins that round. The host points to whoever stood first; a wrong guess passes to the next person standing.",
       "Each round's winner comes up and picks a prize: a ₱500 Starbucks gift card (5) or a Michaela gift set (7), 12 in all.",
       "Once you've won, you sit out the rest of the songs, so more guests get a chance to win.",
-      "Nobody gets it? Press R to replay the clip once, then reveal the answer (the song plays on)."
+      "Nobody gets it? Play Hint 2, then Hint 3 (keys 2 and 3): later parts of the same song. Still nothing? Reveal the answer (the song plays on)."
     ],
     "songs": [
       {
@@ -165,6 +165,8 @@
         "note": "The band played it earlier in the arrival set",
         "youtube": "https://youtu.be/dBqyX0UUzVQ",
         "start": "0:00",
+        "start2": "0:45",
+        "start3": "1:15",
         "length": 10
       },
       {
@@ -173,6 +175,8 @@
         "note": "The band played it during the photos after the ceremony",
         "youtube": "https://youtu.be/-pz8RfOWS18",
         "start": "0:00",
+        "start2": "0:45",
+        "start3": "1:15",
         "length": 10
       },
       {
@@ -181,6 +185,8 @@
         "note": "The band played it earlier in the arrival set",
         "youtube": "https://youtu.be/l2n167F0eBc",
         "start": "0:00",
+        "start2": "0:45",
+        "start3": "1:15",
         "length": 10
       },
       {
@@ -189,6 +195,8 @@
         "note": "The band played it earlier in the arrival set",
         "youtube": "https://youtu.be/CAHsClyYRt8",
         "start": "0:00",
+        "start2": "0:45",
+        "start3": "1:15",
         "length": 10
       },
       {
@@ -197,6 +205,8 @@
         "note": "The band played it earlier in the arrival set",
         "youtube": "https://youtu.be/5VBlbVdoS5Q",
         "start": "0:00",
+        "start2": "0:45",
+        "start3": "1:15",
         "length": 10
       },
       {
@@ -205,6 +215,8 @@
         "note": "The band played it earlier in the mealtime set",
         "youtube": "https://youtu.be/jKajgKJn948",
         "start": "0:00",
+        "start2": "0:45",
+        "start3": "1:15",
         "length": 10
       },
       {
@@ -213,6 +225,8 @@
         "note": "The band played it earlier in the arrival set",
         "youtube": "https://youtu.be/aJakSXHZROo",
         "start": "0:00",
+        "start2": "0:45",
+        "start3": "1:15",
         "length": 10
       },
       {
@@ -221,6 +235,8 @@
         "note": "The band played it earlier in the arrival set",
         "youtube": "https://youtu.be/ku16PsxpZGU",
         "start": "0:00",
+        "start2": "0:45",
+        "start3": "1:15",
         "length": 10
       },
       {
@@ -229,6 +245,8 @@
         "note": "The band played it earlier in the mealtime set",
         "youtube": "https://youtu.be/ejoLl4WJqwM",
         "start": "0:00",
+        "start2": "0:45",
+        "start3": "1:15",
         "length": 10
       },
       {
@@ -237,6 +255,8 @@
         "note": "The band played it earlier in the arrival set",
         "youtube": "https://youtu.be/ZEcqHA7dbwM",
         "start": "0:00",
+        "start2": "0:45",
+        "start3": "1:15",
         "length": 10
       },
       {
@@ -245,6 +265,8 @@
         "note": "The band played it earlier in the arrival set",
         "youtube": "https://youtu.be/dElRVQFqj-k",
         "start": "0:00",
+        "start2": "0:45",
+        "start3": "1:15",
         "length": 10
       },
       {
@@ -253,6 +275,8 @@
         "note": "The band played it earlier in the mealtime set",
         "youtube": "https://youtu.be/DYwQy_9JPtQ",
         "start": "0:00",
+        "start2": "0:45",
+        "start3": "1:15",
         "length": 10
       }
     ]
