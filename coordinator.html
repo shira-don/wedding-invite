@@ -276,7 +276,7 @@ function renderData(d, directory) {
   suppliers = stationsMerge(d.suppliers, directory);
   $('times').innerHTML = (d.times || []).map(row => typeof row === 'string' ? '<li class="sec">' + esc(row) + '</li>' :   // a plain string is a section heading
     '<li><b>' + esc(row[0]) + '</b></li><li' + (row[3] ? ' class="key"' : '') + '>' + esc(row[1]) + (row[2] ? ' <span>· ' + esc(row[2]) + '</span>' : '') +
-    (row[4] ? ' <a class="go" href="' + esc(row[4]) + '" target="_blank" rel="noopener">Open the raffle page →</a>' : '') + '</li>').join('');
+    (row[4] ? ' <a class="go" href="' + esc(row[4]) + '" target="_blank" rel="noopener">Open the ' + (/games/.test(row[4]) ? 'games' : 'raffle') + ' page →</a>' : '') + '</li>').join('');
   $('notes').innerHTML = (d.notes || []).map(n => '<li>' + esc(n) + '</li>').join('');
   renderLists();
   ['venue', 'upper', 'ground'].forEach(map => { const svg = $('map-' + map); if (svg) stationsDraw(svg, suppliers.filter(s => s.map === map), true); });

@@ -1,32 +1,155 @@
 {
   "times": [
     "Ceremony · Ceremony Garden",
-    ["3:00 PM", "Guests arrive and are seated; prelude", "Couple stays upstairs, out of sight"],
-    ["3:20 PM", "Processional line-up"],
-    ["3:30 PM", "Processional march: groom with parents, sponsors, entourage", "", true],
-    ["3:40 PM", "Bride's entrance with her parents", "", true],
-    ["3:45 – 4:45 PM", "Ceremony proper: nuptial Mass, vows and signing of the contract", "", true],
-    ["4:45 – 5:00 PM", "Recessional"],
+    [
+      "2:45 PM",
+      "Guests arrive and are seated; prelude",
+      "Couple stays upstairs, out of sight"
+    ],
+    [
+      "3:20 PM",
+      "Processional line-up"
+    ],
+    [
+      "3:30 PM",
+      "Processional march: groom with parents, sponsors, entourage",
+      "",
+      true
+    ],
+    [
+      "3:40 PM",
+      "Bride's entrance with her parents",
+      "",
+      true
+    ],
+    [
+      "3:45 – 4:45 PM",
+      "Ceremony proper: nuptial Mass, vows and signing of the contract",
+      "",
+      true
+    ],
+    [
+      "4:45 – 5:00 PM",
+      "Recessional"
+    ],
     "After the ceremony",
-    ["5:00 – 5:15 PM", "Family and sponsor photos; cocktails start", "Cocktail area"],
-    ["5:15 – 5:30 PM", "Golden-hour couple portraits (sunset around 5:25); cocktails", "Cocktail area"],
-    ["5:30 – 5:40 PM", "Couple's break upstairs; guests guided to the reception"],
-    ["5:40 PM", "Couple greets guests at the reception entrance; pre-nup slideshow", "Entrance ②"],
+    [
+      "5:00 – 5:15 PM",
+      "Family and sponsor photos; cocktails start",
+      "Cocktail area"
+    ],
+    [
+      "5:15 – 5:30 PM",
+      "Golden-hour couple portraits (sunset around 5:25); cocktails",
+      "Cocktail area"
+    ],
+    [
+      "5:30 – 5:40 PM",
+      "Couple's break upstairs; guests guided to the reception"
+    ],
+    [
+      "5:40 PM",
+      "Couple greets guests at the reception entrance; pre-nup slideshow",
+      "Entrance ②"
+    ],
     "Reception · Main hall",
-    ["6:00 PM", "Guests seated, free to roam the souvenir stations"],
-    ["6:25 PM", "Host's welcome and prayer"],
-    ["6:30 PM", "Dinner is served (Acsions dinner set)"],
-    ["7:00 PM", "Messages mid-dinner (capped at 4)"],
-    ["7:15 PM", "Cake cutting and toast"],
-    ["7:30 PM", "Parent dances"],
-    ["7:40 – 8:25 PM", "Games: couple trivia, Guess the Tune or Lyrics, other guest games"],
-    ["8:25 PM", "Raffle draw", "Coordinate with the LED tech to put the raffle page on the LED wall", true, "raffle.html"],
-    ["8:35 PM", "Same-day edit (SDE) screening"],
-    ["8:45 PM", "Thank-you speech"],
-    ["8:50 PM", "Guests to the right side of the garden; couple up to the balcony"],
-    ["8:55 PM", "Private first dance on the balcony with fireworks", "", true],
-    ["9:05 – 9:35 PM", "After party (playlist)"],
-    ["9:35 PM", "Send-off"]
+    [
+      "6:10 PM",
+      "Host's welcome and prayer"
+    ],
+    [
+      "6:12 PM",
+      "Raffle draw 1 of 6 · 2 prizes",
+      "Right after the prayer. Coordinate with the LED tech to put the raffle page on the LED wall",
+      true,
+      "raffle.html"
+    ],
+    [
+      "6:15 PM",
+      "Dinner is served (Acsions dinner set)"
+    ],
+    [
+      "6:45 PM",
+      "Messages mid-dinner (capped at 4)"
+    ],
+    [
+      "6:55 PM",
+      "Raffle draw 2 of 6 · 2 prizes",
+      "After the last message. Coordinate with the LED tech to put the raffle page on the LED wall",
+      true,
+      "raffle.html"
+    ],
+    [
+      "7:00 PM",
+      "Cake cutting and toast"
+    ],
+    [
+      "7:15 PM",
+      "Parent dances",
+      "",
+      true
+    ],
+    [
+      "7:20 PM",
+      "Raffle draw 3 of 6 · 2 prizes",
+      "After the parent dances, before the games. Coordinate with the LED tech to put the raffle page on the LED wall",
+      true,
+      "raffle.html"
+    ],
+    [
+      "7:25 – 8:10 PM",
+      "Games: Guess the Tune, then Last Man Standing",
+      "Host runs them from the games page",
+      false,
+      "games.html"
+    ],
+    [
+      "8:10 PM",
+      "Raffle draw 4 of 6 · 3 prizes",
+      "After the games. Coordinate with the LED tech to put the raffle page on the LED wall",
+      true,
+      "raffle.html"
+    ],
+    [
+      "8:20 PM",
+      "Same-day edit (SDE) screening"
+    ],
+    [
+      "8:30 PM",
+      "Thank-you speech"
+    ],
+    [
+      "8:33 PM",
+      "Raffle draw 5 of 6 · 2 prizes",
+      "After the thank-you speech. Coordinate with the LED tech to put the raffle page on the LED wall",
+      true,
+      "raffle.html"
+    ],
+    [
+      "8:35 – 9:05 PM",
+      "Short after party (playlist)"
+    ],
+    [
+      "9:00 PM",
+      "Raffle draw 6 of 6 · 2 prizes",
+      "Final draw, grand prize last, before guests move to the garden. Coordinate with the LED tech to put the raffle page on the LED wall",
+      true,
+      "raffle.html"
+    ],
+    [
+      "9:05 PM",
+      "Guests to the right side of the garden; couple up to the balcony"
+    ],
+    [
+      "9:10 PM",
+      "Private first dance on the balcony with fireworks",
+      "",
+      true
+    ],
+    [
+      "9:20 PM",
+      "Send-off"
+    ]
   ],
   "notes": [
     "Guests go from the ceremony past the pool to the cocktail area, then into the reception through entrance ② on the parking side.",
@@ -38,22 +161,227 @@
     "The kids corner is unattended: help set it up, then leave it."
   ],
   "suppliers": [
-    {"map": "venue", "x": 125, "y": 108, "w": 180, "h": 46, "type": "MOBILE BAR", "directory": "MOBILE BAR", "supplier": "Blaze and Blend", "service": "Mobile bar · cocktail hour setup", "spot": "Cocktail area", "contact": "Cyries Evan", "arrive": "3:00 PM", "notes": "Moves inside, below the buffet, for the reception (see the ground floor)."},
-    {"map": "venue", "x": 125, "y": 162, "w": 180, "h": 46, "type": "PASTRY STATION", "directory": "PASTRY STATION", "supplier": "Love Patisserie", "service": "Pastry station", "spot": "Cocktail area", "contact": "Janynn Carla", "arrive": "3:00 PM", "notes": ""},
-    {"map": "venue", "x": 125, "y": 216, "w": 180, "h": 46, "type": "KAKANIN STATION", "directory": "KAKANIN STATION", "supplier": "The Empanada", "service": "Kakanin station", "spot": "Cocktail area", "contact": "Howard Castillo", "arrive": "3:00 PM", "notes": ""},
-    {"map": "venue", "x": 125, "y": 270, "w": 180, "h": 46, "type": "STREET FOOD", "directory": "STREET FOOD STATION", "supplier": "The Greasy Lab", "service": "Street food station", "spot": "Cocktail area", "contact": "Tel Del Castillo", "arrive": "3:00 PM", "notes": ""},
-
-    {"map": "ground", "x": 356, "y": 703, "w": 124, "h": 34, "type": "AUDIO GUESTBOOK", "directory": "AUDIO GUESTBOOK", "service": "Audio guestbook", "spot": "Left foyer, by entrance ②", "contact": "", "arrive": "", "notes": "One of the first stops inside; the partition keeps it away from the hall's noise."},
-    {"map": "ground", "x": 696, "y": 703, "w": 124, "h": 42, "type": "360 PHOTO BOOTH", "directory": "PHOTOBOOTH 360", "supplier": "Franville Events", "service": "360 photo booth", "spot": "Right foyer", "contact": "Kiks Villanueva", "arrive": "3:00 PM", "notes": "Needs about 3 × 3 m plus room for a queue; confirm the exact size. Franville also covers the photo man during cocktail hour."},
-    {"map": "ground", "x": 852, "y": 703, "w": 124, "h": 42, "type": "STAMPING & PERFUME", "directory": "LEATHER STAMPING", "supplier": "Cutie Pans", "service": "Leather stamping & perfume bar", "spot": "Beside the right foyer, next to the 360 booth", "contact": "Bea Ramada", "arrive": "4:00 PM", "notes": "Ground floor, as the second floor costs extra. On the 360's side, as the stamping is loud and the audio guestbook needs quiet."},
-    {"map": "ground", "x": 105, "y": 485, "w": 124, "h": 42, "type": "LECHON STATION", "directory": "LECHON", "supplier": "Drel's Lechon", "service": "Lechon station", "spot": "Below the buffet, first in line", "contact": "", "arrive": "", "notes": ""},
-    {"map": "ground", "x": 105, "y": 539, "w": 124, "h": 42, "type": "MEAT STATION", "directory": "MEAT STATION", "supplier": "Fat Smoke", "service": "Meat station", "spot": "Below the buffet, after Drel's Lechon", "contact": "Laurenz Liwanag", "arrive": "", "notes": ""},
-    {"map": "ground", "x": 105, "y": 593, "w": 124, "h": 42, "type": "MOBILE BAR", "directory": "MOBILE BAR", "supplier": "Blaze and Blend", "service": "Mobile bar · reception setup", "spot": "Below the buffet, after Fat Smoke", "contact": "Cyries Evan", "arrive": "3:00 PM", "notes": "Second setup, after cocktail hour."},
-    {"map": "ground", "x": 928, "y": 390, "w": 96, "h": 30, "type": "KIDS CORNER", "service": "Small table with toys and snacks, set up by the family", "spot": "Right wall, clear of the service archway", "contact": "", "arrive": "", "notes": "Unattended. Add a small sign: “Little ones, please stay with a grown-up.”"},
-
-    {"map": "upper", "x": 100, "y": 165, "w": 124, "h": 42, "type": "PHOTO BOOTH", "directory": "PHOTOBOOTH", "supplier": "Pixlpop", "service": "Photo booth · 4 hours, magnetic prints", "spot": "Left corridor, far end", "contact": "Eric Los Banos", "arrive": "3:00 PM", "notes": "At the far end so guests walk past the souvenir booths to reach it and the queue stays off the stair landing. If the line gets long, keep entrance ③ clear."},
-    {"map": "upper", "x": 100, "y": 500, "w": 124, "h": 42, "type": "LEGO", "directory": "LEGO BOOTH", "supplier": "Bricksy Bits", "service": "Lego station", "spot": "Left corridor, middle", "contact": "Willette Sabino", "arrive": "4:00 PM", "notes": "Kept away from the grand staircase, with space between the kids and the candle bar's hot wax."},
-    {"map": "upper", "x": 100, "y": 660, "w": 124, "h": 42, "type": "CANDLE BAR", "directory": "CANDLE BAR", "supplier": "Happy Lounge", "service": "Candle bar", "spot": "Left corridor, nearest the stairs", "contact": "", "arrive": "4:00 PM", "notes": "Needs power and ventilation."},
-    {"map": "upper", "x": 352, "y": 680, "w": 112, "h": 40, "type": "LIVE ART", "directory": "LIVE PAINTING FOR GUESTS", "supplier": "KL Arts and Crafts", "service": "Live painting for guests", "spot": "Stair landing, left side", "contact": "", "arrive": "4:00 PM", "notes": "Keep the middle of the landing clear for the grand entrance."}
+    {
+      "map": "venue",
+      "x": 125,
+      "y": 108,
+      "w": 180,
+      "h": 46,
+      "type": "MOBILE BAR",
+      "directory": "MOBILE BAR",
+      "supplier": "Blaze and Blend",
+      "service": "Mobile bar · cocktail hour setup",
+      "spot": "Cocktail area",
+      "contact": "Cyries Evan",
+      "arrive": "3:00 PM",
+      "notes": "Moves inside, below the buffet, for the reception (see the ground floor)."
+    },
+    {
+      "map": "venue",
+      "x": 125,
+      "y": 162,
+      "w": 180,
+      "h": 46,
+      "type": "PASTRY STATION",
+      "directory": "PASTRY STATION",
+      "supplier": "Love Patisserie",
+      "service": "Pastry station",
+      "spot": "Cocktail area",
+      "contact": "Janynn Carla",
+      "arrive": "3:00 PM",
+      "notes": ""
+    },
+    {
+      "map": "venue",
+      "x": 125,
+      "y": 216,
+      "w": 180,
+      "h": 46,
+      "type": "KAKANIN STATION",
+      "directory": "KAKANIN STATION",
+      "supplier": "The Empanada",
+      "service": "Kakanin station",
+      "spot": "Cocktail area",
+      "contact": "Howard Castillo",
+      "arrive": "3:00 PM",
+      "notes": ""
+    },
+    {
+      "map": "venue",
+      "x": 125,
+      "y": 270,
+      "w": 180,
+      "h": 46,
+      "type": "STREET FOOD",
+      "directory": "STREET FOOD STATION",
+      "supplier": "The Greasy Lab",
+      "service": "Street food station",
+      "spot": "Cocktail area",
+      "contact": "Tel Del Castillo",
+      "arrive": "3:00 PM",
+      "notes": ""
+    },
+    {
+      "map": "ground",
+      "x": 356,
+      "y": 703,
+      "w": 124,
+      "h": 34,
+      "type": "AUDIO GUESTBOOK",
+      "directory": "AUDIO GUESTBOOK",
+      "service": "Audio guestbook",
+      "spot": "Left foyer, by entrance ②",
+      "contact": "",
+      "arrive": "",
+      "notes": "One of the first stops inside; the partition keeps it away from the hall's noise."
+    },
+    {
+      "map": "ground",
+      "x": 696,
+      "y": 703,
+      "w": 124,
+      "h": 42,
+      "type": "360 PHOTO BOOTH",
+      "directory": "PHOTOBOOTH 360",
+      "supplier": "Franville Events",
+      "service": "360 photo booth",
+      "spot": "Right foyer",
+      "contact": "Kiks Villanueva",
+      "arrive": "3:00 PM",
+      "notes": "Needs about 3 × 3 m plus room for a queue; confirm the exact size. Franville also covers the photo man during cocktail hour."
+    },
+    {
+      "map": "ground",
+      "x": 852,
+      "y": 703,
+      "w": 124,
+      "h": 42,
+      "type": "STAMPING & PERFUME",
+      "directory": "LEATHER STAMPING",
+      "supplier": "Cutie Pans",
+      "service": "Leather stamping & perfume bar",
+      "spot": "Beside the right foyer, next to the 360 booth",
+      "contact": "Bea Ramada",
+      "arrive": "4:00 PM",
+      "notes": "Ground floor, as the second floor costs extra. On the 360's side, as the stamping is loud and the audio guestbook needs quiet."
+    },
+    {
+      "map": "ground",
+      "x": 105,
+      "y": 485,
+      "w": 124,
+      "h": 42,
+      "type": "LECHON STATION",
+      "directory": "LECHON",
+      "supplier": "Drel's Lechon",
+      "service": "Lechon station",
+      "spot": "Below the buffet, first in line",
+      "contact": "",
+      "arrive": "",
+      "notes": ""
+    },
+    {
+      "map": "ground",
+      "x": 105,
+      "y": 539,
+      "w": 124,
+      "h": 42,
+      "type": "MEAT STATION",
+      "directory": "MEAT STATION",
+      "supplier": "Fat Smoke",
+      "service": "Meat station",
+      "spot": "Below the buffet, after Drel's Lechon",
+      "contact": "Laurenz Liwanag",
+      "arrive": "",
+      "notes": ""
+    },
+    {
+      "map": "ground",
+      "x": 105,
+      "y": 593,
+      "w": 124,
+      "h": 42,
+      "type": "MOBILE BAR",
+      "directory": "MOBILE BAR",
+      "supplier": "Blaze and Blend",
+      "service": "Mobile bar · reception setup",
+      "spot": "Below the buffet, after Fat Smoke",
+      "contact": "Cyries Evan",
+      "arrive": "3:00 PM",
+      "notes": "Second setup, after cocktail hour."
+    },
+    {
+      "map": "ground",
+      "x": 928,
+      "y": 390,
+      "w": 96,
+      "h": 30,
+      "type": "KIDS CORNER",
+      "service": "Small table with toys and snacks, set up by the family",
+      "spot": "Right wall, clear of the service archway",
+      "contact": "",
+      "arrive": "",
+      "notes": "Unattended. Add a small sign: “Little ones, please stay with a grown-up.”"
+    },
+    {
+      "map": "upper",
+      "x": 100,
+      "y": 165,
+      "w": 124,
+      "h": 42,
+      "type": "PHOTO BOOTH",
+      "directory": "PHOTOBOOTH",
+      "supplier": "Pixlpop",
+      "service": "Photo booth · 4 hours, magnetic prints",
+      "spot": "Left corridor, far end",
+      "contact": "Eric Los Banos",
+      "arrive": "3:00 PM",
+      "notes": "At the far end so guests walk past the souvenir booths to reach it and the queue stays off the stair landing. If the line gets long, keep entrance ③ clear."
+    },
+    {
+      "map": "upper",
+      "x": 100,
+      "y": 500,
+      "w": 124,
+      "h": 42,
+      "type": "LEGO",
+      "directory": "LEGO BOOTH",
+      "supplier": "Bricksy Bits",
+      "service": "Lego station",
+      "spot": "Left corridor, middle",
+      "contact": "Willette Sabino",
+      "arrive": "4:00 PM",
+      "notes": "Kept away from the grand staircase, with space between the kids and the candle bar's hot wax."
+    },
+    {
+      "map": "upper",
+      "x": 100,
+      "y": 660,
+      "w": 124,
+      "h": 42,
+      "type": "CANDLE BAR",
+      "directory": "CANDLE BAR",
+      "supplier": "Happy Lounge",
+      "service": "Candle bar",
+      "spot": "Left corridor, nearest the stairs",
+      "contact": "",
+      "arrive": "4:00 PM",
+      "notes": "Needs power and ventilation."
+    },
+    {
+      "map": "upper",
+      "x": 352,
+      "y": 680,
+      "w": 112,
+      "h": 40,
+      "type": "LIVE ART",
+      "directory": "LIVE PAINTING FOR GUESTS",
+      "supplier": "KL Arts and Crafts",
+      "service": "Live painting for guests",
+      "spot": "Stair landing, left side",
+      "contact": "",
+      "arrive": "4:00 PM",
+      "notes": "Keep the middle of the landing clear for the grand entrance."
+    }
   ]
 }

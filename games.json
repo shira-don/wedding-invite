@@ -12,9 +12,9 @@
       "About 12 minutes"
     ],
     [
-      "8:00 PM",
-      "Raffle draw",
-      "Coordinate with the LED tech to put the raffle page on the LED wall",
+      "8:10 PM",
+      "Raffle draw 4 of 6",
+      "3 prizes. The other draws are spread through the reception (see Raffle)",
       "raffle.html"
     ]
   ],
@@ -46,9 +46,42 @@
     "notes": [
       "Put the game prizes on a table beside the host, separate from the raffle prizes.",
       "Line up the raffle prizes in draw order: minor first, the grand prize last.",
-      "Game winners stay in the raffle."
+      "Game winners stay in the raffle.",
+      "Use the same laptop and browser for every raffle draw: the raffle page remembers who has won and which prize is next. Never press Reset raffle."
     ]
   },
+  "raffleDraws": [
+    [
+      "6:12 PM",
+      "After the host's welcome and prayer",
+      2
+    ],
+    [
+      "6:55 PM",
+      "After the dinner messages",
+      2
+    ],
+    [
+      "7:20 PM",
+      "After the parent dances, before the games",
+      2
+    ],
+    [
+      "8:10 PM",
+      "After the games",
+      3
+    ],
+    [
+      "8:33 PM",
+      "After the thank-you speech, before the after party",
+      2
+    ],
+    [
+      "9:00 PM",
+      "End of the after party, before guests head to the garden for the fireworks",
+      2
+    ]
+  ],
   "lms": {
     "rules": [
       "Everyone who wants to play stands up.",

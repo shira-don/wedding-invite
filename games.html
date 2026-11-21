@@ -74,6 +74,13 @@
     .pz ul { list-style: none; display: grid; gap: .25rem; font-size: .86rem; font-weight: 400; }
     .pz li { display: flex; justify-content: space-between; gap: .6rem; }
     .pz li span { font-weight: 600; color: #8a5a1c; white-space: nowrap; }
+    .draw-time { font-size: .74rem; font-weight: 600; color: #8a5a1c; margin-top: .5rem; }
+    .draw-time span { font-weight: 400; color: #8a8398; }
+    .pz .draw-time + ul { margin-top: .15rem; }
+    .prizes .draw { display: block; background: #fffaf1; border: 1px solid #ecd6ad; }
+    .prizes .draw .draw-time { margin-top: 0; }
+    .prizes .draw ul { list-style: disc; padding-left: 1.1rem; margin-top: .2rem; display: grid; gap: .1rem; }
+    .prizes .draw li { display: list-item; padding: 0; background: none; }
     .prize-notes { margin-top: .8rem; padding-left: 1.1rem; font-size: .82rem; color: #6b4d23; display: grid; gap: .2rem; }
     .prize-notes li::marker { color: #d9b77e; }
     .prize-flag { background: #fff3e0; border: 2px solid #d9b77e; border-radius: 12px; padding: .6rem .9rem; margin-bottom: 1rem; font-size: .9rem; color: #6b4d23; }
@@ -201,7 +208,7 @@
       <h2 class="panel-title">Raffle</h2>
       <section class="card-box">
         <h2>Raffle draw</h2>
-        <p style="font-size:.85rem">Coordinate with the LED tech to put the raffle page on the LED wall, full screen. Prizes are drawn minor first, grand prize last.</p>
+        <p style="font-size:.85rem">At each draw time, coordinate with the LED tech to put the raffle page on the LED wall, full screen. Use the same laptop and browser every time: the page remembers the winners and which prize is next. Never press Reset raffle.</p>
         <p style="margin-top:.7rem"><a class="go big" href="raffle.html" target="_blank" rel="noopener">Open the raffle page →</a></p>
         <p class="prize-flag" id="raffle-prize" style="margin-top:.9rem"></p>
         <ul class="prizes" id="prizes"></ul>
@@ -268,20 +275,36 @@ function preloadClip(player, song) {
 }
 function stopClip(player) { clearInterval(clipTimer); if (player && player.pauseVideo) player.pauseVideo(); }
 
+// Splits the raffle prizes, one per draw in order, across the scheduled draws; anything left over goes to the last draw.
+function raffleRounds(d, raffle) {
+  const names = raffle.flatMap(r => Array(Math.max(1, Number(r.quantity) || 1)).fill(r.name));
+  const draws = d.raffleDraws && d.raffleDraws.length ? d.raffleDraws : [['', 'Raffle draw', names.length]];
+  let at = 0;
+  return draws.map(([time, when, n], i) => {
+    const take = i === draws.length - 1 ? names.length - at : Number(n) || 0;
+    const prizes = names.slice(at, at + take); at += take;
+    return { time, when, prizes };
+  }).filter(r => r.prizes.length);
+}
+
 function renderPrizes(d, raffle) {
   const p = d.prizes || {};
   const count = items => items.reduce((n, [, q]) => n + (Number(q) || 1), 0);
   const items = list => list.map(([name, q]) => '<li>' + esc(name) + '<span>× ' + (Number(q) || 1) + '</span></li>').join('');
   const card = (label, when, list) => '<div class="pz"><h3>' + esc(label) + '<b>' + count(list) + '</b></h3><p class="when">' + esc(when) + '</p><ul>' + items(list) + '</ul></div>';
   const raffleItems = raffle.map(r => [r.name, r.quantity]);
+  const rounds = raffleRounds(d, raffle);
   const games = ['tune', 'lms'].filter(k => p[k]);
   $('prize-grid').innerHTML = games.map(k => card(p[k].label, p[k].when, p[k].items)).join('') +
-    card('Raffle', 'Drawn in this order, minor first, grand prize last.', raffleItems);
+    '<div class="pz"><h3>Raffle<b>' + count(raffleItems) + '</b></h3><p class="when">' + rounds.length + ' draws through the reception, grand prize last.</p>' +
+    rounds.map(r => '<p class="draw-time">' + esc(r.time) + ' <span>' + esc(r.when) + '</span></p><ul>' + r.prizes.map(n => '<li>' + esc(n) + '</li>').join('') + '</ul>').join('') + '</div>';
+  $('prizes').innerHTML = rounds.map((r, i) => '<li class="draw"><p class="draw-time">Draw ' + (i + 1) + ' · ' + esc(r.time) + ' <span>' + esc(r.when) + '</span></p><ul>' +
+    r.prizes.map(n => '<li>' + esc(n) + '</li>').join('') + '</ul></li>').join('');
   $('prize-notes').innerHTML = (p.notes || []).map(n => '<li>' + esc(n) + '</li>').join('');
   const flag = k => p[k] ? '<b>Prize' + (count(p[k].items) > 1 ? 's' : '') + ':</b> ' + p[k].items.map(([n, q]) => esc(n) + (q > 1 ? ' × ' + q : '')).join(', ') + '. ' + esc(p[k].when) : '';
   $('tune-prize').innerHTML = flag('tune');
   $('lms-prize').innerHTML = flag('lms');
-  $('raffle-prize').innerHTML = '<b>' + count(raffleItems) + ' prizes</b>, drawn in the order below.';
+  $('raffle-prize').innerHTML = '<b>' + count(raffleItems) + ' prizes in ' + rounds.length + ' draws</b>, spread through the reception up to the fireworks. Open the raffle page at each draw; it picks up with the next prize.';
 }
 
 function load() {
@@ -346,7 +369,6 @@ function renderPage(d) {
   $('show-all').addEventListener('change', e => document.querySelectorAll('#lms-qs .q').forEach(q => q.classList.toggle('reveal', e.target.checked)));
   (d.rafflePrizes ? Promise.resolve(d.rafflePrizes) : fetch('raffle-prizes.json', { cache: 'no-cache' }).then(r => r.json())).then(list => {
     renderPrizes(d, list);
-    $('prizes').innerHTML = list.map(p => '<li>' + esc(p.name) + (p.quantity > 1 ? ' × ' + p.quantity : '') + '<span>' + esc(p.tier) + '</span></li>').join('');
   }).catch(() => {});
 }
 
