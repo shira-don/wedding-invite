@@ -8,6 +8,8 @@
   <meta name="theme-color" content="#7b5ea7" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%9C%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="fonts/google-fonts.css" />
+  <link rel="preconnect" href="https://www.youtube.com" />
+  <link rel="preconnect" href="https://i.ytimg.com" />
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Montserrat', sans-serif; font-weight: 300; color: #3a3a3a; line-height: 1.6;
@@ -213,9 +215,24 @@ function playClip(player, song, onwards) {
   clearInterval(clipTimer);
   const c = clipOf(song);
   const loaded = player.getVideoData && player.getVideoData();
+  player.unMute();
   if (onwards && loaded && loaded.video_id === c.id) return player.playVideo();
-  player.loadVideoById({ videoId: c.id, startSeconds: c.start });
+  if (loaded && loaded.video_id === c.id) { player.seekTo(c.start, true); player.playVideo(); }
+  else player.loadVideoById({ videoId: c.id, startSeconds: c.start });
   if (!onwards) clipTimer = setInterval(() => { if (player.getCurrentTime() >= c.start + c.length) { player.pauseVideo(); clearInterval(clipTimer); } }, 150);
+}
+function preloadClip(player, song) {
+  clearInterval(clipTimer);
+  const c = clipOf(song);
+  player.mute();
+  player.loadVideoById({ videoId: c.id, startSeconds: c.start });
+  clipTimer = setInterval(() => {
+    if (player.getPlayerState() !== YT.PlayerState.PLAYING) return;
+    clearInterval(clipTimer);
+    player.pauseVideo();
+    player.seekTo(c.start, true);
+    player.unMute();
+  }, 50);
 }
 function stopClip(player) { clearInterval(clipTimer); if (player && player.pauseVideo) player.pauseVideo(); }
 
@@ -300,7 +317,7 @@ function slidesFor(d) {
         const reveal = '<p class="s-kicker">Song ' + (n + 1) + '</p><h1 class="s-title">' + esc(s.title) + '</h1><p class="s-line">' + esc(s.artist) + '</p>' +
           '<p class="s-kicker">Winner, come up for your prize!</p>';
         if (!clipOf(s).id) return [head + '<p class="s-big">♪</p><p class="s-q">Name that tune!</p>', reveal];
-        return [head + '<p class="s-big">♪</p><p class="s-q">Name that tune!</p><p class="s-line">Listen closely…</p>',
+        return [{ html: head + '<p class="s-big">♪</p><p class="s-q">Name that tune!</p><p class="s-line">Listen closely…</p>', preload: s },
           { html: head + '<div class="eq">' + Array.from({ length: 28 }, () => '<i style="animation-duration:' + (0.45 + Math.random() * 0.6).toFixed(2) + 's;animation-delay:-' + Math.random().toFixed(2) + 's"></i>').join('') + '</div><p class="s-q">Name that tune!</p><p class="s-status">Loading the clip…</p><button type="button" class="s-replay">↻ Restart clip</button>', song: s },
           { html: reveal, song: s, onwards: true }];
       }))
@@ -335,6 +352,7 @@ function present(d) {
     const step = steps[at];
     $('slide').innerHTML = (step.html || step) + (step.song ? '<p class="s-err">' + esc(error) + '</p>' : '');
     $('yt-box').classList.toggle('on', !!step.onwards);
+    if (step.preload) return player ? preloadClip(player, step.preload) : ready.then(p => preloadClip(p, step.preload));
     if (!step.song) return stopClip(player);
     error = ''; $('slide').querySelector('.s-err').textContent = '';
     player ? playClip(player, step.song, step.onwards) : ready.then(p => playClip(p, step.song, step.onwards));
