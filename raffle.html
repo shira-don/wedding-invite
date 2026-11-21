@@ -195,6 +195,7 @@
     </div>
   </aside>
 
+<script src="wedding-games.js"></script>
 <script>
 const SEATS_URL = 'https://script.google.com/macros/s/AKfycbyTuqgUu9wSuGxurX-VFAjPWzx7jsEm-IkYZpl4tld5ngMIGu4EBcFXSL8QnvOOCcZO2A/exec';
 const ALIAS = { 'Table 28': 'VIP 3' };
@@ -489,9 +490,12 @@ document.addEventListener('mousemove', wake);
 document.addEventListener('pointerdown', wake);
 window.addEventListener('resize', () => { if (phase !== 'loading') drawWheel(); });
 
-// Offline it falls back to the last copy this browser saw; a typo in the file shows no prizes instead, so a bad edit gets noticed.
-const prizesReady = fetch('raffle-prizes.json', { cache: 'no-cache' })
-  .then(r => r.json().then(list => { save(PRIZES_KEY, list); return list; }, () => []), () => load(PRIZES_KEY, []))
+// Prizes come from home.exe's Wedding games app (Firestore); raffle-prizes.json stands in when that has none or can't be
+// reached. Offline it falls back to the last copy this browser saw; a typo in the file shows no prizes instead, so a bad edit gets noticed.
+const prizesFromFile = () => fetch('raffle-prizes.json', { cache: 'no-cache' })
+  .then(r => r.json().then(list => { save(PRIZES_KEY, list); return list; }, () => []), () => load(PRIZES_KEY, []));
+const prizesReady = weddingGamesLoad()
+  .then(live => { if (!live.prizes.length) return prizesFromFile(); save(PRIZES_KEY, live.prizes); return live.prizes; }, prizesFromFile)
   .then(list => {
     prizes = (Array.isArray(list) ? list : []).filter(p => p && p.name)
       .map(p => ({ name: p.name, tier: p.tier || 'minor', image: p.image || '', of: p.quantity || 1 }))
