@@ -102,13 +102,26 @@
       .s-opt small { font-size: 3.2vw; letter-spacing: .4vw; margin-bottom: .6vh; }
       .s-big { font-size: 22vw; }
       .s-line { font-size: 4.6vw; max-width: 100%; }
+      .eq { gap: 1vw; height: 14vh; }
+      .eq i { width: 1.6vw; }
+      .s-replay { font-size: 3.6vw; padding: 1vh 4vw; }
+      .s-status { font-size: 4vw; padding: 1.2vh 5vw; }
     }
     /* Hidden while guests guess so the video doesn't give the title away; shown on the reveal */
     .yt-box { position: fixed; right: 12px; bottom: 12px; width: 240px; height: 200px; border-radius: 10px; overflow: hidden; z-index: 3;
       box-shadow: 0 6px 24px rgba(0,0,0,.4); opacity: 0; pointer-events: none; transition: opacity .3s; background: #000; }
     .yt-box.on { opacity: 1; }
     .yt-box iframe { width: 100%; height: 100%; display: block; }
-    .s-big.playing { animation: pulse 1s ease-in-out infinite; }
+    .eq { display: flex; align-items: center; gap: .9vh; height: 18vh; }
+    .eq i { width: 1.4vh; height: 12%; border-radius: 99px; background: linear-gradient(#f3c6a0, #b48fd6); transition: height .4s; }
+    .eq.on i { animation: eq ease-in-out infinite alternate; }
+    @keyframes eq { 0% { height: 10%; } 50% { height: 70%; } 100% { height: 100%; } }
+    .s-replay { font: inherit; font-size: 2.8vh; color: #fff; background: transparent; border: .3vh solid rgba(255,255,255,.4); border-radius: 99px;
+      padding: 1vh 3vh; cursor: pointer; }
+    .s-replay:hover { background: rgba(255,255,255,.12); }
+    .s-status { font-size: 3.4vh; font-weight: 600; letter-spacing: .3vh; text-transform: uppercase; padding: 1.2vh 3.6vh; border-radius: 99px;
+      background: rgba(255,255,255,.1); color: #cbbbe0; }
+    .s-status.on { background: #c0392b; color: #fff; animation: pulse 1.4s ease-in-out infinite; }
     @keyframes pulse { 50% { transform: scale(1.12); opacity: .75; } }
     .s-err { font-size: 2.6vh; color: #f3c6a0; max-width: 80%; }
     .clip { margin-top: .5rem; display: grid; gap: .4rem; justify-items: start; }
@@ -191,9 +204,9 @@ const youtubeApi = () => ytApi || (ytApi = new Promise(resolve => {
   window.onYouTubeIframeAPIReady = resolve;
   const tag = document.createElement('script'); tag.src = 'https://www.youtube.com/iframe_api'; document.head.append(tag);
 }));
-const clipPlayer = (el, onError) => youtubeApi().then(() => new Promise(resolve => {
+const clipPlayer = (el, onError, onState) => youtubeApi().then(() => new Promise(resolve => {
   const player = new YT.Player(el, { width: 240, height: 200, playerVars: { controls: 0, rel: 0, playsinline: 1, disablekb: 1 },
-    events: { onReady: () => resolve(player), onError: e => onError([101, 150].includes(e.data) ? EMBED_BLOCKED : 'YouTube couldn\'t play this clip (error ' + e.data + ').') } });
+    events: { onReady: () => resolve(player), onStateChange: e => onState && onState(e.data), onError: e => onError([101, 150].includes(e.data) ? EMBED_BLOCKED : 'YouTube couldn\'t play this clip (error ' + e.data + ').') } });
 }));
 // The clip stops itself at its end; "onwards" carries on from wherever it stopped, for the reveal.
 function playClip(player, song, onwards) {
@@ -288,7 +301,7 @@ function slidesFor(d) {
           '<p class="s-kicker">Winner, come up for your prize!</p>';
         if (!clipOf(s).id) return [head + '<p class="s-big">♪</p><p class="s-q">Name that tune!</p>', reveal];
         return [head + '<p class="s-big">♪</p><p class="s-q">Name that tune!</p><p class="s-line">Listen closely…</p>',
-          { html: head + '<p class="s-big playing">♪</p><p class="s-q">Name that tune!</p>', song: s },
+          { html: head + '<div class="eq">' + Array.from({ length: 28 }, () => '<i style="animation-duration:' + (0.45 + Math.random() * 0.6).toFixed(2) + 's;animation-delay:-' + Math.random().toFixed(2) + 's"></i>').join('') + '</div><p class="s-q">Name that tune!</p><p class="s-status">Loading the clip…</p><button type="button" class="s-replay">↻ Restart clip</button>', song: s },
           { html: reveal, song: s, onwards: true }];
       }))
       .concat([['<p class="s-kicker">Guess the Tune</p><h1 class="s-title">Thank you for playing!</h1><p class="s-line">Congratulations to all our winners!</p>']]);
@@ -309,7 +322,15 @@ function present(d) {
   let at = 0;
   const clips = mode === 'tune' && steps.some(st => st.song);
   let player = null, error = '';
-  const ready = clips ? clipPlayer('yt', msg => { error = msg; const e = document.querySelector('.s-err'); if (e) e.textContent = msg; }).then(p => (player = p)) : null;
+  const status = state => {
+    const el = document.querySelector('.s-status');
+    if (!el) return;
+    const playing = state === YT.PlayerState.PLAYING;
+    el.classList.toggle('on', playing);
+    document.querySelector('.eq').classList.toggle('on', playing);
+    el.textContent = playing ? '▶ Now playing' : state === YT.PlayerState.PAUSED || state === YT.PlayerState.ENDED ? 'Clip finished' : 'Loading the clip…';
+  };
+  const ready = clips ? clipPlayer('yt', msg => { error = msg; const e = document.querySelector('.s-err'); if (e) e.textContent = msg; }, status).then(p => (player = p)) : null;
   const show = () => {
     const step = steps[at];
     $('slide').innerHTML = (step.html || step) + (step.song ? '<p class="s-err">' + esc(error) + '</p>' : '');
@@ -319,7 +340,10 @@ function present(d) {
     player ? playClip(player, step.song, step.onwards) : ready.then(p => playClip(p, step.song, step.onwards));
   };
   const go = n => { at = Math.max(0, Math.min(steps.length - 1, at + n)); show(); };
-  $('stage').addEventListener('click', () => go(1));
+  $('stage').addEventListener('click', e => {
+    if (!e.target.closest('.s-replay')) return go(1);
+    if (player) playClip(player, steps[at].song);
+  });
   addEventListener('keydown', e => {
     if (['ArrowRight', ' ', 'PageDown', 'Enter'].includes(e.key)) { e.preventDefault(); go(1); }
     else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); go(-1); }
