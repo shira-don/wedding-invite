@@ -1,0 +1,51 @@
+{
+  "block": "7:25 – 8:10 PM",
+  "runOrder": [
+    ["7:25 PM", "Guess the Tune", "About 20 minutes"],
+    ["7:45 PM", "Last Man Standing", "About 12 minutes"],
+    ["8:00 PM", "Raffle draw", "Coordinate with the LED tech to put the raffle page on the LED wall", "raffle.html"]
+  ],
+  "lms": {
+    "rules": [
+      "Everyone who wants to play stands up.",
+      "Hands on head = A. Hands on hips = B.",
+      "Wrong answer: sit down. Last one standing wins.",
+      "Ask everyone to raise both hands before each question, then choose, so nobody copies their tablemates.",
+      "If the last few all get one wrong, bring them back and use a tiebreaker (closest number wins)."
+    ],
+    "questions": [
+      { "round": "Warm-up", "q": "What course did we both take in college?", "a": "Computer Engineering", "b": "Electronics Engineering", "answer": "B" },
+      { "round": "Warm-up", "q": "How did we really get close?", "a": "Thesis partners", "b": "Blockmates who sat beside each other", "answer": "A" },
+      { "round": "Warm-up", "q": "The engineering board exam: did we take it together or separately?", "a": "Together", "b": "Separately", "answer": "A" },
+      { "round": "Warm-up", "q": "How long have we been together?", "a": "7 years", "b": "8 years", "answer": "B" },
+      { "round": "Warm-up", "q": "What's our wedding hashtag?", "a": "#FromThesisToForever", "b": "#DonAndShyForever", "answer": "A" },
+      { "round": "Only we know", "q": "Who said \"I love you\" first?", "a": "Shira", "b": "Leendon", "answer": "" },
+      { "round": "Only we know", "q": "Who made the first move?", "a": "Shira", "b": "Leendon", "answer": "" },
+      { "round": "Only we know", "q": "Who did more of the thesis work?", "a": "Shira", "b": "Leendon", "answer": "" },
+      { "round": "Only we know", "q": "Who fell asleep first during late lab nights?", "a": "Shira", "b": "Leendon", "answer": "" },
+      { "round": "Only we know", "q": "Who cried first during the proposal?", "a": "Shira", "b": "Leendon", "answer": "" },
+      { "round": "Spare", "q": "What are we saving toward?", "a": "Our honeymoon", "b": "Our first home", "answer": "B" },
+      { "round": "Spare", "q": "Who's more likely to be running late?", "a": "Shira", "b": "Leendon", "answer": "" },
+      { "round": "Spare", "q": "Who's the better cook?", "a": "Shira", "b": "Leendon", "answer": "" },
+      { "round": "Spare", "q": "Who has the longer skincare routine?", "a": "Shira", "b": "Leendon", "answer": "" },
+      { "round": "Spare", "q": "Who will cry first during the vows today?", "a": "Shira", "b": "Leendon", "answer": "" }
+    ],
+    "tiebreakers": [
+      { "q": "How many days have we been together as of today?", "answer": "" },
+      { "q": "In what month and year did we become official?", "answer": "" },
+      { "q": "How many guests are at the reception tonight?", "answer": "" }
+    ]
+  },
+  "tune": {
+    "rules": [
+      "Each table plays as one team.",
+      "The band or tech plays the first few seconds of a song.",
+      "The first table to stand and shout the title (and artist, for a bonus) gets the point.",
+      "Wrong guess: that table sits out the rest of that song.",
+      "The table with the most points at the end wins."
+    ],
+    "songs": [
+      { "title": "To follow", "artist": "", "note": "Add the songs and intro lengths with the band or tech" }
+    ]
+  }
+}

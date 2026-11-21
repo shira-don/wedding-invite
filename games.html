@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Games &amp; Raffle — Shira &amp; Leendon</title>
+  <meta name="theme-color" content="#7b5ea7" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%9C%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="fonts/google-fonts.css" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Montserrat', sans-serif; font-weight: 300; color: #3a3a3a; line-height: 1.6;
+      background: linear-gradient(180deg, #faf7ff, #efe8f6); min-height: 100vh; }
+    .wrap { max-width: 1000px; margin: 0 auto; padding: 1.2rem 1rem 3rem; }
+    header { text-align: center; margin-bottom: 1.2rem; }
+    .kicker { font-size: .66rem; letter-spacing: 3px; text-transform: uppercase; color: #7b5ea7; }
+    h1 { font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 2rem; letter-spacing: 3px; color: #5e4590; margin-top: .1rem; }
+    .sub { font-size: .72rem; color: #8a8398; }
+
+    .card-box { background: #fff; border: 1px solid rgba(168,155,187,.35); border-radius: 14px; padding: 1rem 1.1rem; margin-bottom: 1rem; }
+    .card-box h2 { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 1.25rem; color: #7b5ea7; margin-bottom: .4rem; }
+    .times { list-style: none; display: grid; grid-template-columns: max-content 1fr; gap: .15rem .9rem; font-size: .85rem; }
+    .times b { font-weight: 600; color: #5e4590; white-space: nowrap; }
+    .times span { color: #8a8398; }
+    .times .key { font-weight: 500; color: #5e4590; }
+    .go { display: inline-block; margin: .25rem 0 .1rem; padding: .3rem .75rem; border-radius: 999px; background: #7b5ea7; color: #fff; font-weight: 600; font-size: .8rem;
+      text-decoration: none; box-shadow: 0 0 0 3px #e6dcf3; border: 0; cursor: pointer; font-family: inherit; }
+    .go:hover, .go:focus-visible { background: #5e4590; }
+    .go.big { font-size: .95rem; padding: .55rem 1.2rem; }
+    .rules { padding-left: 1.1rem; font-size: .85rem; display: grid; gap: .3rem; }
+    .rules li::marker { color: #9fbb99; }
+
+    .tabs { position: sticky; top: 0; z-index: 5; display: flex; gap: .4rem; padding: .5rem 0; background: linear-gradient(180deg, #f6f1fb 70%, rgba(246,241,251,0)); }
+    .tabs button { flex: 1; padding: .65rem .4rem; border: 1px solid rgba(123,94,167,.35); border-radius: 999px; background: #fff;
+      font: 500 .68rem 'Montserrat', sans-serif; letter-spacing: 1.5px; text-transform: uppercase; color: #5e4590; cursor: pointer; }
+    .tabs button[aria-selected="true"] { background: #7b5ea7; border-color: #7b5ea7; color: #fff; }
+    .panel[hidden] { display: none; }
+    .panel-title { display: none; }
+    .bar { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; justify-content: space-between; margin: .3rem 0 .8rem; }
+    .toggle { font-size: .78rem; color: #5e4590; display: flex; gap: .4rem; align-items: center; cursor: pointer; }
+
+    .qs { list-style: none; display: grid; grid-template-columns: minmax(0, 1fr); gap: .6rem; }
+    .opt { min-width: 0; overflow-wrap: anywhere; }
+    .round { font-size: .66rem; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: #52734d; margin-top: .6rem; }
+    .q { background: #fff; border: 1px solid rgba(168,155,187,.35); border-radius: 12px; padding: .8rem 1rem; }
+    .q .n { font-weight: 600; color: #7b5ea7; margin-right: .3rem; }
+    .q p { font-size: .92rem; font-weight: 400; color: #3a3a3a; }
+    .opts { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; margin-top: .5rem; font-size: .82rem; }
+    .opt { padding: .35rem .6rem; border-radius: 8px; background: #f6f1fb; border: 1px solid transparent; }
+    .opt b { color: #7b5ea7; margin-right: .3rem; }
+    .reveal .opt.right { background: #e8f0e6; border-color: #9fbb99; font-weight: 500; }
+    .ans { margin-top: .45rem; font-size: .78rem; color: #8a8398; }
+    .ans button { border: 0; background: none; color: #7b5ea7; font: 500 .78rem 'Montserrat', sans-serif; cursor: pointer; text-decoration: underline; }
+    .ans .val { display: none; }
+    .reveal .ans .val { display: inline; color: #52734d; font-weight: 500; }
+    .reveal .ans button { display: none; }
+    .tbc { color: #b9a089; font-style: italic; }
+    .msg { padding: .8rem 1rem; border-radius: 10px; background: #fff6ec; border: 1px solid #e3c9a6; color: #6b4d23; font-size: .82rem; margin-bottom: 1rem; }
+    .prizes { list-style: none; display: grid; gap: .4rem; font-size: .85rem; margin-top: .6rem; }
+    .prizes li { display: flex; justify-content: space-between; gap: .6rem; padding: .45rem .7rem; background: #f6f1fb; border-radius: 8px; }
+    .prizes span { color: #8a8398; text-transform: uppercase; font-size: .68rem; letter-spacing: 1.5px; align-self: center; }
+    footer { text-align: center; margin-top: 1.6rem; font-size: .75rem; color: #8a8398; display: grid; gap: .5rem; justify-items: center; }
+    footer a { color: #7b5ea7; }
+    @media (min-width: 700px) { h1 { font-size: 2.5rem; } }
+    @media print {
+      @page { size: A4; margin: 10mm; }
+      body { background: none; }
+      .tabs, .bar, footer, .go { display: none; }
+      .panel, .panel[hidden] { display: block !important; break-before: page; }
+      .panel-title { display: block; font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 1.4rem; color: #5e4590; }
+      .q { break-inside: avoid; padding: .4rem .7rem; }
+      .ans .val { display: inline !important; } .ans button { display: none !important; }
+    }
+
+    /* Present mode: one 4:3 slide for the LED wall, dark so the wall looks rich, not glaring */
+    .stage { display: none; }
+    body.present { background: #1d1229; overflow: hidden; }
+    body.present .wrap { display: none; }
+    body.present .stage { display: grid; place-items: center; position: fixed; inset: 0; cursor: pointer; user-select: none; }
+    .slide { width: min(100vw, 133.33vh); aspect-ratio: 4 / 3; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 3.5vh; padding: 5vh 6vh; text-align: center; color: #f4eefb;
+      background: radial-gradient(ellipse at 50% 30%, #3b2557 0%, #24163a 60%, #1d1229 100%); }
+    .s-kicker { font-size: 3vh; letter-spacing: .6vh; text-transform: uppercase; color: #b9d3b4; font-weight: 500; }
+    .s-title { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 11vh; line-height: 1.05; color: #fff; }
+    .s-q { font-weight: 500; font-size: 6.4vh; line-height: 1.25; max-width: 92%; }
+    .s-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 3vh; width: 92%; }
+    .s-opt { padding: 3vh 2vh; border-radius: 2vh; background: rgba(255,255,255,.08); border: .4vh solid rgba(255,255,255,.18); font-size: 4.8vh; font-weight: 500; transition: all .3s; }
+    .s-opt small { display: block; font-size: 2.8vh; font-weight: 400; color: #cbbbe0; margin-bottom: .8vh; letter-spacing: .3vh; text-transform: uppercase; }
+    .s-opt.right { background: #52734d; border-color: #b9d3b4; color: #fff; }
+    .s-opt.dim { opacity: .3; }
+    .s-big { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 14vh; line-height: 1; color: #fff; }
+    .s-line { font-size: 4vh; color: #cbbbe0; max-width: 90%; line-height: 1.4; }
+    .hint { position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%); font-size: .75rem; color: rgba(255,255,255,.55); transition: opacity 1s; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <p class="kicker">Shira &amp; Leendon · December 6, 2026</p>
+      <h1>Games &amp; Raffle</h1>
+      <p class="sub" id="block">For the host and coordinator</p>
+    </header>
+
+    <div id="msg"></div>
+    <section class="card-box"><h2>Run order</h2><ul class="times" id="order"></ul></section>
+
+    <nav class="tabs" role="tablist">
+      <button type="button" role="tab" data-tab="lms">Last Man Standing</button>
+      <button type="button" role="tab" data-tab="tune">Guess the Tune</button>
+      <button type="button" role="tab" data-tab="raffle">Raffle</button>
+    </nav>
+
+    <section class="panel" data-panel="lms">
+      <h2 class="panel-title">Last Man Standing</h2>
+      <section class="card-box"><h2>How to play</h2><ul class="rules" id="lms-rules"></ul></section>
+      <div class="bar">
+        <label class="toggle"><input type="checkbox" id="show-all" /> Show all answers</label>
+        <a class="go" href="?present=lms" target="_blank" rel="noopener">Show on the LED wall →</a>
+      </div>
+      <ul class="qs" id="lms-qs"></ul>
+    </section>
+
+    <section class="panel" data-panel="tune" hidden>
+      <h2 class="panel-title">Guess the Tune</h2>
+      <section class="card-box"><h2>How to play</h2><ul class="rules" id="tune-rules"></ul></section>
+      <div class="bar"><span></span><a class="go" href="?present=tune" target="_blank" rel="noopener">Show on the LED wall →</a></div>
+      <ul class="qs" id="tune-songs"></ul>
+    </section>
+
+    <section class="panel" data-panel="raffle" hidden>
+      <h2 class="panel-title">Raffle</h2>
+      <section class="card-box">
+        <h2>Raffle draw</h2>
+        <p style="font-size:.85rem">Coordinate with the LED tech to put the raffle page on the LED wall, full screen. Prizes are drawn minor first, grand prize last.</p>
+        <p style="margin-top:.7rem"><a class="go big" href="raffle.html" target="_blank" rel="noopener">Open the raffle page →</a></p>
+        <ul class="prizes" id="prizes"></ul>
+      </section>
+    </section>
+
+    <footer>
+      <a href="coordinator.html">← Coordinator floor plan</a>
+      <p>Questions, answers and songs live in games.json. Answers marked "couple to fill in" are still blank there.</p>
+    </footer>
+  </div>
+
+  <div class="stage" id="stage" role="presentation"><div class="slide" id="slide"></div></div>
+  <p class="hint" id="hint" hidden>Click or → for next · ← back · F full screen</p>
+
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const TBC = '<span class="tbc">couple to fill in</span>';
+const mode = new URLSearchParams(location.search).get('present');
+
+function load() {
+  const keep = d => { try { localStorage.setItem('games-data', JSON.stringify(d)); } catch (e) {} return d; };
+  return fetch('games.json', { cache: 'no-cache' }).then(r => r.json()).then(keep)
+    .catch(() => { try { return JSON.parse(localStorage.getItem('games-data')); } catch (e) { return null; } });
+}
+
+function renderPage(d) {
+  $('block').textContent = 'Games block ' + d.block + ' · for the host and coordinator';
+  $('order').innerHTML = d.runOrder.map(r => '<li><b>' + esc(r[0]) + '</b></li><li class="key">' + esc(r[1]) +
+    (r[2] ? ' <span>· ' + esc(r[2]) + '</span>' : '') +
+    (r[3] ? ' <a class="go" href="' + esc(r[3]) + '" target="_blank" rel="noopener">Open the raffle page →</a>' : '') + '</li>').join('');
+  $('lms-rules').innerHTML = d.lms.rules.map(r => '<li>' + esc(r) + '</li>').join('');
+  $('tune-rules').innerHTML = d.tune.rules.map(r => '<li>' + esc(r) + '</li>').join('');
+
+  let round = '';
+  $('lms-qs').innerHTML = d.lms.questions.map((q, n) => {
+    const head = q.round !== round ? '<li class="round">' + esc(round = q.round) + '</li>' : '';
+    const right = k => q.answer === k ? ' right' : '';
+    return head + '<li class="q"><p><span class="n">' + (n + 1) + '.</span>' + esc(q.q) + '</p><div class="opts">' +
+      '<div class="opt' + right('A') + '"><b>A</b>' + esc(q.a) + '</div><div class="opt' + right('B') + '"><b>B</b>' + esc(q.b) + '</div></div>' +
+      '<p class="ans">Answer: <button type="button">Show</button><span class="val">' + (q.answer ? q.answer + ' · ' + esc(q.answer === 'A' ? q.a : q.b) : TBC) + '</span></p></li>';
+  }).join('') + '<li class="round">Tiebreakers · closest number wins</li>' + d.lms.tiebreakers.map(t =>
+    '<li class="q"><p>' + esc(t.q) + '</p><p class="ans">Answer: <button type="button">Show</button><span class="val">' + (t.answer ? esc(t.answer) : TBC) + '</span></p></li>').join('');
+
+  $('tune-songs').innerHTML = d.tune.songs.map((s, n) => '<li class="q"><p><span class="n">' + (n + 1) + '.</span>' +
+    (/^to follow$/i.test(s.title) ? TBC : esc(s.title) + (s.artist ? ' <span style="color:#8a8398">· ' + esc(s.artist) + '</span>' : '')) + '</p>' +
+    (s.note ? '<p class="ans">' + esc(s.note) + '</p>' : '') + '</li>').join('');
+
+  document.querySelectorAll('.ans button').forEach(b => b.addEventListener('click', () => b.closest('.q').classList.add('reveal')));
+  $('show-all').addEventListener('change', e => document.querySelectorAll('#lms-qs .q').forEach(q => q.classList.toggle('reveal', e.target.checked)));
+  fetch('raffle-prizes.json', { cache: 'no-cache' }).then(r => r.json()).then(list => {
+    $('prizes').innerHTML = list.map(p => '<li>' + esc(p.name) + (p.quantity > 1 ? ' × ' + p.quantity : '') + '<span>' + esc(p.tier) + '</span></li>').join('');
+  }).catch(() => {});
+}
+
+function showTab(id) {
+  document.querySelectorAll('.tabs button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === id)));
+  document.querySelectorAll('.panel').forEach(p => { p.hidden = p.dataset.panel !== id; });
+  history.replaceState(null, '', '#' + id);
+}
+
+// Each slide is a list of steps: the question first, then the answer revealed on the next click.
+function slidesFor(d) {
+  const opt = (k, label, q, shown) => '<div class="s-opt' + (shown && q.answer ? (q.answer === k ? ' right' : ' dim') : '') + '"><small>' +
+    (k === 'A' ? 'A · hands on head' : 'B · hands on hips') + '</small>' + esc(label) + '</div>';
+  if (mode === 'tune') {
+    const songs = d.tune.songs.filter(s => !/^to follow$/i.test(s.title));
+    return [['<p class="s-kicker">Game time</p><h1 class="s-title">Guess the Tune</h1><p class="s-line">Stand up and shout the title. First table gets the point!</p>']]
+      .concat(songs.map((s, n) => [
+        '<p class="s-kicker">Song ' + (n + 1) + ' of ' + songs.length + '</p><p class="s-big">♪</p><p class="s-q">Name that tune!</p>',
+        '<p class="s-kicker">Song ' + (n + 1) + '</p><h1 class="s-title">' + esc(s.title) + '</h1><p class="s-line">' + esc(s.artist) + '</p>']))
+      .concat([['<p class="s-kicker">Guess the Tune</p><h1 class="s-title">Thank you for playing!</h1>']]);
+  }
+  const qs = d.lms.questions;
+  return [['<p class="s-kicker">Game time</p><h1 class="s-title">Last Man Standing</h1><p class="s-line">Everyone stand up! Hands on head = A · Hands on hips = B. Wrong answer, sit down.</p>']]
+    .concat(qs.map((q, n) => [false, true].map(shown =>
+      '<p class="s-kicker">Question ' + (n + 1) + '</p><p class="s-q">' + esc(q.q) + '</p><div class="s-opts">' + opt('A', q.a, q, shown) + opt('B', q.b, q, shown) + '</div>')))
+    .concat(d.lms.tiebreakers.map(t => ['<p class="s-kicker">Tiebreaker · closest number wins</p><p class="s-q">' + esc(t.q) + '</p>']
+      .concat(t.answer ? ['<p class="s-kicker">Tiebreaker</p><p class="s-q">' + esc(t.q) + '</p><p class="s-big">' + esc(t.answer) + '</p>'] : [])))
+    .concat([['<p class="s-kicker">Last Man Standing</p><h1 class="s-title">We have a winner!</h1>']]);
+}
+
+function present(d) {
+  document.body.classList.add('present');
+  document.title = (mode === 'tune' ? 'Guess the Tune' : 'Last Man Standing') + ' — LED';
+  const steps = slidesFor(d).flat();
+  let at = 0;
+  const show = () => { $('slide').innerHTML = steps[at]; };
+  const go = n => { at = Math.max(0, Math.min(steps.length - 1, at + n)); show(); };
+  $('stage').addEventListener('click', () => go(1));
+  addEventListener('keydown', e => {
+    if (['ArrowRight', ' ', 'PageDown', 'Enter'].includes(e.key)) { e.preventDefault(); go(1); }
+    else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); go(-1); }
+    else if (e.key === 'f' || e.key === 'F') document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen().catch(() => {});
+  });
+  $('hint').hidden = false;
+  setTimeout(() => { $('hint').style.opacity = 0; }, 4000);
+  show();
+}
+
+load().then(d => {
+  if (!d) { $('msg').innerHTML = '<p class="msg">Couldn\'t load games.json. Check the connection and refresh.</p>'; return; }
+  if (mode) return present(d);
+  renderPage(d);
+  document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
+  showTab(['lms', 'tune', 'raffle'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'lms');
+});
+</script>
+</body>
+</html>
