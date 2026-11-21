@@ -18,12 +18,42 @@
       "raffle.html"
     ]
   ],
+  "prizes": {
+    "tune": {
+      "label": "Guess the Tune",
+      "when": "One per song. The winner picks one.",
+      "items": [
+        [
+          "₱500 Starbucks gift card",
+          5
+        ],
+        [
+          "Michaela gift set",
+          7
+        ]
+      ]
+    },
+    "lms": {
+      "label": "Last Man Standing",
+      "when": "The last one standing.",
+      "items": [
+        [
+          "Double gas stove",
+          1
+        ]
+      ]
+    },
+    "notes": [
+      "Put the game prizes on a table beside the host, separate from the raffle prizes.",
+      "Line up the raffle prizes in draw order: minor first, the grand prize last.",
+      "Game winners stay in the raffle."
+    ]
+  },
   "lms": {
     "rules": [
       "Everyone who wants to play stands up.",
       "Hands on head = A. Hands on hips = B.",
       "Wrong answer: sit down. Last one standing wins.",
-      "Prize: the double gas stove for the last one standing.",
       "Ask everyone to raise both hands before each question, then choose, so nobody copies their tablemates.",
       "If the last few all get one wrong, bring them back and use a tiebreaker (closest number wins)."
     ],
@@ -154,7 +184,7 @@
       "Play as yourself, not as a table.",
       "Each song plays a 10-second clip from YouTube. Every one is a song the band played earlier tonight.",
       "First to stand up and shout the right title wins that round. The host points to whoever stood first; a wrong guess passes to the next person standing.",
-      "Each round's winner comes up and picks a prize: a ₱500 Starbucks gift card (5) or a Michaela gift set (7), 12 in all.",
+      "Each round's winner comes up and picks a prize from the prize table.",
       "Once you've won, you sit out the rest of the songs, so more guests get a chance to win.",
       "Nobody gets it? Play Hint 2, then Hint 3 (keys 2 and 3): later parts of the same song. Still nothing? Reveal the answer (the song plays on)."
     ],
