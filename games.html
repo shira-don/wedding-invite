@@ -199,7 +199,8 @@ const clipPlayer = (el, onError) => youtubeApi().then(() => new Promise(resolve 
 function playClip(player, song, onwards) {
   clearInterval(clipTimer);
   const c = clipOf(song);
-  if (onwards && player.getVideoData && player.getVideoData().video_id === c.id) return player.playVideo();
+  const loaded = player.getVideoData && player.getVideoData();
+  if (onwards && loaded && loaded.video_id === c.id) return player.playVideo();
   player.loadVideoById({ videoId: c.id, startSeconds: c.start });
   if (!onwards) clipTimer = setInterval(() => { if (player.getCurrentTime() >= c.start + c.length) { player.pauseVideo(); clearInterval(clipTimer); } }, 150);
 }

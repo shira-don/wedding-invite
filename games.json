@@ -151,72 +151,108 @@
   "tune": {
     "rules": [
       "Play as yourself, not as a table.",
-      "Every song is one the band played earlier tonight (from the planner sheet's MUSIC LIST), so the band plays the first few bars live. A song with a YouTube clip set in home.exe plays from the laptop instead.",
+      "Each song plays a 10-second clip from YouTube. Every one is a song the band played earlier tonight.",
       "First to stand up and shout the right title wins that round. The host points to whoever stood first; a wrong guess passes to the next person standing.",
       "Each round's winner comes up for a small prize right away.",
       "Once you've won, you sit out the rest of the songs, so more guests get a chance to win.",
-      "Nobody gets it? The band plays a little more, then the host reveals the answer and moves on."
+      "Nobody gets it? Press R to replay the clip once, then reveal the answer (the song plays on)."
     ],
     "songs": [
       {
         "title": "Just the Way You Are",
         "artist": "Billy Joel",
-        "note": "Band plays the intro live · heard earlier in the arrival set"
+        "note": "The band played it earlier in the arrival set",
+        "youtube": "https://youtu.be/dBqyX0UUzVQ",
+        "start": "0:00",
+        "length": 10
       },
       {
         "title": "Palagi",
         "artist": "TJ Monterde",
-        "note": "Band plays the intro live · heard during the photos after the ceremony"
+        "note": "The band played it during the photos after the ceremony",
+        "youtube": "https://youtu.be/-pz8RfOWS18",
+        "start": "0:00",
+        "length": 10
       },
       {
         "title": "Killing Me Softly",
         "artist": "Roberta Flack",
-        "note": "Band plays the intro live · heard earlier in the arrival set"
+        "note": "The band played it earlier in the arrival set",
+        "youtube": "https://youtu.be/l2n167F0eBc",
+        "start": "0:00",
+        "length": 10
       },
       {
         "title": "Awitin Mo at Isasayaw Ko",
         "artist": "VST & Company",
-        "note": "Band plays the intro live · heard earlier in the arrival set"
+        "note": "The band played it earlier in the arrival set",
+        "youtube": "https://youtu.be/CAHsClyYRt8",
+        "start": "0:00",
+        "length": 10
       },
       {
         "title": "Sway",
         "artist": "Bic Runga",
-        "note": "Band plays the intro live · heard earlier in the arrival set"
+        "note": "The band played it earlier in the arrival set",
+        "youtube": "https://youtu.be/5VBlbVdoS5Q",
+        "start": "0:00",
+        "length": 10
       },
       {
         "title": "L.O.V.E",
         "artist": "Michael Bublé",
-        "note": "Band plays the intro live · heard earlier in the mealtime set"
+        "note": "The band played it earlier in the mealtime set",
+        "youtube": "https://youtu.be/jKajgKJn948",
+        "start": "0:00",
+        "length": 10
       },
       {
         "title": "Tingin",
         "artist": "Cup of Joe & Janine Teñoso",
-        "note": "Band plays the intro live · heard earlier in the arrival set"
+        "note": "The band played it earlier in the arrival set",
+        "youtube": "https://youtu.be/aJakSXHZROo",
+        "start": "0:00",
+        "length": 10
       },
       {
         "title": "Rather Be",
         "artist": "Clean Bandit ft. Jess Glynne",
-        "note": "Band plays the intro live · heard earlier in the arrival set"
+        "note": "The band played it earlier in the arrival set",
+        "youtube": "https://youtu.be/ku16PsxpZGU",
+        "start": "0:00",
+        "length": 10
       },
       {
         "title": "Ikaw at Ako",
         "artist": "Moira Dela Torre & Jason Marvin",
-        "note": "Band plays the intro live · heard earlier in the mealtime set"
+        "note": "The band played it earlier in the mealtime set",
+        "youtube": "https://youtu.be/ejoLl4WJqwM",
+        "start": "0:00",
+        "length": 10
       },
       {
         "title": "Fly Me to the Moon",
         "artist": "Frank Sinatra",
-        "note": "Band plays the intro live · heard earlier in the arrival set"
+        "note": "The band played it earlier in the arrival set",
+        "youtube": "https://youtu.be/ZEcqHA7dbwM",
+        "start": "0:00",
+        "length": 10
       },
       {
         "title": "Marry You",
         "artist": "Bruno Mars",
-        "note": "Band plays the intro live · heard earlier in the arrival set"
+        "note": "The band played it earlier in the arrival set",
+        "youtube": "https://youtu.be/dElRVQFqj-k",
+        "start": "0:00",
+        "length": 10
       },
       {
         "title": "Can't Take My Eyes Off You",
         "artist": "Frankie Valli",
-        "note": "Band plays the intro live · heard earlier in the mealtime set"
+        "note": "The band played it earlier in the mealtime set",
+        "youtube": "https://youtu.be/DYwQy_9JPtQ",
+        "start": "0:00",
+        "length": 10
       }
     ]
   }
