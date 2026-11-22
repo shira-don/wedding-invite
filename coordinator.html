@@ -171,6 +171,7 @@
 
     <footer>
       <button type="button" class="print-btn" onclick="print()">Print all maps</button>
+      <a href="photos.html">Photo order after the ceremony: who goes in each group →</a>
       <a href="seat-plan.html">Find a guest's table on the seat plan →</a>
       <a href="games.html">Games &amp; raffle: questions, answers and LED slides →</a>
       <p>Suppliers, contacts and arrival times come from the SUPPLIERS DIRECTORY tab of the planner sheet. TBC means it isn't filled in there yet.</p>
@@ -276,7 +277,7 @@ function renderData(d, directory) {
   suppliers = stationsMerge(d.suppliers, directory);
   $('times').innerHTML = (d.times || []).map(row => typeof row === 'string' ? '<li class="sec">' + esc(row) + '</li>' :   // a plain string is a section heading
     '<li><b>' + esc(row[0]) + '</b></li><li' + (row[3] ? ' class="key"' : '') + '>' + esc(row[1]) + (row[2] ? ' <span>· ' + esc(row[2]) + '</span>' : '') +
-    (row[4] ? ' <a class="go" href="' + esc(row[4]) + '" target="_blank" rel="noopener">Open the ' + (/games/.test(row[4]) ? 'games' : 'raffle') + ' page →</a>' : '') + '</li>').join('');
+    (row[4] ? ' <a class="go" href="' + esc(row[4]) + '" target="_blank" rel="noopener">Open the ' + (/games/.test(row[4]) ? 'games page' : /photos/.test(row[4]) ? 'photo order' : 'raffle page') + ' →</a>' : '') + '</li>').join('');
   $('notes').innerHTML = (d.notes || []).map(n => '<li>' + esc(n) + '</li>').join('');
   renderLists();
   ['venue', 'upper', 'ground'].forEach(map => { const svg = $('map-' + map); if (svg) stationsDraw(svg, suppliers.filter(s => s.map === map), true); });

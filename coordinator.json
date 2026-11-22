@@ -36,7 +36,9 @@
     [
       "5:00 – 5:15 PM",
       "Family and sponsor photos; cocktails start",
-      "Cocktail area"
+      "Cocktail area. 15 groups in order, about a minute each",
+      false,
+      "photos.html"
     ],
     [
       "5:15 – 5:30 PM",

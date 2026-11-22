@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Photo Order — Shira &amp; Leendon</title>
+  <meta name="theme-color" content="#7b5ea7" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%B7%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="fonts/google-fonts.css" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Montserrat', sans-serif; font-weight: 300; color: #3a3a3a; line-height: 1.6;
+      background: linear-gradient(180deg, #faf7ff, #efe8f6); min-height: 100vh; }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 1.2rem 1rem 3rem; }
+    header { text-align: center; margin-bottom: 1.2rem; }
+    .kicker { font-size: .66rem; letter-spacing: 3px; text-transform: uppercase; color: #7b5ea7; }
+    h1 { font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 2rem; letter-spacing: 3px; color: #5e4590; margin-top: .1rem; }
+    .sub { font-size: .72rem; color: #8a8398; }
+
+    .card-box { background: #fff; border: 1px solid rgba(168,155,187,.35); border-radius: 14px; padding: 1rem 1.1rem; margin-bottom: 1rem; }
+    .card-box h2 { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 1.25rem; color: #7b5ea7; margin-bottom: .4rem; }
+    .notes { padding-left: 1.1rem; font-size: .85rem; display: grid; gap: .35rem; }
+    .notes li::marker { color: #9fbb99; }
+    .notes b { font-weight: 600; color: #5e4590; }
+
+    .shots { list-style: none; display: grid; gap: .6rem; }
+    .shot { display: grid; grid-template-columns: 2.4rem 1fr; gap: .8rem; padding: .85rem 1rem; background: #fff; border: 1px solid rgba(168,155,187,.35);
+      border-radius: 12px; cursor: pointer; user-select: none; }
+    .shot .n { width: 2.4rem; height: 2.4rem; border-radius: 50%; background: #7b5ea7; color: #fff; display: grid; place-items: center;
+      font-weight: 600; font-size: .95rem; }
+    .shot .grp { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 1.2rem; line-height: 1.2; color: #3a3a3a; }
+    .shot .who { font-size: .85rem; margin-top: .2rem; }
+    .shot .note { font-size: .78rem; color: #8a6d3b; margin-top: .3rem; }
+    .shot.done { opacity: .5; }
+    .shot.done .n { background: #52734d; }
+    .shot.done .n::after { content: '✓'; }
+    .shot.done .n span { display: none; }
+    .shot.later { border-style: dashed; }
+    .hint { font-size: .72rem; color: #8a8398; text-align: center; margin: .2rem 0 .6rem; }
+
+    footer { text-align: center; margin-top: 1.6rem; font-size: .75rem; color: #8a8398; display: grid; gap: .5rem; justify-items: center; }
+    footer a { color: #7b5ea7; }
+    .btn { padding: .6rem 1.4rem; border: 0; border-radius: 4px; background: #7b5ea7; color: #fff; font: 500 .7rem 'Montserrat', sans-serif;
+      letter-spacing: 2px; text-transform: uppercase; cursor: pointer; }
+    .btn.ghost { background: none; color: #7b5ea7; border: 1px solid rgba(123,94,167,.45); }
+    .loading { padding: 2rem; text-align: center; color: #8a8398; font-size: .85rem; }
+    .msg { padding: .8rem 1rem; border-radius: 10px; background: #fff6ec; border: 1px solid #e3c9a6; color: #6b4d23; font-size: .82rem; margin-bottom: 1rem; }
+
+    @media (min-width: 700px) { h1 { font-size: 2.5rem; } }
+    @media print {
+      @page { size: A4; margin: 10mm; }
+      body { background: none; }
+      .hint, footer, #msg { display: none; }
+      .shot { padding: .4rem .6rem; break-inside: avoid; gap: .5rem; }
+      .shot.done { opacity: 1; }
+      .shot.done .n { background: #7b5ea7; }
+      .shot.done .n::after { content: none; }
+      .shot.done .n span { display: inline; }
+      .shot .grp { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <p class="kicker">Shira &amp; Leendon · December 6, 2026</p>
+      <h1>Photo Order</h1>
+      <p class="sub">Family &amp; sponsor photos after the ceremony</p>
+    </header>
+
+    <div id="msg"></div>
+    <section class="card-box">
+      <h2>Before you start</h2>
+      <ul class="notes">
+        <li><b>5:00 – 5:15 PM</b>, right after the recessional, while cocktails start. That's about a minute per group, so keep it moving.</li>
+        <li>While one group is being shot, call the next one and have them waiting at the side.</li>
+        <li>Couple-only portraits are separate: golden hour, 5:15 – 5:30 PM.</li>
+        <li>Anyone who misses their group joins the next big group (relatives or friends). Don't go back.</li>
+      </ul>
+    </section>
+
+    <p class="hint">Tap a group when it's done.</p>
+    <ol class="shots" id="shots"><li class="loading">Loading the photo order…</li></ol>
+
+    <footer>
+      <div><button type="button" class="btn" onclick="print()">Print</button> <button type="button" class="btn ghost" id="reset">Clear ticks</button></div>
+      <a href="coordinator.html">← Back to the coordinator page</a>
+      <p>From the PICTORIAL SEQUENCE tab of the planner sheet. Edit it there and reload this page.</p>
+    </footer>
+  </div>
+
+<script>
+const SHEET = 'https://docs.google.com/spreadsheets/d/1t5cbsdMCdoAq2igyebTX4-TFycz4nDVNPwXPwyvYdZE/gviz/tq?tqx=out:csv&sheet=PICTORIAL%20SEQUENCE&range=A3:D60&headers=0';
+const CACHE_KEY = 'photo-order', DONE_KEY = 'photo-order-done';
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const load = key => { try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; } };
+const save = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {} };
+const title = s => { const t = s.trim().toLowerCase(); return t.charAt(0).toUpperCase() + t.slice(1); };
+
+function parseCsv(text) {
+  const rows = [];
+  let row = [], cell = '', quoted = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (quoted) {
+      if (c === '"' && text[i + 1] === '"') { cell += '"'; i++; }
+      else if (c === '"') quoted = false;
+      else cell += c;
+    } else if (c === '"') quoted = true;
+    else if (c === ',') { row.push(cell); cell = ''; }
+    else if (c === '\n') { row.push(cell); rows.push(row); row = []; cell = ''; }
+    else if (c !== '\r') cell += c;
+  }
+  if (cell || row.length) { row.push(cell); rows.push(row); }
+  return rows;
+}
+
+function render(shots) {
+  const done = new Set(load(DONE_KEY) || []);
+  $('shots').innerHTML = shots.map((s, i) =>
+    '<li class="shot' + (done.has(s.group) ? ' done' : '') + (/^not in the/i.test(s.note) ? ' later' : '') + '" data-group="' + esc(s.group) + '">' +
+    '<span class="n"><span>' + (i + 1) + '</span></span><div>' +
+    '<p class="grp">' + esc(title(s.group)) + '</p>' +
+    (s.who ? '<p class="who">' + esc(s.who) + '</p>' : '') +
+    (s.note ? '<p class="note">' + esc(s.note) + '</p>' : '') + '</div></li>').join('');
+}
+
+$('shots').addEventListener('click', e => {
+  const li = e.target.closest('.shot');
+  if (!li) return;
+  li.classList.toggle('done');
+  save(DONE_KEY, [...document.querySelectorAll('.shot.done')].map(el => el.dataset.group));
+});
+$('reset').addEventListener('click', () => {
+  document.querySelectorAll('.shot.done').forEach(el => el.classList.remove('done'));
+  save(DONE_KEY, []);
+});
+
+fetch(SHEET, { cache: 'no-cache' })
+  .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
+  .then(text => {
+    const shots = parseCsv(text).map(r => ({ group: (r[1] || '').trim(), who: (r[2] || '').trim(), note: (r[3] || '').trim() })).filter(s => s.group);
+    if (!shots.length) throw new Error('empty');
+    save(CACHE_KEY, shots);
+    return shots;
+  })
+  .catch(() => {
+    const cached = load(CACHE_KEY);
+    $('msg').innerHTML = '<p class="msg">Couldn’t reach the planner sheet. ' + (cached ? 'Showing the copy saved on this device.' : 'Check the connection and reload.') + '</p>';
+    return cached || [];
+  })
+  .then(render);
+</script>
+</body>
+</html>
