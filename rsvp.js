@@ -13,7 +13,7 @@
 const RSVP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzFK9IKeYJe10jecpVcDHz3xEGoBRQmCfZYH4eARSVDY3hzFmMqamw9baRCU3JS1lpy/exec';
 
 // Shown in the strict "we couldn't find your name" and deadline-closed messages.
-const COORDINATOR_CONTACT = 'our wedding coordinator at 0965 207 6143';
+const COORDINATOR_CONTACT = 'us or our wedding coordinator';
 
 // PH mobile: 09xxxxxxxxx or +639xxxxxxxxx (spaces/dashes tolerated).
 const PH_MOBILE_RE = /^(09\d{9}|\+639\d{9})$/;

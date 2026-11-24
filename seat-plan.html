@@ -456,7 +456,7 @@ function search() {
   if (!q) { msg.textContent = 'Please enter your name.'; return; }
   const hits = find(q);
   if (!hits.length) {
-    msg.textContent = 'We couldn\u2019t find that name. Please check the spelling, or ask our coordinator at 0965 207 6143.';
+    msg.textContent = 'We couldn\u2019t find that name. Please check the spelling, or ask our coordinator at the entrance.';
     return;
   }
   if (hits.length === 1) openMatch(hits[0]);
@@ -612,7 +612,7 @@ function boot(guests) {
 
 function failed(msg) {
   document.getElementById('loading').textContent = msg ||
-    'We could not load the seating chart just now. Please refresh, or ask our coordinator at 0965 207 6143.';
+    'We could not load the seating chart just now. Please refresh, or ask our coordinator at the entrance.';
 }
 
 const planBox = document.querySelector('.plan-scroll');
