@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Peg Inspirations — Shira &amp; Leendon</title>
+  <meta name="theme-color" content="#7b5ea7" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%90%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="fonts/google-fonts.css" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Montserrat', sans-serif; font-weight: 300; color: #3a3a3a; line-height: 1.6;
+      background: linear-gradient(180deg, #faf7ff, #efe8f6); min-height: 100vh; }
+    .wrap { max-width: 1000px; margin: 0 auto; padding: 1.2rem 1rem 3rem; }
+    header { text-align: center; margin-bottom: 1.2rem; }
+    .kicker { font-size: .66rem; letter-spacing: 3px; text-transform: uppercase; color: #7b5ea7; }
+    h1 { font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 2rem; letter-spacing: 3px; color: #5e4590; margin-top: .1rem; }
+    .sub { font-size: .72rem; color: #8a8398; }
+
+    .pegs { list-style: none; display: grid; gap: 1rem; }
+    .peg { background: #fff; border: 1px solid rgba(168,155,187,.35); border-radius: 14px; overflow: hidden; break-inside: avoid; }
+    .peg img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; background: #f3eef9; }
+    .peg div { padding: .85rem 1rem 1rem; }
+    .peg .for { font-size: .66rem; letter-spacing: 2px; text-transform: uppercase; color: #52734d; font-weight: 500; }
+    .peg h2 { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 1.3rem; line-height: 1.2; color: #5e4590; }
+    .peg p { font-size: .84rem; margin-top: .3rem; }
+
+    footer { text-align: center; margin-top: 1.6rem; font-size: .75rem; color: #8a8398; display: grid; gap: .5rem; justify-items: center; }
+    footer a { color: #7b5ea7; }
+    .btn { padding: .6rem 1.4rem; border: 0; border-radius: 4px; background: #7b5ea7; color: #fff; font: 500 .7rem 'Montserrat', sans-serif;
+      letter-spacing: 2px; text-transform: uppercase; cursor: pointer; }
+
+    @media (min-width: 700px) { h1 { font-size: 2.5rem; } .pegs { grid-template-columns: 1fr 1fr; } }
+    @media print {
+      @page { size: A4; margin: 10mm; }
+      body { background: none; }
+      footer { display: none; }
+      .pegs { grid-template-columns: 1fr 1fr; gap: .5rem; }
+      .peg img { aspect-ratio: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <p class="kicker">Shira &amp; Leendon · December 6, 2026</p>
+      <h1>Peg Inspirations</h1>
+      <p class="sub">White calla lilies, lavender, eucalyptus and lilac ribbon. Tap a photo to see it full size.</p>
+    </header>
+
+    <ul class="pegs">
+      <li class="peg">
+        <a href="images/pegs/bride-bouquet.jpg" target="_blank" rel="noopener"><img src="images/pegs/bride-bouquet.jpg" alt="Bride holding a cascading bouquet of white calla lilies and lilac orchids" loading="lazy" /></a>
+        <div><p class="for">Florist</p><h2>Bride's bouquet</h2>
+          <p>A loose cascade of white calla lilies with lilac orchids and trailing greenery.</p></div>
+      </li>
+      <li class="peg">
+        <a href="images/pegs/entourage-flowers.jpg" target="_blank" rel="noopener"><img src="images/pegs/entourage-flowers.jpg" alt="Bridesmaids in lilac holding hoop bouquets of calla lilies, lavender and eucalyptus" loading="lazy" /></a>
+        <div><p class="for">Florist</p><h2>Entourage flowers</h2>
+          <p>Hoop bouquets: white calla lilies, lavender statice and eucalyptus, tied with a long lilac satin ribbon.</p></div>
+      </li>
+      <li class="peg">
+        <a href="images/pegs/pet-carrier.jpg" target="_blank" rel="noopener"><img src="images/pegs/pet-carrier.jpg" alt="Clear pet carrier dressed with calla lilies, lavender, eucalyptus and a lilac bow" loading="lazy" /></a>
+        <div><p class="for">Florist</p><h2>Pet carrier</h2>
+          <p>A spray of calla lilies, lavender statice and eucalyptus along the front with a lilac bow, and a small posy on the handle.</p></div>
+      </li>
+      <li class="peg">
+        <a href="images/pegs/aisle-cones.jpg" target="_blank" rel="noopener"><img src="images/pegs/aisle-cones.jpg" alt="Paper petal cones tied with twine to white aisle chairs" loading="lazy" /></a>
+        <div><p class="for">Ceremony set-up</p><h2>Aisle petal cones</h2>
+          <p>Paper cones of white petals tied with twine to the aisle chairs, printed with greenery, "S &amp; L" and 12.06.2026.</p></div>
+      </li>
+    </ul>
+
+    <footer>
+      <button type="button" class="btn" onclick="print()">Print</button>
+      <a href="coordinator.html">← Back to the coordinator page</a>
+      <p>Also on the MOODBOARD tab of the planner sheet.</p>
+    </footer>
+  </div>
+</body>
+</html>
